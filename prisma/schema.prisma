@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  firmName  String?  @default("Advokatbyrån AB") // Byråns namn för fakturan
+  password  String
+  createdAt DateTime @default(now())
+}
+
+model Client {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  orgNr     String?
+  cases     Case[]
+  createdAt DateTime @default(now())
+}
+
+model Case {
+  id          String      @id @default(cuid())
+  title       String
+  description String?
+  status      String      @default("OPEN")
+  hourlyRate  Float       @default(2000) // Standardtaxa 2000 kr/h
+  clientId    String
+  client      Client      @relation(fields: [clientId], references: [id])
+  logs        Log[]
+  documents   Document[]
+  timeEntries TimeEntry[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Log {
+  id        String   @id @default(cuid())
+  action    String
+  caseId    String
+  case      Case     @relation(fields: [caseId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Document {
+  id        String   @id @default(cuid())
+  name      String
+  url       String
+  caseId    String
+  case      Case     @relation(fields: [caseId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model TimeEntry {
+  id          String   @id @default(cuid())
+  description String
+  hours       Float
+  caseId      String
+  case        Case     @relation(fields: [caseId], references: [id])
+  createdAt   DateTime @default(now())
+}
