@@ -1,18 +1,27 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
+// Hämta den allra senaste, uppdaterade användardatan
+export async function GET() {
+  try {
+    const user = await prisma.user.findFirst()
+    return NextResponse.json({ user })
+  } catch (error) {
+    return NextResponse.json({ error: 'Kunde inte hämta inställningar' }, { status: 500 })
+  }
+}
+
+// Spara de nya inställningarna
 export async function PATCH(req: Request) {
   try {
     const body = await req.json()
     
-    // Hämtar administratören (eftersom det just nu är ett enanvändarsystem)
     const user = await prisma.user.findFirst()
     
     if (!user) {
       return NextResponse.json({ error: 'Användare hittades inte' }, { status: 404 })
     }
 
-    // Uppdaterar namnet och byrånamnet
     const updatedUser = await prisma.user.update({
       where: { id: user.id },
       data: {

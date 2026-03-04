@@ -1,5 +1,5 @@
 'use client'
-import { signOut, getSession } from 'next-auth/react'
+import { signOut } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 
@@ -7,11 +7,14 @@ export default function UserProfile() {
   const [user, setUser] = useState<{ name?: string | null, email?: string | null } | null>(null)
 
   useEffect(() => {
-    getSession().then(session => {
-      if (session?.user) {
-        setUser(session.user)
-      }
-    })
+    // Nu hämtar vi live-data direkt från databasen istället för från inloggningskakan
+    fetch('/api/settings')
+      .then(res => res.json())
+      .then(data => {
+        if (data.user) {
+          setUser({ name: data.user.name, email: data.user.email })
+        }
+      })
   }, [])
 
   if (!user) return <div className="h-12 w-48 animate-pulse bg-slate-200 rounded-xl"></div>
@@ -23,13 +26,12 @@ export default function UserProfile() {
         <p className="text-xs text-slate-500">{user.email}</p>
       </div>
       
-      <div className="h-9 w-9 bg-blue-100 text-blue-700 font-bold rounded-full flex items-center justify-center">
+      <div className="h-9 w-9 bg-yellow-100 text-yellow-700 font-black rounded-full flex items-center justify-center">
         {user.name?.charAt(0) || 'A'}
       </div>
       
       <div className="w-px h-8 bg-slate-200 mx-2"></div>
       
-      {/* Ny länk till inställningar */}
       <Link href="/settings" className="text-sm font-bold text-slate-500 hover:text-blue-600 transition">
         Inställningar
       </Link>

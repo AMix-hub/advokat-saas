@@ -1,6 +1,5 @@
 'use client'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 
 export default function SettingsForm({ 
   initialName, 
@@ -9,7 +8,6 @@ export default function SettingsForm({
   initialName: string, 
   initialFirmName: string 
 }) {
-  const router = useRouter()
   const [name, setName] = useState(initialName)
   const [firmName, setFirmName] = useState(initialFirmName)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -27,12 +25,11 @@ export default function SettingsForm({
 
     if (res.ok) {
       setShowSuccess(true)
-      router.refresh()
-      // Dölj notisen efter 3 sekunder
-      setTimeout(() => setShowSuccess(false), 3000)
+      // Tvingar fönstret att ladda om så att toppmenyn hämtar det nya namnet direkt
+      window.location.reload()
+    } else {
+      setIsSubmitting(false)
     }
-    
-    setIsSubmitting(false)
   }
 
   return (
@@ -43,7 +40,7 @@ export default function SettingsForm({
           type="text" 
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50 text-slate-900"
+          className="w-full border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-slate-50 text-slate-900 shadow-inner"
           required
         />
       </div>
@@ -54,7 +51,7 @@ export default function SettingsForm({
           type="text" 
           value={firmName}
           onChange={(e) => setFirmName(e.target.value)}
-          className="w-full border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50 text-slate-900"
+          className="w-full border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-slate-50 text-slate-900 shadow-inner"
           required
         />
       </div>
@@ -63,7 +60,7 @@ export default function SettingsForm({
         <button 
           type="submit" 
           disabled={isSubmitting}
-          className="bg-blue-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-700 transition disabled:bg-slate-300 shadow-sm"
+          className="bg-slate-900 text-white px-8 py-3 rounded-lg font-bold hover:bg-slate-800 transition disabled:bg-slate-300 shadow-sm"
         >
           {isSubmitting ? 'Sparar...' : 'Spara inställningar'}
         </button>
