@@ -3,7 +3,6 @@ import { signIn } from 'next-auth/react'
 import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-// Vi bryter ut själva formuläret i en egen liten del
 function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -36,17 +35,17 @@ function LoginForm() {
   }
 
   return (
-    <div className="bg-white p-10 rounded-3xl shadow-xl border border-slate-100 max-w-md w-full">
+    <div className="bg-white p-10 rounded-2xl shadow-2xl border border-slate-200 max-w-md w-full">
       <div className="text-center mb-10">
         <div className="inline-flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center shadow-inner">
-            <span className="text-2xl">🍌</span>
+          <div className="w-12 h-12 bg-slate-900 rounded-lg flex items-center justify-center shadow-md">
+            <span className="text-2xl text-white">🏛️</span>
           </div>
-          <h1 className="text-3xl font-black text-slate-950 tracking-tighter">
-            Nano<span className="text-yellow-500">Banana</span>
+          <h1 className="text-4xl font-black text-slate-900 tracking-tight">
+            Case<span className="text-blue-600">Core</span>
           </h1>
         </div>
-        <p className="text-slate-600 font-medium">Logga in på din juridiska plattform</p>
+        <p className="text-slate-500 font-medium">Säker inloggning för jurister</p>
       </div>
 
       {(error || authError) && (
@@ -63,7 +62,7 @@ function LoginForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="din.epost@firma.se"
-            className="w-full border border-slate-300 p-3.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-slate-50 text-slate-900 shadow-inner"
+            className="w-full border border-slate-300 p-3.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 bg-slate-50 text-slate-900 shadow-sm transition"
             required
           />
         </div>
@@ -75,7 +74,7 @@ function LoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
-            className="w-full border border-slate-300 p-3.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-slate-50 text-slate-900 shadow-inner"
+            className="w-full border border-slate-300 p-3.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 bg-slate-50 text-slate-900 shadow-sm transition"
             required
           />
         </div>
@@ -83,24 +82,23 @@ function LoginForm() {
         <button 
           type="submit" 
           disabled={isSubmitting}
-          className="w-full bg-yellow-400 text-yellow-950 px-8 py-4 rounded-xl font-extrabold text-lg hover:bg-yellow-500 transition disabled:bg-slate-300 shadow-md transform hover:scale-[1.02] active:scale-[0.98]"
+          className="w-full bg-slate-900 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition disabled:bg-slate-400 shadow-md"
         >
-          {isSubmitting ? 'Loggar in...' : 'Logga in'}
+          {isSubmitting ? 'Verifierar uppgifter...' : 'Logga in'}
         </button>
       </form>
 
       <p className="text-center text-xs text-slate-400 mt-10 font-medium">
-        &copy; 2026 Nano Banana Lawyer SaaS Platform
+        &copy; {new Date().getFullYear()} CaseCore Legal Technology
       </p>
     </div>
   )
 }
 
-// Huvudsidan som lindar in formuläret i <Suspense>
 export default function LoginPage() {
   return (
-    <main className="min-h-screen bg-slate-100 flex items-center justify-center p-6">
-      <Suspense fallback={<div className="animate-pulse font-bold text-slate-500">Laddar inloggning...</div>}>
+    <main className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
+      <Suspense fallback={<div className="animate-pulse font-bold text-slate-500">Laddar säker inloggning...</div>}>
         <LoginForm />
       </Suspense>
     </main>
