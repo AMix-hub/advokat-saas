@@ -1,12 +1,12 @@
 'use client'
 import { signOut, getSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 
 export default function UserProfile() {
   const [user, setUser] = useState<{ name?: string | null, email?: string | null } | null>(null)
 
   useEffect(() => {
-    // Hämtar den inloggade användarens data säkert
     getSession().then(session => {
       if (session?.user) {
         setUser(session.user)
@@ -14,7 +14,6 @@ export default function UserProfile() {
     })
   }, [])
 
-  // Visar en liten "laddar"-animering innan namnet hämtats
   if (!user) return <div className="h-12 w-48 animate-pulse bg-slate-200 rounded-xl"></div>
 
   return (
@@ -24,12 +23,18 @@ export default function UserProfile() {
         <p className="text-xs text-slate-500">{user.email}</p>
       </div>
       
-      {/* En snygg avatar-cirkel med första bokstaven i namnet */}
       <div className="h-9 w-9 bg-blue-100 text-blue-700 font-bold rounded-full flex items-center justify-center">
         {user.name?.charAt(0) || 'A'}
       </div>
       
       <div className="w-px h-8 bg-slate-200 mx-2"></div>
+      
+      {/* Ny länk till inställningar */}
+      <Link href="/settings" className="text-sm font-bold text-slate-500 hover:text-blue-600 transition">
+        Inställningar
+      </Link>
+
+      <div className="w-px h-4 bg-slate-200 mx-1"></div>
       
       <button
         onClick={() => signOut({ callbackUrl: '/login' })}
