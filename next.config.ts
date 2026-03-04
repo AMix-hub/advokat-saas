@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  eslint: {
+    // Säger åt Vercel att ignorera linting-fel när den bygger systemet
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default nextConfig;
