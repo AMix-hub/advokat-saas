@@ -5,6 +5,7 @@ import CaseControls from '@/components/CaseControls'
 import DocumentManager from '@/components/DocumentManager'
 import TimeTracker from '@/components/TimeTracker'
 import UserProfile from '@/components/UserProfile'
+import TaskList from '@/components/TaskList'
 
 function getStatusBadge(status: string) {
   switch (status) {
@@ -25,7 +26,8 @@ export default async function CaseDetails({ params }: { params: Promise<{ id: st
       client: true, 
       documents: { orderBy: { createdAt: 'desc' } },
       timeEntries: { orderBy: { createdAt: 'desc' } },
-      logs: { orderBy: { createdAt: 'desc' } } 
+      logs: { orderBy: { createdAt: 'desc' } },
+      tasks: { orderBy: { createdAt: 'desc' } }
     }
   })
 
@@ -43,7 +45,7 @@ export default async function CaseDetails({ params }: { params: Promise<{ id: st
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 mb-8">
               <div className="flex justify-between items-start mb-6">
                 <div>
                   <h1 className="text-3xl font-extrabold text-slate-900 mb-2">{caseItem.title}</h1>
@@ -60,6 +62,9 @@ export default async function CaseDetails({ params }: { params: Promise<{ id: st
                 {caseItem.description}
               </div>
             </div>
+
+            {/* Checklistan läggs till här! */}
+            <TaskList caseId={caseItem.id} tasks={caseItem.tasks} />
 
             <TimeTracker caseId={caseItem.id} timeEntries={caseItem.timeEntries} />
             <DocumentManager caseId={caseItem.id} documents={caseItem.documents} />

@@ -11,7 +11,7 @@ model User {
   id        String   @id @default(cuid())
   email     String   @unique
   name      String?
-  firmName  String?  @default("Advokatbyrån AB") // Byråns namn för fakturan
+  firmName  String?  @default("Advokatbyrån AB")
   password  String
   createdAt DateTime @default(now())
 }
@@ -30,14 +30,25 @@ model Case {
   title       String
   description String?
   status      String      @default("OPEN")
-  hourlyRate  Float       @default(2000) // Standardtaxa 2000 kr/h
+  hourlyRate  Float       @default(2000)
   clientId    String
   client      Client      @relation(fields: [clientId], references: [id])
   logs        Log[]
   documents   Document[]
   timeEntries TimeEntry[]
+  tasks       Task[]      // Koppling till de nya uppgifterna
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
+}
+
+model Task {
+  id          String   @id @default(cuid())
+  title       String
+  isCompleted Boolean  @default(false)
+  dueDate     DateTime?
+  caseId      String
+  case        Case     @relation(fields: [caseId], references: [id])
+  createdAt   DateTime @default(now())
 }
 
 model Log {
