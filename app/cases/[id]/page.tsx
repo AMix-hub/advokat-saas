@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -56,17 +58,26 @@ export default async function CaseDetails({ params }: { params: Promise<{ id: st
                   <p className="text-slate-500 text-sm mt-1 font-medium">Timtaxa: {caseItem.hourlyRate} kr/h</p>
                 </div>
                 
-                {/* Status-etikett OCH nya Faktura-knappen i en kolumn */}
                 <div className="flex flex-col items-end gap-3">
                   <span className={`text-xs font-bold px-3 py-1.5 rounded-full border ${getStatusBadge(caseItem.status)}`}>
                     {caseItem.status}
                   </span>
-                  <Link 
-                    href={`/cases/${caseItem.id}/invoice`} 
-                    className="bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-800 transition shadow-sm flex items-center gap-2"
-                  >
-                    📄 Fakturaunderlag
-                  </Link>
+                  
+                  {/* Ny layout med två knappar i rad */}
+                  <div className="flex gap-2">
+                    <Link 
+                      href={`/cases/${caseItem.id}/edit`} 
+                      className="bg-white text-slate-700 border border-slate-300 px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-50 transition shadow-sm flex items-center gap-2"
+                    >
+                      ✏️ Redigera
+                    </Link>
+                    <Link 
+                      href={`/cases/${caseItem.id}/invoice`} 
+                      className="bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-800 transition shadow-sm flex items-center gap-2"
+                    >
+                      📄 Faktura
+                    </Link>
+                  </div>
                 </div>
               </div>
 
