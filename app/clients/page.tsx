@@ -5,7 +5,6 @@ import Link from 'next/link'
 import UserProfile from '@/components/UserProfile'
 
 export default async function ClientsPage() {
-  // Hämta alla klienter i bokstavsordning och inkludera deras ärenden för att kunna räkna dem
   const clients = await prisma.client.findMany({
     include: {
       cases: true
@@ -17,7 +16,6 @@ export default async function ClientsPage() {
     <main className="min-h-screen bg-slate-50 p-8">
       <div className="max-w-6xl mx-auto">
         
-        {/* Toppmeny med navigering */}
         <div className="flex justify-between items-center mb-10">
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-3">
@@ -29,7 +27,6 @@ export default async function ClientsPage() {
               </h1>
             </div>
             
-            {/* Navigeringslänkar */}
             <div className="hidden md:flex gap-6">
               <Link href="/" className="font-bold text-slate-500 hover:text-slate-900 transition">Översikt</Link>
               <Link href="/clients" className="font-bold text-slate-900 border-b-2 border-blue-600 pb-1">Klientregister</Link>
@@ -59,26 +56,35 @@ export default async function ClientsPage() {
                   <th className="py-4 px-4 font-bold text-slate-500 uppercase text-xs tracking-wider">Klientnamn</th>
                   <th className="py-4 px-4 font-bold text-slate-500 uppercase text-xs tracking-wider">E-post</th>
                   <th className="py-4 px-4 font-bold text-slate-500 uppercase text-xs tracking-wider">Org.nr / Personnr</th>
-                  <th className="py-4 px-4 font-bold text-slate-500 uppercase text-xs tracking-wider text-right">Antal ärenden</th>
+                  <th className="py-4 px-4 font-bold text-slate-500 uppercase text-xs tracking-wider text-center">Ärenden</th>
+                  <th className="py-4 px-4 font-bold text-slate-500 uppercase text-xs tracking-wider text-right">Åtgärd</th>
                 </tr>
               </thead>
               <tbody>
                 {clients.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="py-8 text-center text-slate-500 italic">
+                    <td colSpan={5} className="py-8 text-center text-slate-500 italic">
                       Inga klienter i registret ännu.
                     </td>
                   </tr>
                 ) : (
                   clients.map(client => (
-                    <tr key={client.id} className="border-b border-slate-50 hover:bg-slate-50 transition">
+                    <tr key={client.id} className="border-b border-slate-50 hover:bg-slate-50 transition group">
                       <td className="py-4 px-4 font-bold text-slate-900">{client.name}</td>
                       <td className="py-4 px-4 text-slate-600">{client.email}</td>
                       <td className="py-4 px-4 text-slate-600">{client.orgNr || '-'}</td>
-                      <td className="py-4 px-4 text-right">
-                        <span className="bg-blue-50 text-blue-700 font-bold px-3 py-1 rounded-full text-sm">
+                      <td className="py-4 px-4 text-center">
+                        <span className="bg-blue-50 text-blue-700 font-bold px-3 py-1 rounded-full text-sm border border-blue-100">
                           {client.cases.length} st
                         </span>
+                      </td>
+                      <td className="py-4 px-4 text-right">
+                        <Link 
+                          href={`/clients/${client.id}`}
+                          className="text-sm font-bold text-blue-600 hover:text-blue-800 bg-white border border-slate-200 px-4 py-2 rounded-lg shadow-sm transition group-hover:border-blue-300 inline-block"
+                        >
+                          Visa profil &rarr;
+                        </Link>
                       </td>
                     </tr>
                   ))
