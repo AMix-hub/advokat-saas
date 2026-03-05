@@ -1,34 +1,29 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
-// Hämtar alla klienter
-export async function GET() {
-  try {
-    const clients = await prisma.client.findMany({
-      orderBy: { name: 'asc' }
-    })
-    return NextResponse.json(clients)
-  } catch (error) {
-    return NextResponse.json({ error: 'Kunde inte hämta klienter' }, { status: 500 })
-  }
-}
-
-// Skapar en ny klient
 export async function POST(req: Request) {
   try {
-    const { name, email, orgNr } = await req.json()
+    const body = await req.json()
     
-    const newClient = await prisma.client.create({
+    // Kontrollera om e-posten redan finns för att undvika krockar
+    const existingClient = await prisma.client.findUnique({
+      where: { email: body.email }
+    })
+
+    if (existingClient) {
+      return NextResponse.json({ error: 'En klient med denna e-post finns redan.' }, { status: 400 })
+    }
+
+    const client = await prisma.client.create({
       data: {
-        name,
-        email,
-        orgNr,
+        name: body.name,
+        email: body.email,
+        orgNr: body.orgNr,
       }
     })
     
-    return NextResponse.json(newClient, { status: 201 })
+    return NextResponse.json(client)
   } catch (error) {
-    console.error("Fel vid skapande av klient:", error)
-    return NextResponse.json({ error: 'Kunde inte skapa klient' }, { status: 500 })
+    return NextResponse.json({ error: 'Kunde inte skapa klienten' }, { status: 500 })
   }
 }

@@ -1,4 +1,3 @@
-// DENNA RAD ÄR NY: Säger åt Vercel att aldrig cacha sidan, utan alltid visa live-data!
 export const dynamic = 'force-dynamic'
 
 import { prisma } from '@/lib/prisma'
@@ -6,7 +5,6 @@ import Link from 'next/link'
 import UserProfile from '@/components/UserProfile'
 
 export default async function Dashboard() {
-  // Hämta all data från databasen för att kunna räkna ut statistiken
   const cases = await prisma.case.findMany({
     include: {
       client: true,
@@ -18,7 +16,6 @@ export default async function Dashboard() {
     orderBy: { updatedAt: 'desc' }
   })
 
-  // Räkna ut statistik från all hämtad data
   const activeCasesCount = cases.filter(c => c.status === 'OPEN' || c.status === 'PENDING').length
   
   let totalHours = 0
@@ -37,49 +34,46 @@ export default async function Dashboard() {
     <main className="min-h-screen bg-slate-50 p-8">
       <div className="max-w-6xl mx-auto">
         
-        {/* Toppmeny med nya CaseCore-loggan */}
+        {/* Toppmeny med ny navigering */}
         <div className="flex justify-between items-center mb-10">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-slate-900 rounded-lg flex items-center justify-center shadow-md">
-              <span className="text-xl text-white">🏛️</span>
+          <div className="flex items-center gap-8">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-slate-900 rounded-lg flex items-center justify-center shadow-md">
+                <span className="text-xl text-white">🏛️</span>
+              </div>
+              <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+                Case<span className="text-blue-600">Core</span>
+              </h1>
             </div>
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight">
-              Case<span className="text-blue-600">Core</span>
-            </h1>
+            
+            {/* Navigeringslänkar */}
+            <div className="hidden md:flex gap-6">
+              <Link href="/" className="font-bold text-slate-900 border-b-2 border-blue-600 pb-1">Översikt</Link>
+              <Link href="/clients" className="font-bold text-slate-500 hover:text-slate-900 transition pb-1">Klientregister</Link>
+            </div>
           </div>
           <UserProfile />
         </div>
 
-        {/* Nya Statistik-panelen (Dashboard) */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-          {/* Kort 1: Aktiva ärenden */}
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
             <p className="text-sm font-bold text-slate-500 mb-1">Aktiva ärenden</p>
             <p className="text-3xl font-black text-slate-900">{activeCasesCount}</p>
           </div>
-
-          {/* Kort 2: Arbetade timmar */}
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
             <p className="text-sm font-bold text-slate-500 mb-1">Loggade timmar</p>
             <p className="text-3xl font-black text-blue-600">{totalHours.toFixed(1)} h</p>
           </div>
-
-          {/* Kort 3: Totalt fakturerbart värde */}
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
             <p className="text-sm font-bold text-slate-500 mb-1">Fakturerbart värde</p>
-            <p className="text-3xl font-black text-emerald-600">
-              {totalRevenue.toLocaleString('sv-SE')} kr
-            </p>
+            <p className="text-3xl font-black text-emerald-600">{totalRevenue.toLocaleString('sv-SE')} kr</p>
           </div>
-
-          {/* Kort 4: Ogjorda uppgifter */}
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
             <p className="text-sm font-bold text-slate-500 mb-1">Innestående uppgifter</p>
             <p className="text-3xl font-black text-amber-600">{pendingTasksCount} st</p>
           </div>
         </div>
 
-        {/* Listan över ärenden */}
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold text-slate-800">Dina ärenden</h2>
