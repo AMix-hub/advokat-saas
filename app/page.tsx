@@ -1,118 +1,130 @@
-'use client'
-import { useState, useEffect } from 'react'
-import CaseList from '@/components/CaseList'
-import DashboardStats from '@/components/DashboardStats'
-import UserProfile from '@/components/UserProfile' // <-- NY IMPORT
+import { prisma } from '@/lib/prisma'
+import Link from 'next/link'
+import UserProfile from '@/components/UserProfile'
 
-export default function Home() {
-  const [showCaseModal, setShowCaseModal] = useState(false)
-  const [showClientModal, setShowClientModal] = useState(false)
+export default async function Dashboard() {
+  // Hämta all data från databasen för att kunna räkna ut statistiken
+  const cases = await prisma.case.findMany({
+    include: {
+      client: true,
+      timeEntries: true,
+      tasks: {
+        where: { isCompleted: false }
+      }
+    },
+    orderBy: { updatedAt: 'desc' }
+  })
+
+  // Räkna ut statistik från all hämtad data
+  const activeCasesCount = cases.filter(c => c.status === 'OPEN' || c.status === 'PENDING').length
   
-  const [clients, setClients] = useState<any[]>([])
-  const [selectedClient, setSelectedClient] = useState('')
+  let totalHours = 0
+  let totalRevenue = 0
+  let pendingTasksCount = 0
 
-  useEffect(() => {
-    fetch('/api/clients')
-      .then(res => res.json())
-      .then(data => {
-        setClients(data)
-        if (data.length > 0) setSelectedClient(data[0].id)
-      })
-  }, [])
+  cases.forEach(c => {
+    pendingTasksCount += c.tasks.length
+    c.timeEntries.forEach(t => {
+      totalHours += t.hours
+      totalRevenue += (t.hours * c.hourlyRate)
+    })
+  })
 
   return (
     <main className="min-h-screen bg-slate-50 p-8">
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         
-        {/* Uppdaterad Header med Profilmeny */}
-        <header className="mb-10 flex justify-between items-end">
-          <div>
-            <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
-              Advokat<span className="text-blue-600">SaaS</span>
+        {/* Toppmeny med nya CaseCore-loggan */}
+        <div className="flex justify-between items-center mb-10">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-slate-900 rounded-lg flex items-center justify-center shadow-md">
+              <span className="text-xl text-white">🏛️</span>
+            </div>
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+              Case<span className="text-blue-600">Core</span>
             </h1>
-            <p className="text-slate-600 mt-2">Hantering av juridiska ärenden och klienter.</p>
           </div>
-          
-          <div className="flex items-center gap-4">
-            <UserProfile />
-            <button 
-              onClick={() => setShowClientModal(true)}
-              className="bg-white border border-slate-300 text-slate-700 px-4 py-3 rounded-xl text-sm font-bold hover:bg-slate-50 transition shadow-sm h-[52px]"
-            >
-              + Ny klient
-            </button>
-          </div>
-        </header>
-
-        <DashboardStats />
-
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-slate-800">Aktuella ärenden</h2>
-            <button 
-              onClick={() => setShowCaseModal(true)}
-              disabled={clients.length === 0}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-                clients.length === 0 
-                  ? 'bg-slate-300 text-slate-500 cursor-not-allowed' 
-                  : 'bg-slate-900 text-white hover:bg-slate-800'
-              }`}
-            >
-              + Nytt ärende
-            </button>
-          </div>
-          <CaseList />
+          <UserProfile />
         </div>
 
-        {/* Modal: Ny Klient */}
-        {showClientModal && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-xl">
-              <h2 className="text-xl font-bold mb-4">Skapa ny klient</h2>
-              <form action={async (formData) => {
-                const res = await fetch('/api/clients', {
-                  method: 'POST',
-                  body: JSON.stringify({ name: formData.get('name'), email: formData.get('email'), orgNr: formData.get('orgNr') }),
-                })
-                if (res.ok) window.location.reload()
-              }} className="space-y-4">
-                <input name="name" placeholder="Företagsnamn / Namn" className="w-full border p-2 rounded" required />
-                <input type="email" name="email" placeholder="E-post" className="w-full border p-2 rounded" required />
-                <input name="orgNr" placeholder="OrgNr" className="w-full border p-2 rounded" />
-                <div className="flex justify-end gap-3 mt-6">
-                  <button type="button" onClick={() => setShowClientModal(false)} className="px-4 py-2 text-slate-600">Avbryt</button>
-                  <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded">Spara klient</button>
-                </div>
-              </form>
-            </div>
+        {/* Nya Statistik-panelen (Dashboard) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+          {/* Kort 1: Aktiva ärenden */}
+          <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <p className="text-sm font-bold text-slate-500 mb-1">Aktiva ärenden</p>
+            <p className="text-3xl font-black text-slate-900">{activeCasesCount}</p>
           </div>
-        )}
 
-        {/* Modal: Nytt Ärende */}
-        {showCaseModal && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-xl">
-              <h2 className="text-xl font-bold mb-4">Skapa nytt ärende</h2>
-              <form action={async (formData) => {
-                const res = await fetch('/api/cases', {
-                  method: 'POST',
-                  body: JSON.stringify({ title: formData.get('title'), description: formData.get('desc'), clientId: selectedClient }),
-                })
-                if (res.ok) window.location.reload()
-              }} className="space-y-4">
-                <input name="title" placeholder="Titel" className="w-full border p-2 rounded" required />
-                <textarea name="desc" placeholder="Beskrivning" className="w-full border p-2 rounded" rows={3} />
-                <select className="w-full border p-2 rounded" value={selectedClient} onChange={(e) => setSelectedClient(e.target.value)} required>
-                  {clients.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-                </select>
-                <div className="flex justify-end gap-3 mt-6">
-                  <button type="button" onClick={() => setShowCaseModal(false)} className="px-4 py-2 text-slate-600">Avbryt</button>
-                  <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded">Spara ärende</button>
-                </div>
-              </form>
-            </div>
+          {/* Kort 2: Arbetade timmar */}
+          <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <p className="text-sm font-bold text-slate-500 mb-1">Loggade timmar</p>
+            <p className="text-3xl font-black text-blue-600">{totalHours.toFixed(1)} h</p>
           </div>
-        )}
+
+          {/* Kort 3: Totalt fakturerbart värde */}
+          <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <p className="text-sm font-bold text-slate-500 mb-1">Fakturerbart värde</p>
+            <p className="text-3xl font-black text-emerald-600">
+              {totalRevenue.toLocaleString('sv-SE')} kr
+            </p>
+          </div>
+
+          {/* Kort 4: Ogjorda uppgifter */}
+          <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <p className="text-sm font-bold text-slate-500 mb-1">Innestående uppgifter</p>
+            <p className="text-3xl font-black text-amber-600">{pendingTasksCount} st</p>
+          </div>
+        </div>
+
+        {/* Listan över ärenden */}
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-bold text-slate-800">Dina ärenden</h2>
+            <Link 
+              href="/cases/new" 
+              className="bg-slate-900 text-white px-5 py-2.5 rounded-lg font-bold hover:bg-slate-800 transition"
+            >
+              + Nytt ärende
+            </Link>
+          </div>
+
+          {cases.length === 0 ? (
+            <div className="text-center py-10 text-slate-500 font-medium">
+              Inga ärenden upplagda ännu. Klicka på "Nytt ärende" för att börja!
+            </div>
+          ) : (
+            <div className="grid gap-4">
+              {cases.map(caseItem => (
+                <Link key={caseItem.id} href={`/cases/${caseItem.id}`}>
+                  <div className="flex items-center justify-between p-4 rounded-xl border border-slate-100 hover:border-blue-300 hover:shadow-md transition bg-slate-50 hover:bg-white group">
+                    <div>
+                      <h3 className="font-bold text-slate-900 group-hover:text-blue-600 transition">
+                        {caseItem.title}
+                      </h3>
+                      <p className="text-sm text-slate-500 mt-1 font-medium">
+                        Klient: {caseItem.client.name}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <span className="text-sm font-bold text-slate-400">
+                        {caseItem.timeEntries.reduce((acc, curr) => acc + curr.hours, 0)} h loggat
+                      </span>
+                      <span className={`text-xs font-bold px-3 py-1.5 rounded-full border ${
+                        caseItem.status === 'OPEN' ? 'bg-blue-100 text-blue-800 border-blue-200' :
+                        caseItem.status === 'PENDING' ? 'bg-amber-100 text-amber-800 border-amber-200' :
+                        caseItem.status === 'CLOSED' ? 'bg-emerald-100 text-emerald-800 border-emerald-200' :
+                        'bg-slate-200 text-slate-700 border-slate-300'
+                      }`}>
+                        {caseItem.status}
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+
       </div>
     </main>
   )
