@@ -46,6 +46,7 @@ export default async function CaseDetails({ params }: { params: Promise<{ id: st
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 mb-8">
+              
               <div className="flex justify-between items-start mb-6">
                 <div>
                   <h1 className="text-3xl font-extrabold text-slate-900 mb-2">{caseItem.title}</h1>
@@ -54,18 +55,27 @@ export default async function CaseDetails({ params }: { params: Promise<{ id: st
                   </p>
                   <p className="text-slate-500 text-sm mt-1 font-medium">Timtaxa: {caseItem.hourlyRate} kr/h</p>
                 </div>
-                <span className={`text-xs font-bold px-3 py-1.5 rounded-full border ${getStatusBadge(caseItem.status)}`}>
-                  {caseItem.status}
-                </span>
+                
+                {/* Status-etikett OCH nya Faktura-knappen i en kolumn */}
+                <div className="flex flex-col items-end gap-3">
+                  <span className={`text-xs font-bold px-3 py-1.5 rounded-full border ${getStatusBadge(caseItem.status)}`}>
+                    {caseItem.status}
+                  </span>
+                  <Link 
+                    href={`/cases/${caseItem.id}/invoice`} 
+                    className="bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-800 transition shadow-sm flex items-center gap-2"
+                  >
+                    📄 Fakturaunderlag
+                  </Link>
+                </div>
               </div>
+
               <div className="bg-slate-50 p-5 rounded-xl border border-slate-100 text-slate-700 whitespace-pre-wrap leading-relaxed">
                 {caseItem.description}
               </div>
             </div>
 
-            {/* Checklistan läggs till här! */}
             <TaskList caseId={caseItem.id} tasks={caseItem.tasks} />
-
             <TimeTracker caseId={caseItem.id} timeEntries={caseItem.timeEntries} />
             <DocumentManager caseId={caseItem.id} documents={caseItem.documents} />
 
