@@ -12,8 +12,9 @@ model User {
   email     String   @unique
   name      String?
   firmName  String?  @default("Advokatbyrån AB")
-  bankgiro  String?  // <-- Nytt fält för Bankgiro/Plusgiro
+  bankgiro  String?  
   password  String
+  cases     Case[]   // NYTT: Koppling till ärenden
   createdAt DateTime @default(now())
 }
 
@@ -27,19 +28,24 @@ model Client {
 }
 
 model Case {
-  id          String      @id @default(cuid())
-  title       String
-  description String?
-  status      String      @default("OPEN")
-  hourlyRate  Float       @default(2000)
-  clientId    String
-  client      Client      @relation(fields: [clientId], references: [id])
-  logs        Log[]
-  documents   Document[]
-  timeEntries TimeEntry[]
-  tasks       Task[]      
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id           String      @id @default(cuid())
+  title        String
+  description  String?
+  status       String      @default("OPEN")
+  hourlyRate   Float       @default(2000)
+  clientId     String
+  client       Client      @relation(fields: [clientId], references: [id])
+  
+  // NYTT: Vem på byrån som är ansvarig för ärendet
+  assignedToId String?
+  assignedTo   User?       @relation(fields: [assignedToId], references: [id])
+
+  logs         Log[]
+  documents    Document[]
+  timeEntries  TimeEntry[]
+  tasks        Task[]      
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
 }
 
 model Task {
