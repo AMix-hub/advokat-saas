@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
-// Hämta den allra senaste, uppdaterade användardatan
 export async function GET() {
   try {
     const user = await prisma.user.findFirst()
@@ -11,7 +10,6 @@ export async function GET() {
   }
 }
 
-// Spara de nya inställningarna
 export async function PATCH(req: Request) {
   try {
     const body = await req.json()
@@ -27,6 +25,7 @@ export async function PATCH(req: Request) {
       data: {
         name: body.name,
         firmName: body.firmName,
+        bankgiro: body.bankgiro, // Sparar det nya bankgirot
       }
     })
 

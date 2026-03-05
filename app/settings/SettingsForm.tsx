@@ -3,13 +3,16 @@ import { useState } from 'react'
 
 export default function SettingsForm({ 
   initialName, 
-  initialFirmName 
+  initialFirmName,
+  initialBankgiro
 }: { 
   initialName: string, 
-  initialFirmName: string 
+  initialFirmName: string,
+  initialBankgiro: string
 }) {
   const [name, setName] = useState(initialName)
   const [firmName, setFirmName] = useState(initialFirmName)
+  const [bankgiro, setBankgiro] = useState(initialBankgiro)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
 
@@ -20,12 +23,11 @@ export default function SettingsForm({
 
     const res = await fetch('/api/settings', {
       method: 'PATCH',
-      body: JSON.stringify({ name, firmName })
+      body: JSON.stringify({ name, firmName, bankgiro })
     })
 
     if (res.ok) {
       setShowSuccess(true)
-      // Tvingar fönstret att ladda om så att toppmenyn hämtar det nya namnet direkt
       window.location.reload()
     } else {
       setIsSubmitting(false)
@@ -40,7 +42,7 @@ export default function SettingsForm({
           type="text" 
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-slate-50 text-slate-900 shadow-inner"
+          className="w-full border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 bg-slate-50 text-slate-900 shadow-sm"
           required
         />
       </div>
@@ -51,9 +53,22 @@ export default function SettingsForm({
           type="text" 
           value={firmName}
           onChange={(e) => setFirmName(e.target.value)}
-          className="w-full border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-slate-50 text-slate-900 shadow-inner"
+          className="w-full border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 bg-slate-50 text-slate-900 shadow-sm"
           required
         />
+      </div>
+
+      {/* NYTT FÄLT: Bankgiro / Plusgiro */}
+      <div>
+        <label className="block text-sm font-bold text-slate-700 mb-2">Bankgiro / Plusgiro</label>
+        <input 
+          type="text" 
+          value={bankgiro}
+          onChange={(e) => setBankgiro(e.target.value)}
+          placeholder="T.ex. 123-4567"
+          className="w-full border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 bg-slate-50 text-slate-900 shadow-sm"
+        />
+        <p className="text-xs text-slate-500 mt-2">Detta kommer att visas längst ner på dina fakturaunderlag.</p>
       </div>
 
       <div className="flex items-center gap-4 pt-4 border-t border-slate-100">
