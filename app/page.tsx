@@ -1,3 +1,6 @@
+// DENNA RAD ÄR NY: Säger åt Vercel att aldrig cacha sidan, utan alltid visa live-data!
+export const dynamic = 'force-dynamic'
+
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
 import UserProfile from '@/components/UserProfile'
