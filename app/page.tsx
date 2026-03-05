@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic'
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
 import UserProfile from '@/components/UserProfile'
+import SearchBar from '@/components/SearchBar'
 
 export default async function Dashboard() {
   const cases = await prisma.case.findMany({
@@ -34,7 +35,7 @@ export default async function Dashboard() {
     <main className="min-h-screen bg-slate-50 p-8">
       <div className="max-w-6xl mx-auto">
         
-        {/* Toppmeny med ny navigering */}
+        {/* Toppmeny med SÖKFÄLT */}
         <div className="flex justify-between items-center mb-10">
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-3">
@@ -46,10 +47,13 @@ export default async function Dashboard() {
               </h1>
             </div>
             
-            {/* Navigeringslänkar */}
-            <div className="hidden md:flex gap-6">
+            <div className="hidden lg:flex gap-6 items-center">
               <Link href="/" className="font-bold text-slate-900 border-b-2 border-blue-600 pb-1">Översikt</Link>
               <Link href="/clients" className="font-bold text-slate-500 hover:text-slate-900 transition pb-1">Klientregister</Link>
+              
+              <div className="w-px h-6 bg-slate-300 mx-2"></div>
+              {/* Sökrutan anropas här! */}
+              <SearchBar />
             </div>
           </div>
           <UserProfile />
@@ -77,12 +81,22 @@ export default async function Dashboard() {
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold text-slate-800">Dina ärenden</h2>
-            <Link 
-              href="/cases/new" 
-              className="bg-slate-900 text-white px-5 py-2.5 rounded-lg font-bold hover:bg-slate-800 transition"
-            >
-              + Nytt ärende
-            </Link>
+            
+            <div className="flex gap-3">
+              {/* EXPORT-KNAPPEN */}
+              <a 
+                href="/api/export" 
+                className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-4 py-2 rounded-lg font-bold hover:bg-emerald-100 transition shadow-sm flex items-center gap-2"
+              >
+                📥 Export CSV
+              </a>
+              <Link 
+                href="/cases/new" 
+                className="bg-slate-900 text-white px-5 py-2.5 rounded-lg font-bold hover:bg-slate-800 transition shadow-sm"
+              >
+                + Nytt ärende
+              </Link>
+            </div>
           </div>
 
           {cases.length === 0 ? (
