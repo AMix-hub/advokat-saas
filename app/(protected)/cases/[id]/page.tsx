@@ -102,7 +102,7 @@ export default async function CaseDetails({ params }: { params: Promise<{ id: st
 
             <TaskList caseId={caseItem.id} tasks={caseItem.tasks} />
             <DeadlineManager caseId={caseItem.id} />
-            <InvoiceManager caseId={caseItem.id} />
+            <InvoiceManager caseId={caseItem.id} timeEntries={caseItem.timeEntries} expenses={caseItem.expenses} hourlyRate={caseItem.hourlyRate} />
             <InternalComments caseId={caseItem.id} />
             <TimeTracker caseId={caseItem.id} timeEntries={caseItem.timeEntries} />
             <ExpenseTracker caseId={caseItem.id} expenses={caseItem.expenses} />

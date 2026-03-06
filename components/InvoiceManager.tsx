@@ -30,11 +30,34 @@ interface Invoice {
   }
 }
 
-export default function InvoiceManager({ caseId }: { caseId?: string }) {
+interface TimeEntry {
+  id: string
+  description: string
+  hours: number
+}
+
+interface Expense {
+  id: string
+  description: string
+  amount: number
+}
+
+interface InvoiceManagerProps {
+  caseId?: string
+  timeEntries?: TimeEntry[]
+  expenses?: Expense[]
+  hourlyRate?: number
+}
+
+export default function InvoiceManager({ caseId, timeEntries = [], expenses = [], hourlyRate = 0 }: InvoiceManagerProps) {
   const [invoices, setInvoices] = useState<Invoice[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null)
+  const [addItemsInvoiceId, setAddItemsInvoiceId] = useState<string | null>(null)
+  const [newItems, setNewItems] = useState<{ description: string; quantity: number; unitPrice: number }[]>([
+    { description: '', quantity: 1, unitPrice: 0 }
+  ])
   const [formData, setFormData] = useState({
     dueDate: '',
     items: [{ description: '', quantity: 1, unitPrice: 0 }],
@@ -60,6 +83,28 @@ export default function InvoiceManager({ caseId }: { caseId?: string }) {
     }
   }
 
+  const handleOpenNewForm = () => {
+    // Förifyll fakturarader från tidsregistreringar och utlägg
+    const preFilledItems = [
+      ...timeEntries.map(entry => ({
+        description: entry.description,
+        quantity: entry.hours,
+        unitPrice: hourlyRate
+      })),
+      ...expenses.map(expense => ({
+        description: expense.description,
+        quantity: 1,
+        unitPrice: expense.amount
+      }))
+    ]
+    setFormData({
+      dueDate: '',
+      items: preFilledItems.length > 0 ? preFilledItems : [{ description: '', quantity: 1, unitPrice: 0 }],
+      notes: ''
+    })
+    setShowForm(true)
+  }
+
   const handleCreateInvoice = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!caseId) return
@@ -71,7 +116,7 @@ export default function InvoiceManager({ caseId }: { caseId?: string }) {
         body: JSON.stringify({
           caseId,
           dueDate: new Date(formData.dueDate),
-          items: formData.items.filter(item => item.description && item.unitPrice > 0),
+          items: formData.items.filter(item => item.description && item.quantity > 0 && item.unitPrice > 0),
           notes: formData.notes || null
         })
       })
@@ -99,6 +144,27 @@ export default function InvoiceManager({ caseId }: { caseId?: string }) {
       }
     } catch (error) {
       console.error('Error updating invoice:', error)
+    }
+  }
+
+  const handleAddItems = async (invoiceId: string) => {
+    const validItems = newItems.filter(item => item.description && item.quantity > 0 && item.unitPrice > 0)
+    if (validItems.length === 0) return
+
+    try {
+      const res = await fetch(`/api/invoices/${invoiceId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ addItems: validItems })
+      })
+
+      if (res.ok) {
+        setAddItemsInvoiceId(null)
+        setNewItems([{ description: '', quantity: 1, unitPrice: 0 }])
+        fetchInvoices()
+      }
+    } catch (error) {
+      console.error('Error adding items:', error)
     }
   }
 
@@ -162,7 +228,7 @@ export default function InvoiceManager({ caseId }: { caseId?: string }) {
           </h3>
           {caseId && (
             <button
-              onClick={() => setShowForm(!showForm)}
+              onClick={handleOpenNewForm}
               className="bg-emerald-600 text-white px-3 py-2 rounded-lg text-sm font-bold hover:bg-emerald-700 transition flex items-center gap-2"
             >
               <Plus className="w-4 h-4" /> Ny faktura
@@ -173,6 +239,11 @@ export default function InvoiceManager({ caseId }: { caseId?: string }) {
         {/* Formulär för ny faktura */}
         {showForm && caseId && (
           <form onSubmit={handleCreateInvoice} className="mb-6 p-4 bg-white/[0.04] rounded-lg border border-white/[0.06] space-y-4">
+            {(timeEntries.length > 0 || expenses.length > 0) && (
+              <p className="text-xs text-slate-400 italic">
+                Fakturarader har förifyllts från tidsregistreringar och utlägg. Du kan ändra eller ta bort rader innan du skapar fakturan.
+              </p>
+            )}
             <div>
               <label className="block text-sm font-bold text-slate-400 mb-2">Förfallodag</label>
               <input
@@ -310,14 +381,99 @@ export default function InvoiceManager({ caseId }: { caseId?: string }) {
                   </div>
                 </div>
 
-                <div className="flex gap-2 justify-end">
-                  {invoice.status === 'DRAFT' && (
+                {/* Lägg till rader (bara för utkast) */}
+                {invoice.status === 'DRAFT' && addItemsInvoiceId === invoice.id && (
+                  <div className="mt-3 p-3 bg-white/[0.04] rounded-lg border border-white/[0.06] space-y-3">
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">Lägg till fakturarader</p>
+                    {newItems.map((item, idx) => (
+                      <div key={idx} className="flex gap-2">
+                        <input
+                          type="text"
+                          placeholder="Beskrivning"
+                          value={item.description}
+                          onChange={(e) => {
+                            const updated = [...newItems]
+                            updated[idx].description = e.target.value
+                            setNewItems(updated)
+                          }}
+                          className="flex-1 px-3 py-2 border border-white/10 rounded-lg text-sm bg-white/[0.05] text-white"
+                        />
+                        <input
+                          type="number"
+                          placeholder="Antal"
+                          value={item.quantity}
+                          onChange={(e) => {
+                            const updated = [...newItems]
+                            updated[idx].quantity = parseFloat(e.target.value) || 0
+                            setNewItems(updated)
+                          }}
+                          className="w-20 px-3 py-2 border border-white/10 rounded-lg text-sm bg-white/[0.05] text-white"
+                        />
+                        <input
+                          type="number"
+                          placeholder="Pris/enhet"
+                          value={item.unitPrice}
+                          onChange={(e) => {
+                            const updated = [...newItems]
+                            updated[idx].unitPrice = parseFloat(e.target.value) || 0
+                            setNewItems(updated)
+                          }}
+                          className="w-28 px-3 py-2 border border-white/10 rounded-lg text-sm bg-white/[0.05] text-white"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = newItems.filter((_, i) => i !== idx)
+                            setNewItems(updated.length > 0 ? updated : [{ description: '', quantity: 1, unitPrice: 0 }])
+                          }}
+                          className="text-red-600 hover:text-red-800 font-bold"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
                     <button
-                      onClick={() => handleUpdateStatus(invoice.id, 'SENT')}
-                      className="bg-blue-600 text-white px-3 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition"
+                      type="button"
+                      onClick={() => setNewItems([...newItems, { description: '', quantity: 1, unitPrice: 0 }])}
+                      className="text-blue-600 hover:text-blue-800 text-sm font-bold"
                     >
-                      Skicka
+                      + Lägg till rad
                     </button>
+                    <div className="flex gap-2 mt-2">
+                      <button
+                        type="button"
+                        onClick={() => handleAddItems(invoice.id)}
+                        className="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-emerald-700 transition"
+                      >
+                        Spara rader
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => { setAddItemsInvoiceId(null); setNewItems([{ description: '', quantity: 1, unitPrice: 0 }]) }}
+                        className="bg-white/10 text-slate-300 px-4 py-2 rounded-lg text-sm font-bold hover:bg-white/[0.15] transition"
+                      >
+                        Avbryt
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex gap-2 justify-end mt-2">
+                  {invoice.status === 'DRAFT' && (
+                    <>
+                      <button
+                        onClick={() => { setAddItemsInvoiceId(addItemsInvoiceId === invoice.id ? null : invoice.id); setNewItems([{ description: '', quantity: 1, unitPrice: 0 }]) }}
+                        className="bg-slate-700 text-white px-3 py-2 rounded-lg text-sm font-bold hover:bg-slate-600 transition flex items-center gap-1"
+                      >
+                        <Plus className="w-4 h-4" /> Lägg till rad
+                      </button>
+                      <button
+                        onClick={() => handleUpdateStatus(invoice.id, 'SENT')}
+                        className="bg-blue-600 text-white px-3 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition"
+                      >
+                        Skicka
+                      </button>
+                    </>
                   )}
                   {invoice.status === 'SENT' && (
                     <button
