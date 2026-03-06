@@ -12,6 +12,7 @@ import {
   Lock,
   BarChart3,
   Database,
+  Layers,
 } from 'lucide-react'
 
 const features = [
@@ -81,6 +82,9 @@ export default function LandingPage() {
           <div className="flex items-center gap-6">
             <Link href="/pitch" className="hidden sm:block text-sm font-bold text-slate-400 hover:text-white transition">
               Priser
+            </Link>
+            <Link href="/modules" className="hidden sm:block text-sm font-bold text-slate-400 hover:text-white transition">
+              Moduler
             </Link>
             <Link href="/login" className="hidden sm:block text-sm font-bold text-slate-400 hover:text-white transition">
               Logga in
@@ -174,6 +178,57 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ── Modules teaser ──────────────────────────────────────────────────── */}
+      <section className="py-24 px-6" style={{ background: '#020617' }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="rounded-2xl border border-white/[0.08] overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(59,130,246,0.08) 0%, rgba(34,211,238,0.05) 100%)' }}>
+            <div className="p-8 sm:p-12 flex flex-col lg:flex-row items-start lg:items-center gap-8">
+              <div className="flex-1">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 font-bold text-xs mb-5">
+                  <Layers className="w-3.5 h-3.5" />
+                  Modulär arkitektur
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-black text-white mb-4">
+                  Bygg ut när ni är redo.
+                </h2>
+                <p className="text-slate-400 text-sm leading-relaxed max-w-xl mb-6">
+                  CaseCore är designat för att växa med er byrå. Kärnsystemet täcker all ärendehantering —
+                  lägg sedan till Klientkommunikation, automatiserad dokumentgenerering eller en fristående
+                  KYC-modul för att möta era specifika behov.
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  {[
+                    { label: 'Klientkommunikation', available: true },
+                    { label: 'CaseCore Docs', available: true },
+                    { label: 'CaseCore KYC', available: true },
+                  ].map(({ label, available }) => (
+                    <span
+                      key={label}
+                      className={`text-xs font-bold px-3 py-1.5 rounded-full border ${
+                        available
+                          ? 'text-cyan-400 border-cyan-500/30 bg-cyan-500/10'
+                          : 'text-slate-500 border-white/10 bg-white/5'
+                      }`}
+                    >
+                      {available ? '✓ ' : '⋯ '}{label}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div className="flex-shrink-0">
+                <Link
+                  href="/modules"
+                  className="inline-flex items-center gap-2 font-bold text-white px-7 py-4 rounded-xl transition shadow-2xl whitespace-nowrap"
+                  style={{ background: 'linear-gradient(135deg,#3b82f6,#2563eb)', boxShadow: '0 0 24px rgba(59,130,246,0.35)' }}
+                >
+                  Utforska moduler <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── Pricing preview ────────────────────────────────────────────────── */}
       <section className="py-24 px-6" style={{ background: 'linear-gradient(160deg, #0f172a 0%, #1e1b4b 100%)' }}>
         <div className="max-w-5xl mx-auto text-center mb-14">
@@ -249,6 +304,7 @@ export default function LandingPage() {
             <p className="text-xs text-slate-600">© {new Date().getFullYear()} CaseCore Legal Tech · Byggt för modern juridik</p>
             <div className="flex gap-4">
               <Link href="/pitch" className="text-xs font-bold text-slate-500 hover:text-slate-300 transition">Priser</Link>
+              <Link href="/modules" className="text-xs font-bold text-slate-500 hover:text-slate-300 transition">Moduler</Link>
               <Link href="/login" className="text-xs font-bold text-slate-500 hover:text-slate-300 transition">Logga in</Link>
             </div>
           </div>

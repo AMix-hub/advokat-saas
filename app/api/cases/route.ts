@@ -7,7 +7,11 @@ export async function GET(req: NextRequest) {
     const token = await getToken({ req })
     if (!token?.email) return NextResponse.json({ error: 'Ej inloggad' }, { status: 401 })
 
+    const { searchParams } = new URL(req.url)
+    const clientId = searchParams.get('clientId') ?? undefined
+
     const cases = await prisma.case.findMany({
+      where: clientId ? { clientId } : undefined,
       select: { id: true, title: true, status: true },
       orderBy: { updatedAt: 'desc' },
     })
