@@ -7,11 +7,11 @@ import { statusLabel, caseTypeLabel } from '@/lib/status'
 
 function getStatusBadge(status: string) {
   switch (status) {
-    case 'OPEN': return 'bg-blue-50 text-blue-700 border-blue-200'
-    case 'PENDING': return 'bg-amber-50 text-amber-700 border-amber-200'
-    case 'CLOSED': return 'bg-emerald-50 text-emerald-700 border-emerald-200'
-    case 'ARCHIVED': return 'bg-slate-100 text-slate-600 border-slate-300'
-    default: return 'bg-gray-50 text-gray-700 border-gray-200'
+    case 'OPEN': return 'bg-blue-500/10 text-blue-400 border-blue-500/20'
+    case 'PENDING': return 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+    case 'CLOSED': return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+    case 'ARCHIVED': return 'bg-white/10 text-slate-300 border-white/20'
+    default: return 'bg-white/[0.05] text-slate-300 border-white/10'
   }
 }
 
@@ -25,17 +25,17 @@ export default async function CasesPage() {
   })
 
   return (
-    <main className="min-h-screen bg-slate-100 p-4 sm:p-8">
+    <main className="min-h-screen bg-slate-950 p-4 sm:p-8">
       <div className="max-w-6xl mx-auto">
 
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-8">
+        <div className="bg-slate-900 rounded-2xl border border-white/[0.08] p-5 sm:p-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-blue-500/20 text-blue-400 rounded-xl flex items-center justify-center">
                 <Briefcase className="w-6 h-6" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-slate-800">Ärenden</h1>
+                <h1 className="text-2xl font-bold text-slate-100">Ärenden</h1>
                 <p className="text-slate-500 text-sm">Totalt {cases.length} ärenden</p>
               </div>
             </div>
@@ -50,7 +50,7 @@ export default async function CasesPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b-2 border-slate-100">
+                <tr className="border-b-2 border-white/[0.08]">
                   <th className="py-4 px-4 font-bold text-slate-500 uppercase text-xs tracking-wider">Ärende</th>
                   <th className="py-4 px-4 font-bold text-slate-500 uppercase text-xs tracking-wider">Klient</th>
                   <th className="py-4 px-4 font-bold text-slate-500 uppercase text-xs tracking-wider">Kategori</th>
@@ -70,10 +70,10 @@ export default async function CasesPage() {
                   cases.map(caseItem => {
                     const totalHours = caseItem.timeEntries.reduce((acc, t) => acc + t.hours, 0)
                     return (
-                      <tr key={caseItem.id} className="border-b border-slate-50 hover:bg-slate-50 transition group">
-                        <td className="py-4 px-4 font-bold text-slate-900">{caseItem.title}</td>
-                        <td className="py-4 px-4 text-slate-600">{caseItem.client.name}</td>
-                        <td className="py-4 px-4 text-slate-600">{caseTypeLabel(caseItem.caseType)}</td>
+                      <tr key={caseItem.id} className="border-b border-white/[0.05] hover:bg-white/[0.05] transition group">
+                        <td className="py-4 px-4 font-bold text-white">{caseItem.title}</td>
+                        <td className="py-4 px-4 text-slate-400">{caseItem.client.name}</td>
+                        <td className="py-4 px-4 text-slate-400">{caseTypeLabel(caseItem.caseType)}</td>
                         <td className="py-4 px-4 text-center">
                           <span className="inline-flex items-center gap-1 text-sm font-bold text-slate-500">
                             <Clock className="w-3.5 h-3.5" />
@@ -89,7 +89,7 @@ export default async function CasesPage() {
                         <td className="py-4 px-4 text-right">
                           <Link
                             href={`/cases/${caseItem.id}`}
-                            className="text-sm font-bold text-blue-600 hover:text-blue-800 bg-white border border-slate-200 px-4 py-2 rounded-lg shadow-sm transition group-hover:border-blue-300 inline-block"
+                            className="text-sm font-bold text-blue-400 hover:text-blue-300 bg-white/[0.08] border border-white/[0.08] px-4 py-2 rounded-lg transition group-hover:border-blue-500/30 inline-block"
                           >
                             Öppna &rarr;
                           </Link>
