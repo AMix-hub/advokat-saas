@@ -13,6 +13,7 @@ import DeadlineManager from '@/components/DeadlineManager'
 import InvoiceManager from '@/components/InvoiceManager'
 import InternalComments from '@/components/InternalComments'
 import CopyPortalLink from '@/components/CopyPortalLink'
+import Timeline from '@/components/Timeline'
 import { Briefcase, Edit, FileStack, FileText, ArrowLeft, Activity, AlertCircle } from 'lucide-react'
 
 function getStatusBadge(status: string) {
@@ -108,22 +109,15 @@ export default async function CaseDetails({ params }: { params: Promise<{ id: st
             <ExpenseTracker caseId={caseItem.id} expenses={caseItem.expenses} />
             <DocumentManager caseId={caseItem.id} documents={caseItem.documents} />
 
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-8 mt-6 sm:mt-8">
-              <h2 className="text-lg sm:text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-                <Activity className="w-5 h-5 text-blue-500" /> Aktivitetslogg
-              </h2>
-              <ul className="space-y-5 sm:space-y-6">
-                {caseItem.logs.map((log: any) => (
-                  <li key={log.id} className="relative pl-4 sm:pl-5 border-l-2 border-slate-200">
-                    <div className="absolute w-2.5 h-2.5 bg-blue-500 rounded-full -left-[6px] top-1 sm:top-1.5 ring-4 ring-white"></div>
-                    <p className="font-medium text-slate-800 text-sm sm:text-base">{log.action}</p>
-                    <span className="text-xs sm:text-sm text-slate-500 mt-1 block font-medium">
-                      {new Date(log.createdAt).toLocaleString('sv-SE')}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <Timeline 
+              events={caseItem.logs.map((log: any) => ({
+                id: log.id,
+                action: log.action,
+                timestamp: log.createdAt,
+                type: log.action.toLowerCase().includes('uppdat') ? 'update' : 'create'
+              }))}
+              title="Aktivitetslogg"
+            />
           </div>
 
           <div className="order-first lg:order-last mb-6 lg:mb-0">

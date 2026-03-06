@@ -5,6 +5,8 @@ import Link from 'next/link'
 import UserProfile from '@/components/UserProfile'
 import SearchBar from '@/components/SearchBar'
 import UpcomingDeadlines from '@/components/UpcomingDeadlines'
+import FloatingActionButton from '@/components/FloatingActionButton'
+import NotificationBadge from '@/components/NotificationBadge'
 import { Building2, Download, Plus, Calendar, Clock, FileText, Briefcase, CheckCircle2, CircleDashed, AlertCircle } from 'lucide-react'
 
 export default async function Dashboard() {
@@ -14,7 +16,9 @@ export default async function Dashboard() {
       timeEntries: true,
       tasks: {
         where: { isCompleted: false }
-      }
+      },
+      deadlines: true,
+      invoices: true
     },
     orderBy: { updatedAt: 'desc' }
   })
@@ -27,6 +31,20 @@ export default async function Dashboard() {
     include: { case: true },
     orderBy: { dueDate: 'asc' },
     take: 6
+  })
+
+  const overdeadlines = await prisma.deadline.findMany({
+    where: {
+      dueDate: { lt: new Date() },
+      isCompleted: false
+    },
+    include: { case: true }
+  })
+
+  const unpaidInvoices = await prisma.invoice.findMany({
+    where: {
+      status: { in: ['DRAFT', 'SENT', 'OVERDUE'] }
+    }
   })
 
   const activeCasesCount = cases.filter(c => c.status === 'OPEN' || c.status === 'PENDING').length
@@ -47,61 +65,78 @@ export default async function Dashboard() {
 
   return (
     <main className="min-h-screen bg-slate-50 p-4 sm:p-8">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         
-        {/* Toppmeny - Förbättrad för mobil */}
+        {/* Toppmenu */}
         <div className="flex justify-between items-center mb-8 sm:mb-10">
           <div className="flex items-center gap-4 sm:gap-8">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-slate-900 rounded-lg flex items-center justify-center shadow-md flex-shrink-0">
+            <div className="flex items-center gap-3 lg:hidden">
+              <div className="w-10 h-10 bg-gradient-to-br from-slate-900 to-blue-900 rounded-lg flex items-center justify-center shadow-md flex-shrink-0">
                 <Building2 className="w-6 h-6 text-white" strokeWidth={2.5} />
               </div>
-              <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight hidden xs:block">
+              <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
                 Case<span className="text-blue-600">Core</span>
               </h1>
             </div>
             
             <div className="hidden lg:flex gap-6 items-center">
-              {/* UPPDATERAD LÄNK HÄR */}
-              <Link href="/dashboard" className="font-bold text-slate-900 border-b-2 border-blue-600 pb-1">Översikt</Link>
-              <Link href="/clients" className="font-bold text-slate-500 hover:text-slate-900 transition pb-1">Klientregister</Link>
-              
-              <div className="w-px h-6 bg-slate-300 mx-2"></div>
               <SearchBar />
             </div>
           </div>
           <UserProfile />
         </div>
 
-        {/* Statistik-kort */}
+        {/* Notifications */}
+        {(overdeadlines.length > 0 || unpaidInvoices.length > 0) && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            {overdeadlines.length > 0 && (
+              <NotificationBadge
+                type="overdue"
+                title="Överförfallna deadlines"
+                description={`Du har ${overdeadlines.length} deadline${overdeadlines.length !== 1 ? 's' : ''} som är försenta`}
+                count={overdeadlines.length}
+              />
+            )}
+            {unpaidInvoices.length > 0 && (
+              <NotificationBadge
+                type="pending"
+                title="Obetälda fakturor"
+                description={`${unpaidInvoices.length} faktura${unpaidInvoices.length !== 1 ? 'r' : ''} väntar på betalning`}
+                count={unpaidInvoices.length}
+              />
+            )}
+          </div>
+        )}
+
+        {/* Statistics Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 sm:mb-10">
-          <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200 flex items-start justify-between">
+          <div className="gradient-primary bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200 flex items-start justify-between hover:shadow-lg hover:scale-105 transition-all duration-300">
             <div>
               <p className="text-xs sm:text-sm font-bold text-slate-500 mb-1">Aktiva ärenden</p>
               <p className="text-2xl sm:text-3xl font-black text-slate-900">{activeCasesCount}</p>
             </div>
-            <div className="p-3 bg-slate-50 rounded-lg hidden sm:block"><Briefcase className="w-5 h-5 text-slate-400" /></div>
+            <div className="p-3 bg-blue-50 rounded-xl"><Briefcase className="w-5 h-5 text-blue-600" /></div>
           </div>
-          <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200 flex items-start justify-between">
+          <div className="gradient-success bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200 flex items-start justify-between hover:shadow-lg hover:scale-105 transition-all duration-300">
             <div>
               <p className="text-xs sm:text-sm font-bold text-slate-500 mb-1">Loggade timmar</p>
-              <p className="text-2xl sm:text-3xl font-black text-blue-600">{totalHours.toFixed(1)} h</p>
+              <p className="text-2xl sm:text-3xl font-black text-emerald-600">{totalHours.toFixed(1)} h</p>
             </div>
-            <div className="p-3 bg-blue-50 rounded-lg hidden sm:block"><Clock className="w-5 h-5 text-blue-500" /></div>
+            <div className="p-3 bg-emerald-50 rounded-xl"><Clock className="w-5 h-5 text-emerald-600" /></div>
           </div>
-          <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200 flex items-start justify-between">
+          <div className="gradient-warning bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200 flex items-start justify-between hover:shadow-lg hover:scale-105 transition-all duration-300">
             <div>
               <p className="text-xs sm:text-sm font-bold text-slate-500 mb-1">Fakturerbart värde</p>
-              <p className="text-2xl sm:text-3xl font-black text-emerald-600">{totalRevenue.toLocaleString('sv-SE')} kr</p>
+              <p className="text-2xl sm:text-3xl font-black text-amber-600">{(totalRevenue/1000).toFixed(1)} k kr</p>
             </div>
-            <div className="p-3 bg-emerald-50 rounded-lg hidden sm:block"><FileText className="w-5 h-5 text-emerald-500" /></div>
+            <div className="p-3 bg-amber-50 rounded-xl"><FileText className="w-5 h-5 text-amber-600" /></div>
           </div>
-          <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200 flex items-start justify-between">
+          <div className="gradient-danger bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200 flex items-start justify-between hover:shadow-lg hover:scale-105 transition-all duration-300">
             <div>
               <p className="text-xs sm:text-sm font-bold text-slate-500 mb-1">Innestående uppgifter</p>
-              <p className="text-2xl sm:text-3xl font-black text-amber-600">{pendingTasksCount} st</p>
+              <p className="text-2xl sm:text-3xl font-black text-red-600">{pendingTasksCount} st</p>
             </div>
-            <div className="p-3 bg-amber-50 rounded-lg hidden sm:block"><CheckCircle2 className="w-5 h-5 text-amber-500" /></div>
+            <div className="p-3 bg-red-50 rounded-xl"><CheckCircle2 className="w-5 h-5 text-red-600" /></div>
           </div>
         </div>
 
@@ -190,6 +225,9 @@ export default async function Dashboard() {
 
         </div>
       </div>
+
+      {/* Floating Action Button */}
+      <FloatingActionButton />
     </main>
   )
 }
