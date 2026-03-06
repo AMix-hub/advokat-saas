@@ -63,8 +63,8 @@ const expansionModules = [
   {
     icon: MessageSquare,
     title: 'Klientkommunikation',
-    badge: 'Tillgänglig',
-    badgeColor: '#22d3ee',
+    badge: 'Tillägg · 199 kr/mån',
+    badgeColor: '#a78bfa',
     desc: 'Skicka och ta emot meddelanden direkt till klienter kopplade till ärenden – allt loggat och sökbart i systemet.',
     features: [
       'Utgående meddelanden per klient',
@@ -72,15 +72,15 @@ const expansionModules = [
       'Koppling till ärende & tidsstämpel',
       'Fullt sökbart meddelandearkiv',
     ],
-    href: '/login',
-    cta: 'Kom igång',
+    href: '/pitch#tillagg',
+    cta: 'Lägg till',
     available: true,
   },
   {
     icon: BookOpen,
     title: 'CaseCore Docs',
-    badge: 'Tillgänglig',
-    badgeColor: '#22d3ee',
+    badge: 'Tillägg · 299 kr/mån',
+    badgeColor: '#a78bfa',
     desc: 'Automatiserad juridisk dokumentgenerering. Skapa kravbrev, fullmakter, uppdragsavtal och inlagor från smarta mallar med variabelfyllning.',
     features: [
       '6 inbyggda juridiska mallar',
@@ -88,24 +88,24 @@ const expansionModules = [
       'Live-förhandsgranskning',
       'Utskrift & PDF-export',
     ],
-    href: '/login',
-    cta: 'Kom igång',
+    href: '/pitch#tillagg',
+    cta: 'Lägg till',
     available: true,
   },
   {
     icon: ShieldCheck,
     title: 'CaseCore KYC',
-    badge: 'Tillgänglig',
-    badgeColor: '#22d3ee',
-    desc: 'Centraliserad KYC/AML-modul med PEP-kontroller, sanktionslistscreening, riskbedömningar och GDPR-kompatibel export.',
+    badge: 'Tillägg · 399 kr/mån',
+    badgeColor: '#a78bfa',
+    desc: 'Avancerad KYC/AML-modul med PEP-kontroller, sanktionslistscreening, riskbedömningar och GDPR-kompatibel export.',
     features: [
       'Riskbedömning per klient (Låg/Medel/Hög)',
       'PEP & sanktionslistscreening',
       'Fullständig KYC-checklista',
       'GDPR-export till CSV',
     ],
-    href: '/login',
-    cta: 'Kom igång',
+    href: '/pitch#tillagg',
+    cta: 'Lägg till',
     available: true,
   },
 ]
@@ -227,23 +227,18 @@ export default function ModulesPage() {
       >
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <p className="text-xs font-bold text-purple-400 uppercase tracking-widest mb-3">Utbyggbara tjänster</p>
-            <h2 className="text-3xl md:text-4xl font-black text-white mb-4">Ytterligare moduler</h2>
+            <p className="text-xs font-bold text-purple-400 uppercase tracking-widest mb-3">Köptillägg</p>
+            <h2 className="text-3xl md:text-4xl font-black text-white mb-4">Specialmoduler</h2>
             <p className="text-lg text-slate-400 max-w-2xl mx-auto">
-              Lägg till specialiserade funktioner när ni behöver dem — eller välj en fristående tjänst
-              anpassad för ett specifikt arbetsflöde.
+              Lägg till kraftfulla specialfunktioner vid behov — aktiveras direkt och faktureras månadsvis.
             </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {expansionModules.map(({ icon: Icon, title, badge, badgeColor, desc, features, href, cta, available }) => (
+            {expansionModules.map(({ icon: Icon, title, badge, badgeColor, desc, features, href, cta }) => (
               <div
                 key={title}
-                className={`relative p-7 rounded-2xl flex flex-col border transition-all duration-300 ${
-                  available
-                    ? 'border-cyan-500/30 bg-cyan-500/[0.05] hover:border-cyan-400/50'
-                    : 'border-white/[0.08] bg-white/[0.03] hover:border-white/20'
-                }`}
+                className="relative p-7 rounded-2xl flex flex-col border border-purple-500/20 bg-purple-500/[0.05] hover:border-purple-400/40 transition-all duration-300"
               >
                 {/* Badge */}
                 <div
@@ -260,12 +255,9 @@ export default function ModulesPage() {
                 {/* Icon */}
                 <div
                   className="w-12 h-12 rounded-xl flex items-center justify-center mb-5"
-                  style={{ background: available ? 'rgba(34,211,238,0.1)' : 'rgba(167,139,250,0.1)' }}
+                  style={{ background: 'rgba(167,139,250,0.15)' }}
                 >
-                  <Icon
-                    className="w-6 h-6"
-                    style={{ color: available ? '#22d3ee' : '#a78bfa' }}
-                  />
+                  <Icon className="w-6 h-6 text-purple-400" />
                 </div>
 
                 <h3 className="text-lg font-black text-white mb-3">{title}</h3>
@@ -275,10 +267,7 @@ export default function ModulesPage() {
                 <ul className="space-y-2 mb-8 flex-1">
                   {features.map(f => (
                     <li key={f} className="flex items-start gap-2 text-sm text-slate-400">
-                      <CheckCircle2
-                        className="w-4 h-4 mt-0.5 flex-shrink-0"
-                        style={{ color: available ? '#22d3ee' : '#a78bfa' }}
-                      />
+                      <CheckCircle2 className="w-4 h-4 mt-0.5 flex-shrink-0 text-purple-400" />
                       {f}
                     </li>
                   ))}
@@ -286,11 +275,7 @@ export default function ModulesPage() {
 
                 <Link
                   href={href}
-                  className={`w-full flex items-center justify-center gap-2 py-3 px-5 rounded-xl font-bold text-sm transition-all ${
-                    available
-                      ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-500/30'
-                      : 'bg-white/5 text-slate-400 border border-white/10 hover:bg-white/10 hover:text-white'
-                  }`}
+                  className="w-full flex items-center justify-center gap-2 py-3 px-5 rounded-xl font-bold text-sm transition-all bg-purple-500/20 text-purple-300 border border-purple-500/30 hover:bg-purple-500/30"
                 >
                   {cta} <ArrowRight className="w-4 h-4" />
                 </Link>

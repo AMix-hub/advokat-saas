@@ -92,6 +92,12 @@ textarea:focus-visible {
   @apply outline-2 outline-offset-2 outline-blue-500;
 }
 
+/* Fix native <select> dropdown options in dark-themed areas */
+select option {
+  background-color: #1e293b; /* slate-800 */
+  color: #f1f5f9;            /* slate-100 */
+}
+
 /* Futuristic glow effects */
 .glow-blue {
   box-shadow: 0 0 16px rgba(59, 130, 246, 0.4);
