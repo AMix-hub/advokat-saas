@@ -1,17 +1,16 @@
 'use client'
 import { useState } from 'react'
+import { Link as LinkIcon, CheckCircle2 } from 'lucide-react'
 
 export default function CopyPortalLink({ caseId }: { caseId: string }) {
   const [copied, setCopied] = useState(false)
 
   const handleCopy = () => {
-    // Genererar den fullständiga länken baserat på vilken domän du är på (t.ex. localhost eller din Vercel-domän)
     const url = `${window.location.origin}/portal/${caseId}`
     
     navigator.clipboard.writeText(url)
     setCopied(true)
     
-    // Återställ knappen efter 2 sekunder
     setTimeout(() => setCopied(false), 2000)
   }
 
@@ -24,7 +23,11 @@ export default function CopyPortalLink({ caseId }: { caseId: string }) {
           : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
       }`}
     >
-      {copied ? '✅ Länken kopierad!' : '🔗 Kopiera Klientlänk'}
+      {copied ? (
+        <><CheckCircle2 className="w-4 h-4" /> Länken kopierad!</>
+      ) : (
+        <><LinkIcon className="w-4 h-4" /> Kopiera Klientlänk</>
+      )}
     </button>
   )
 }
