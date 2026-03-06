@@ -1,23 +1,14 @@
 export const dynamic = 'force-dynamic'
 
-import { Suspense } from 'react'
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
-import dynamic from 'next/dynamic'
 import UserProfile from '@/components/UserProfile'
 import SearchBar from '@/components/SearchBar'
 import UpcomingDeadlines from '@/components/UpcomingDeadlines'
 import FloatingActionButton from '@/components/FloatingActionButton'
 import NotificationBadge from '@/components/NotificationBadge'
-import { SkeletonCard } from '@/components/Skeleton'
 import { Building2, Download, Plus, Calendar, Clock, FileText, Briefcase, CheckCircle2, CircleDashed, AlertCircle } from 'lucide-react'
 import { statusLabel } from '@/lib/status'
-
-// Lazy load components that appear below the fold
-const CaseList = dynamic(() => import('@/components/CaseList'), {
-  loading: () => <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6"><SkeletonCard /></div>,
-  ssr: false
-})
 
 export default async function Dashboard() {
   const cases = await prisma.case.findMany({
