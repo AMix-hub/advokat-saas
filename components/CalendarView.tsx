@@ -16,12 +16,12 @@ type CalEvent = {
 }
 
 const KIND_STYLES: Record<string, string> = {
-  DEADLINE_COURT_DATE:   'bg-violet-100 text-violet-800 border-violet-200',
-  DEADLINE_LAW_DEADLINE: 'bg-red-100 text-red-800 border-red-200',
-  DEADLINE_REMINDER:     'bg-amber-100 text-amber-800 border-amber-200',
-  DEADLINE_OTHER:        'bg-slate-100 text-slate-700 border-slate-200',
-  TASK:                  'bg-blue-100 text-blue-800 border-blue-200',
-  COMPLETED:             'bg-emerald-50 text-emerald-600 border-emerald-100 opacity-60',
+  DEADLINE_COURT_DATE:   'bg-violet-500/20 text-violet-300 border-violet-500/30',
+  DEADLINE_LAW_DEADLINE: 'bg-red-500/20 text-red-300 border-red-500/30',
+  DEADLINE_REMINDER:     'bg-amber-500/20 text-amber-300 border-amber-500/30',
+  DEADLINE_OTHER:        'bg-white/10 text-slate-300 border-white/20',
+  TASK:                  'bg-blue-500/20 text-blue-300 border-blue-500/30',
+  COMPLETED:             'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 opacity-60',
 }
 
 function getStyle(ev: CalEvent) {
@@ -94,9 +94,9 @@ export default function CalendarView({ events }: { events: CalEvent[] }) {
       {/* ── Summary pills ─────────────────────────────────────────────────── */}
       <div className="flex flex-wrap gap-3 mb-6">
         {[
-          { label: 'Deadlines denna månaden', value: monthEvents.filter(e => e.kind === 'DEADLINE').length, color: 'bg-amber-50 text-amber-800 border-amber-200' },
-          { label: 'Uppgifter denna månaden',  value: monthEvents.filter(e => e.kind === 'TASK').length,     color: 'bg-blue-50 text-blue-800 border-blue-200' },
-          { label: 'Förfallna (alla månader)', value: overdueCount, color: overdueCount > 0 ? 'bg-red-50 text-red-700 border-red-200' : 'bg-slate-50 text-slate-600 border-slate-200' },
+          { label: 'Deadlines denna månaden', value: monthEvents.filter(e => e.kind === 'DEADLINE').length, color: 'bg-amber-500/10 text-amber-300 border-amber-500/20' },
+          { label: 'Uppgifter denna månaden',  value: monthEvents.filter(e => e.kind === 'TASK').length,     color: 'bg-blue-500/10 text-blue-300 border-blue-500/20' },
+          { label: 'Förfallna (alla månader)', value: overdueCount, color: overdueCount > 0 ? 'bg-red-500/10 text-red-300 border-red-500/20' : 'bg-white/[0.04] text-slate-300 border-white/[0.08]' },
         ].map(({ label, value, color }) => (
           <div key={label} className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-bold ${color}`}>
             <span className="text-lg font-black">{value}</span>
@@ -108,25 +108,25 @@ export default function CalendarView({ events }: { events: CalEvent[] }) {
       {/* ── Month navigation ──────────────────────────────────────────────── */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <button onClick={prevMonth} className="p-2 rounded-xl border border-slate-200 hover:bg-slate-100 transition text-slate-600">
+          <button onClick={prevMonth} className="p-2 rounded-xl border border-white/[0.08] hover:bg-white/[0.08] transition text-slate-400">
             <ChevronLeft className="w-5 h-5" />
           </button>
-          <button onClick={nextMonth} className="p-2 rounded-xl border border-slate-200 hover:bg-slate-100 transition text-slate-600">
+          <button onClick={nextMonth} className="p-2 rounded-xl border border-white/[0.08] hover:bg-white/[0.08] transition text-slate-400">
             <ChevronRight className="w-5 h-5" />
           </button>
-          <h2 className="text-xl font-black text-slate-900 ml-1">
+          <h2 className="text-xl font-black text-white ml-1">
             {MONTHS_SE[month]} {year}
           </h2>
         </div>
-        <button onClick={goToday} className="px-4 py-2 rounded-xl border border-slate-200 hover:bg-slate-100 transition text-sm font-bold text-slate-600">
+        <button onClick={goToday} className="px-4 py-2 rounded-xl border border-white/[0.08] hover:bg-white/[0.08] transition text-sm font-bold text-slate-400">
           Idag
         </button>
       </div>
 
       {/* ── Grid ──────────────────────────────────────────────────────────── */}
-      <div className="rounded-2xl border border-slate-200 overflow-hidden">
+      <div className="rounded-2xl border border-white/[0.08] overflow-hidden">
         {/* Weekday headers */}
-        <div className="grid grid-cols-7 bg-slate-50 border-b border-slate-200">
+        <div className="grid grid-cols-7 bg-white/[0.04] border-b border-white/[0.08]">
           {DAYS_SE.map(d => (
             <div key={d} className="py-3 text-center text-xs font-bold text-slate-500 uppercase tracking-wider">
               {d}
@@ -135,10 +135,10 @@ export default function CalendarView({ events }: { events: CalEvent[] }) {
         </div>
 
         {/* Day cells */}
-        <div className="grid grid-cols-7 divide-x divide-y divide-slate-100">
+        <div className="grid grid-cols-7 divide-x divide-y divide-white/[0.06]">
           {cells.map((day, idx) => {
             if (!day) {
-              return <div key={`e${idx}`} className="min-h-[100px] bg-slate-50/50 p-1" />
+              return <div key={`e${idx}`} className="min-h-[100px] bg-white/[0.02] p-1" />
             }
             const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
             const dayEvents = eventMap[dateStr] ?? []
@@ -149,11 +149,11 @@ export default function CalendarView({ events }: { events: CalEvent[] }) {
               <div
                 key={dateStr}
                 className={`min-h-[100px] p-1.5 flex flex-col gap-1 transition ${
-                  isToday ? 'bg-blue-50/70' : isPast ? 'bg-white' : 'bg-white'
+                  isToday ? 'bg-blue-500/10' : isPast ? 'bg-transparent' : 'bg-transparent'
                 }`}
               >
                 <div className={`w-7 h-7 flex items-center justify-center rounded-full text-sm font-bold self-end ${
-                  isToday ? 'bg-blue-600 text-white shadow-md' : 'text-slate-700'
+                  isToday ? 'bg-blue-600 text-white shadow-md' : 'text-slate-300'
                 }`}>
                   {day}
                 </div>
@@ -210,10 +210,10 @@ export default function CalendarView({ events }: { events: CalEvent[] }) {
             <div className="space-y-2">
               {upcoming.map(ev => (
                 <Link key={ev.id} href={`/cases/${ev.caseId}`}>
-                  <div className="flex items-center gap-4 p-3 rounded-xl bg-white border border-slate-100 hover:border-blue-300 hover:shadow-sm transition group">
+                  <div className="flex items-center gap-4 p-3 rounded-xl bg-white/[0.04] border border-white/[0.06] hover:border-blue-500/30 hover:shadow-sm transition group">
                     <div className={`w-2 h-2 rounded-full flex-shrink-0 ${ev.kind === 'TASK' ? 'bg-blue-500' : ev.deadlineType === 'COURT_DATE' ? 'bg-violet-500' : ev.deadlineType === 'LAW_DEADLINE' ? 'bg-red-500' : 'bg-amber-400'}`} />
                     <div className="flex-1 min-w-0">
-                      <p className="font-bold text-slate-800 text-sm truncate group-hover:text-blue-600 transition">{ev.title}</p>
+                      <p className="font-bold text-slate-100 text-sm truncate group-hover:text-blue-400 transition">{ev.title}</p>
                       <p className="text-xs text-slate-400 truncate">{ev.caseTitle}</p>
                     </div>
                     <div className="text-xs font-bold text-slate-500 whitespace-nowrap">
