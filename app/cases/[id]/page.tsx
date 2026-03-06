@@ -9,6 +9,8 @@ import TimeTracker from '@/components/TimeTracker'
 import ExpenseTracker from '@/components/ExpenseTracker'
 import UserProfile from '@/components/UserProfile'
 import TaskList from '@/components/TaskList'
+import DeadlineManager from '@/components/DeadlineManager'
+import InvoiceManager from '@/components/InvoiceManager'
 import CopyPortalLink from '@/components/CopyPortalLink'
 import { Briefcase, Edit, FileStack, FileText, ArrowLeft, Activity, AlertCircle } from 'lucide-react'
 
@@ -33,7 +35,9 @@ export default async function CaseDetails({ params }: { params: Promise<{ id: st
       timeEntries: { orderBy: { createdAt: 'desc' } },
       expenses: { orderBy: { createdAt: 'desc' } },
       logs: { orderBy: { createdAt: 'desc' } },
-      tasks: { orderBy: { createdAt: 'desc' } }
+      tasks: { orderBy: { createdAt: 'desc' } },
+      deadlines: { orderBy: { dueDate: 'asc' } },
+      invoices: { orderBy: { invoiceDate: 'desc' } }
     }
   })
 
@@ -96,6 +100,8 @@ export default async function CaseDetails({ params }: { params: Promise<{ id: st
             </div>
 
             <TaskList caseId={caseItem.id} tasks={caseItem.tasks} />
+            <DeadlineManager caseId={caseItem.id} />
+            <InvoiceManager caseId={caseItem.id} />
             <TimeTracker caseId={caseItem.id} timeEntries={caseItem.timeEntries} />
             <ExpenseTracker caseId={caseItem.id} expenses={caseItem.expenses} />
             <DocumentManager caseId={caseItem.id} documents={caseItem.documents} />

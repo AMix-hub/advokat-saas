@@ -34,23 +34,30 @@ model Client {
 }
 
 model Case {
-  id            String      @id @default(cuid())
+  id            String        @id @default(cuid())
   title         String
   description   String?
-  status        String      @default("OPEN")
-  invoiceStatus String      @default("UNBILLED") 
-  hourlyRate    Float       @default(2000)
+  status        String        @default("OPEN")
+  caseType      String?       // DISPUTE, PROPERTY, WILL, CONTRACT, OTHER
+  invoiceStatus String        @default("UNBILLED") 
+  hourlyRate    Float         @default(2000)
+  budgetedHours Float?        // Planerad arbetstid
+  opposingParty String?       // Motpart i tvisten
+  courtName     String?       // Domstol om tillämplig
+  caseDeadline  DateTime?     // Ärendets slutdatum
   clientId      String
-  client        Client      @relation(fields: [clientId], references: [id])
+  client        Client        @relation(fields: [clientId], references: [id])
   assignedToId  String?
-  assignedTo    User?       @relation(fields: [assignedToId], references: [id])
+  assignedTo    User?         @relation(fields: [assignedToId], references: [id])
   logs          Log[]
   documents     Document[]
   timeEntries   TimeEntry[]
   tasks         Task[]
   expenses      Expense[]
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  deadlines     Deadline[]
+  invoices      Invoice[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }
 
 model ConflictLog {
@@ -123,4 +130,46 @@ model PasswordResetToken {
   createdAt DateTime @default(now())
 
   @@unique([email, token])
+}
+
+// NY MODELL: Juridiska deadlines och milestones
+model Deadline {
+  id          String   @id @default(cuid())
+  title       String   // t.ex "Slutförande", "Domstolsförhandling", "Klagotid löper ut"
+  description String?
+  dueDate     DateTime
+  type        String   @default("REMINDER") // LAW_DEADLINE, COURT_DATE, REMINDER, OTHER
+  isCompleted Boolean  @default(false)
+  caseId      String
+  case        Case     @relation(fields: [caseId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// NY MODELL: Fakturor
+model Invoice {
+  id            String         @id @default(cuid())
+  invoiceNumber String         @unique // t.ex "2025-001", "2025-002"
+  invoiceDate   DateTime       @default(now())
+  dueDate       DateTime       // Förfallodag
+  status        String         @default("DRAFT") // DRAFT, SENT, PAID, OVERDUE
+  totalAmount   Float
+  notes         String?        // Villkor, betalningsinstruktioner etc
+  caseId        String
+  case          Case           @relation(fields: [caseId], references: [id])
+  items         InvoiceItem[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+// NY MODELL: Fakturarader
+model InvoiceItem {
+  id          String   @id @default(cuid())
+  description String   // t.ex "Juridisk rådgivning", "Domstolsföreträde"
+  quantity    Float    @default(1.0)
+  unitPrice   Float
+  amount      Float    // quantity * unitPrice - beräknas vid skapa
+  invoiceId   String
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
 }

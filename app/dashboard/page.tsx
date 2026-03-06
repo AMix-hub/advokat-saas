@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
 import UserProfile from '@/components/UserProfile'
 import SearchBar from '@/components/SearchBar'
+import UpcomingDeadlines from '@/components/UpcomingDeadlines'
 import { Building2, Download, Plus, Calendar, Clock, FileText, Briefcase, CheckCircle2, CircleDashed, AlertCircle } from 'lucide-react'
 
 export default async function Dashboard() {
@@ -174,44 +175,10 @@ export default async function Dashboard() {
           <div className="lg:col-span-1">
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6 sticky top-8">
               <h2 className="text-lg font-bold text-slate-800 mb-5 sm:mb-6 flex items-center gap-2 pb-4 border-b border-slate-100">
-                <Calendar className="w-5 h-5 text-slate-400" /> Deadlines
+                <Calendar className="w-5 h-5 text-slate-400" /> Kommande deadlines
               </h2>
 
-              {upcomingTasks.length === 0 ? (
-                <div className="text-center py-8 bg-slate-50 rounded-xl border border-dashed border-slate-200">
-                  <CheckCircle2 className="w-8 h-8 text-emerald-400 mx-auto mb-2" />
-                  <p className="text-slate-500 text-sm font-medium">Kalendern är tom.</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {upcomingTasks.map(task => {
-                    const date = new Date(task.dueDate!)
-                    const isOverdue = date.setHours(0,0,0,0) < new Date().setHours(0,0,0,0)
-
-                    return (
-                      <Link key={task.id} href={`/cases/${task.caseId}`} className="flex gap-3 sm:gap-4 items-start group">
-                        <div className={`flex flex-col items-center justify-center border rounded-lg min-w-[3rem] sm:min-w-[3.5rem] overflow-hidden shadow-sm transition group-hover:shadow-md ${isOverdue ? 'border-red-200 bg-red-50' : 'border-slate-200 bg-slate-50'}`}>
-                          <span className={`text-[9px] sm:text-[10px] font-bold w-full text-center uppercase py-0.5 ${isOverdue ? 'bg-red-500 text-white' : 'bg-slate-200 text-slate-600'}`}>
-                            {months[date.getMonth()]}
-                          </span>
-                          <span className={`text-base sm:text-lg font-black py-1 ${isOverdue ? 'text-red-700' : 'text-slate-700'}`}>
-                            {date.getDate()}
-                          </span>
-                        </div>
-                        
-                        <div className="flex-1 min-w-0 pt-0.5">
-                          <p className={`font-bold text-xs sm:text-sm truncate transition ${isOverdue ? 'text-red-600' : 'text-slate-800 group-hover:text-blue-600'}`}>
-                            {task.title}
-                          </p>
-                          <p className="text-[11px] sm:text-xs text-slate-500 truncate mt-0.5">
-                            {task.case.title}
-                          </p>
-                        </div>
-                      </Link>
-                    )
-                  })}
-                </div>
-              )}
+              <UpcomingDeadlines />
             </div>
           </div>
 
