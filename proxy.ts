@@ -4,7 +4,7 @@ export default withAuth
 
 export const config = {
   matcher: [
-    // Lade till "pitch" i listan över sidor som inte kräver inloggning!
-    "/((?!api/auth|login|portal|pitch|_next/static|_next/image|favicon.ico).*)"
+    // Låser alla sidor utom de vi uttryckligen listar här nedan:
+    "/((?!api/auth|login|portal|pitch|forgot-password|reset-password|_next/static|_next/image|favicon.ico).*)"
   ]
 }
