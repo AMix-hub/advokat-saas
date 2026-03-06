@@ -48,7 +48,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 p-4 sm:p-8">
+    <main className="min-h-screen bg-slate-100 p-4 sm:p-8">
       <div className="max-w-3xl mx-auto">
 
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 md:p-12">

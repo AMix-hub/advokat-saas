@@ -3,7 +3,6 @@ export const dynamic = 'force-dynamic'
 import { prisma } from '@/lib/prisma'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import UserProfile from '@/components/UserProfile'
 
 export default async function TemplatesHub({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
@@ -21,14 +20,13 @@ export default async function TemplatesHub({ params }: { params: Promise<{ id: s
   })
 
   return (
-    <main className="min-h-screen bg-slate-50 p-8">
+    <main className="min-h-screen bg-slate-100 p-8">
       <div className="max-w-5xl mx-auto">
         
-        <div className="flex justify-between items-center mb-10">
+        <div className="mb-8">
           <Link href={`/cases/${caseItem.id}`} className="text-blue-600 hover:text-blue-800 font-bold inline-flex items-center gap-2 transition bg-blue-50 px-4 py-2 rounded-lg">
             &larr; Tillbaka till ärendet
           </Link>
-          <UserProfile />
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 md:p-12 mb-8">

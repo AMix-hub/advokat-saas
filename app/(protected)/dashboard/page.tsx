@@ -2,12 +2,10 @@ export const dynamic = 'force-dynamic'
 
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
-import UserProfile from '@/components/UserProfile'
-import SearchBar from '@/components/SearchBar'
 import UpcomingDeadlines from '@/components/UpcomingDeadlines'
 import FloatingActionButton from '@/components/FloatingActionButton'
 import NotificationBadge from '@/components/NotificationBadge'
-import { Building2, Download, Plus, Calendar, Clock, FileText, Briefcase, CheckCircle2, CircleDashed, AlertCircle } from 'lucide-react'
+import { Download, Plus, Calendar, Clock, FileText, Briefcase, CheckCircle2, CircleDashed, AlertCircle } from 'lucide-react'
 import { statusLabel } from '@/lib/status'
 
 export default async function Dashboard() {
@@ -65,26 +63,13 @@ export default async function Dashboard() {
   const months = ["Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"]
 
   return (
-    <main className="min-h-screen bg-slate-50 p-3 sm:p-6 lg:p-8">
+    <main className="min-h-screen bg-slate-100 p-3 sm:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
         
-        {/* Toppmenu */}
-        <div className="flex justify-between items-center mb-8 sm:mb-10">
-          <div className="flex items-center gap-4 sm:gap-8">
-            <div className="flex items-center gap-3 lg:hidden">
-              <div className="w-10 h-10 bg-gradient-to-br from-slate-900 to-blue-900 rounded-lg flex items-center justify-center shadow-md flex-shrink-0">
-                <Building2 className="w-6 h-6 text-white" strokeWidth={2.5} />
-              </div>
-              <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-                Case<span className="text-blue-600">Core</span>
-              </h1>
-            </div>
-            
-            <div className="hidden lg:flex gap-6 items-center">
-              <SearchBar />
-            </div>
-          </div>
-          <UserProfile />
+        {/* Page heading */}
+        <div className="mb-8 sm:mb-10">
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Översikt</h1>
+          <p className="text-sm text-slate-500 mt-1 font-medium">Välkommen tillbaka — här är en sammanfattning av ditt arbete.</p>
         </div>
 
         {/* Notifications */}

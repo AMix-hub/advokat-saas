@@ -2,6 +2,22 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getToken } from 'next-auth/jwt'
 
+export async function GET(req: NextRequest) {
+  try {
+    const token = await getToken({ req })
+    if (!token?.email) return NextResponse.json({ error: 'Ej inloggad' }, { status: 401 })
+
+    const cases = await prisma.case.findMany({
+      select: { id: true, title: true, status: true },
+      orderBy: { updatedAt: 'desc' },
+    })
+    return NextResponse.json(cases)
+  } catch (error) {
+    console.error(error)
+    return NextResponse.json({ error: 'Kunde inte hämta ärenden' }, { status: 500 })
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     // Hämta inloggad användare för loggboken

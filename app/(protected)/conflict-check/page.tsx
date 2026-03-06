@@ -1,7 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import UserProfile from '@/components/UserProfile'
 import { Scale, Search, ShieldCheck, AlertOctagon, Printer, History, User, Briefcase } from 'lucide-react'
 import { statusLabel } from '@/lib/status'
 
@@ -53,16 +52,15 @@ export default function ConflictCheckPage() {
   const totalHits = results.clients.length + results.cases.length
 
   return (
-    <main className="min-h-screen bg-slate-50 print:bg-white">
+    <main className="min-h-screen bg-slate-100 print:bg-white">
       
       {/* --- STANDARD GRÄNSSNITT (Döljs vid utskrift) --- */}
       <div className="p-4 sm:p-8 max-w-7xl mx-auto print:hidden">
         
-        <div className="flex justify-between items-center mb-10">
+        <div className="mb-8">
           <Link href="/dashboard" className="text-blue-600 hover:text-blue-800 font-bold inline-flex items-center gap-2 transition bg-blue-50 px-4 py-2 rounded-lg">
             &larr; Tillbaka till översikten
           </Link>
-          <UserProfile />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
