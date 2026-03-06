@@ -199,8 +199,8 @@ export default function LandingPage() {
                 <div className="flex flex-wrap gap-3">
                   {[
                     { label: 'Klientkommunikation', available: true },
-                    { label: 'CaseCore Docs', available: false },
-                    { label: 'CaseCore KYC', available: false },
+                    { label: 'CaseCore Docs', available: true },
+                    { label: 'CaseCore KYC', available: true },
                   ].map(({ label, available }) => (
                     <span
                       key={label}

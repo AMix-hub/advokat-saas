@@ -22,6 +22,7 @@ model User {
   internalComments InternalComment[]
   createdAgreements Agreement[]   @relation("CreatedBy")
   sentMessages      Message[]      @relation("SentMessages")
+  generatedDocuments GeneratedDocument[] @relation("GeneratedDocuments")
   createdAt     DateTime         @default(now())
 }
 
@@ -36,6 +37,7 @@ model Client {
   isAnonymized Boolean  @default(false)
   cases        Case[]
   messages     Message[]
+  kycRecords   KycRecord[]
   createdAt    DateTime @default(now())
 }
 
@@ -67,6 +69,7 @@ model Case {
   internalComments InternalComment[]
   agreements    Agreement[]
   messages      Message[]
+  generatedDocuments GeneratedDocument[]
   createdAt     DateTime            @default(now())
   updatedAt     DateTime            @updatedAt
 }
@@ -291,4 +294,37 @@ model NotificationLog {
   sentAt        DateTime?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+}
+
+// CaseCore Docs: Sparade genererade dokument
+model GeneratedDocument {
+  id           String   @id @default(cuid())
+  templateName String
+  content      String   @db.Text
+  variables    String   @db.Text  // JSON-kodade nyckel-värde-par
+  caseId       String?
+  case         Case?    @relation(fields: [caseId], references: [id], onDelete: SetNull)
+  createdById  String?
+  createdBy    User?    @relation("GeneratedDocuments", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt    DateTime @default(now())
+}
+
+// CaseCore KYC: Detaljerade KYC-bedömningar per klient
+model KycRecord {
+  id               String    @id @default(cuid())
+  clientId         String
+  client           Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  riskLevel        String    @default("LOW")  // LOW, MEDIUM, HIGH
+  pepChecked       Boolean   @default(false)
+  pepResult        Boolean   @default(false)   // true = PEP-träff hittad
+  sanctionsChecked Boolean   @default(false)
+  sanctionsResult  Boolean   @default(false)   // true = träff på sanktionslista
+  idVerified       Boolean   @default(false)
+  sourceOfFunds    String?
+  notes            String?   @db.Text
+  reviewer         String?
+  reviewedAt       DateTime?
+  expiresAt        DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 }

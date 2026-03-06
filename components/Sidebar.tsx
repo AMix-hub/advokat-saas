@@ -21,6 +21,8 @@ import {
   FileSignature,
   KeyRound,
   MessageSquare,
+  BookOpen,
+  ShieldCheck,
 } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 
@@ -56,7 +58,9 @@ export default function Sidebar() {
     { href: '/agreements',     label: 'Avtal',            icon: FileSignature },
     { href: '/reports',        label: 'Rapporter',        icon: BarChart3 },
     { href: '/templates',      label: 'Mallar',           icon: FileText },
+    { href: '/docs',           label: 'Docs',             icon: BookOpen },
     { href: '/conflict-check', label: 'Jävsprövning',     icon: Scale },
+    { href: '/kyc',            label: 'KYC',              icon: ShieldCheck },
     { href: '/kommunikation',  label: 'Klientkommunikation', icon: MessageSquare },
     { href: '/team',           label: 'Team',             icon: Users },
     { href: '/admin/activation-codes', label: 'Åtkomstkoder', icon: KeyRound },
