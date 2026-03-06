@@ -6,9 +6,10 @@ import { notFound } from 'next/navigation'
 import CaseControls from '@/components/CaseControls'
 import DocumentManager from '@/components/DocumentManager'
 import TimeTracker from '@/components/TimeTracker'
-import ExpenseTracker from '@/components/ExpenseTracker' // NY IMPORT
+import ExpenseTracker from '@/components/ExpenseTracker'
 import UserProfile from '@/components/UserProfile'
 import TaskList from '@/components/TaskList'
+import CopyPortalLink from '@/components/CopyPortalLink' // NY IMPORT
 
 function getStatusBadge(status: string) {
   switch (status) {
@@ -29,7 +30,7 @@ export default async function CaseDetails({ params }: { params: Promise<{ id: st
       client: true, 
       documents: { orderBy: { createdAt: 'desc' } },
       timeEntries: { orderBy: { createdAt: 'desc' } },
-      expenses: { orderBy: { createdAt: 'desc' } }, // Hämta utlägg
+      expenses: { orderBy: { createdAt: 'desc' } },
       logs: { orderBy: { createdAt: 'desc' } },
       tasks: { orderBy: { createdAt: 'desc' } }
     }
@@ -66,6 +67,9 @@ export default async function CaseDetails({ params }: { params: Promise<{ id: st
                   </span>
                   
                   <div className="flex flex-wrap justify-end gap-2 mt-2">
+                    {/* HÄR ÄR DEN NYA KNAPPEN FÖR KLIENTLÄNKEN */}
+                    <CopyPortalLink caseId={caseItem.id} />
+                    
                     <Link href={`/cases/${caseItem.id}/edit`} className="bg-white text-slate-700 border border-slate-300 px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-50 transition shadow-sm flex items-center gap-2">
                       ✏️ Redigera
                     </Link>
@@ -86,10 +90,7 @@ export default async function CaseDetails({ params }: { params: Promise<{ id: st
 
             <TaskList caseId={caseItem.id} tasks={caseItem.tasks} />
             <TimeTracker caseId={caseItem.id} timeEntries={caseItem.timeEntries} />
-            
-            {/* HÄR ÄR DEN NYA KOMPONENTEN */}
             <ExpenseTracker caseId={caseItem.id} expenses={caseItem.expenses} />
-            
             <DocumentManager caseId={caseItem.id} documents={caseItem.documents} />
 
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 mt-8">
