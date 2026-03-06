@@ -7,3 +7,14 @@ export function statusLabel(status: string) {
     default: return status
   }
 }
+
+export function caseTypeLabel(caseType: string | null | undefined): string {
+  switch (caseType) {
+    case 'DISPUTE': return 'Tvist'
+    case 'PROPERTY': return 'Fastighet'
+    case 'WILL': return 'Testamente'
+    case 'CONTRACT': return 'Avtal'
+    case 'OTHER': return 'Övrigt'
+    default: return 'Övrigt'
+  }
+}
