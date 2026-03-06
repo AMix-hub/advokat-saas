@@ -14,23 +14,23 @@ export default function DashboardStats() {
       })
   }, [])
 
-  if (loading) return <div className="h-24 animate-pulse bg-slate-200 rounded-2xl mb-8"></div>
+  if (loading) return <div className="h-24 animate-pulse bg-white/[0.08] rounded-2xl mb-8"></div>
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+      <div className="bg-slate-900 p-6 rounded-2xl border border-white/[0.08]">
         <p className="text-sm text-slate-500 font-bold uppercase tracking-wider mb-1">Aktiva Ärenden</p>
         <p className="text-3xl font-black text-blue-600">{stats.openCases}</p>
       </div>
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+      <div className="bg-slate-900 p-6 rounded-2xl border border-white/[0.08]">
         <p className="text-sm text-slate-500 font-bold uppercase tracking-wider mb-1">Klienter</p>
-        <p className="text-3xl font-black text-slate-800">{stats.totalClients}</p>
+        <p className="text-3xl font-black text-slate-100">{stats.totalClients}</p>
       </div>
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+      <div className="bg-slate-900 p-6 rounded-2xl border border-white/[0.08]">
         <p className="text-sm text-slate-500 font-bold uppercase tracking-wider mb-1">Stängda Ärenden</p>
         <p className="text-3xl font-black text-emerald-600">{stats.closedCases}</p>
       </div>
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+      <div className="bg-slate-900 p-6 rounded-2xl border border-white/[0.08]">
         <p className="text-sm text-slate-500 font-bold uppercase tracking-wider mb-1">Fakturerbara h</p>
         <p className="text-3xl font-black text-indigo-600">{stats.totalHours.toFixed(1)}</p>
       </div>

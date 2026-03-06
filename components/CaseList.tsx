@@ -19,19 +19,19 @@ export default function CaseList() {
   if (cases.length === 0) return <p className="text-slate-400 p-4">Inga ärenden hittades.</p>
 
   return (
-    <div className="divide-y divide-slate-100">
+    <div className="divide-y divide-white/[0.06]">
       {cases.map((c: any) => (
         <Link 
           href={`/cases/${c.id}`} 
           key={c.id} 
-          className="py-4 flex justify-between items-center hover:bg-slate-50 transition px-2 rounded-lg cursor-pointer block"
+          className="py-4 flex justify-between items-center hover:bg-white/[0.05] transition px-2 rounded-lg cursor-pointer block"
         >
           <div>
-            <h3 className="font-semibold text-slate-800">{c.title}</h3>
+            <h3 className="font-semibold text-slate-100">{c.title}</h3>
             <p className="text-sm text-slate-500">{c.client?.name}</p>
           </div>
           <span className={`text-xs font-bold px-3 py-1 rounded-full ${
-            c.status === 'OPEN' ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-700'
+            c.status === 'OPEN' ? 'bg-blue-500/20 text-blue-400' : 'bg-white/10 text-slate-300'
           }`}>
             {c.status}
           </span>

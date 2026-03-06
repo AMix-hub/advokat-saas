@@ -48,8 +48,8 @@ export default function TaskList({ caseId, tasks }: { caseId: string, tasks: any
   })
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8">
-      <h2 className="text-xl font-bold text-slate-800 mb-6">Att-göra & Deadlines</h2>
+    <div className="bg-slate-900 rounded-2xl border border-white/[0.08] p-6 mb-8">
+      <h2 className="text-xl font-bold text-slate-100 mb-6">Att-göra & Deadlines</h2>
       
       <form onSubmit={addTask} className="flex flex-col sm:flex-row gap-3 mb-6">
         <input 
@@ -57,14 +57,14 @@ export default function TaskList({ caseId, tasks }: { caseId: string, tasks: any
           value={title} 
           onChange={(e) => setTitle(e.target.value)} 
           placeholder="Vad behöver göras? (T.ex. Inkomma med svaromål)" 
-          className="flex-1 border border-slate-300 p-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
+          className="flex-1 border border-white/10 p-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/[0.05] text-white" 
           required 
         />
         <input 
           type="date" 
           value={dueDate} 
           onChange={(e) => setDueDate(e.target.value)} 
-          className="border border-slate-300 p-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-700" 
+          className="border border-white/10 p-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/[0.05] text-white" 
         />
         <button 
           type="submit" 
@@ -81,7 +81,7 @@ export default function TaskList({ caseId, tasks }: { caseId: string, tasks: any
           const isOverdue = task.dueDate && !task.isCompleted && new Date(task.dueDate).setHours(0,0,0,0) < new Date().setHours(0,0,0,0)
           
           return (
-            <li key={task.id} className={`flex items-center justify-between p-3 rounded-lg border transition ${task.isCompleted ? 'bg-slate-50 border-slate-100' : 'bg-white border-slate-200 shadow-sm'}`}>
+            <li key={task.id} className={`flex items-center justify-between p-3 rounded-lg border transition ${task.isCompleted ? 'bg-white/[0.02] border-white/[0.05]' : 'bg-white/[0.04] border-white/[0.08]'}`}>
               <div className="flex items-center gap-4">
                 <input 
                   type="checkbox" 
@@ -90,7 +90,7 @@ export default function TaskList({ caseId, tasks }: { caseId: string, tasks: any
                   className="w-6 h-6 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
                 />
                 <div>
-                  <p className={`font-semibold ${task.isCompleted ? 'text-slate-400 line-through' : 'text-slate-800'}`}>
+                  <p className={`font-semibold ${task.isCompleted ? 'text-slate-400 line-through' : 'text-slate-100'}`}>
                     {task.title}
                   </p>
                   {task.dueDate && (

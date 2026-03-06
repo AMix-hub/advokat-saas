@@ -24,7 +24,7 @@ export default function SearchBar() {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Sök ärende, klient..."
-        className="pl-9 pr-4 py-2 bg-slate-100 border border-transparent rounded-lg text-sm focus:bg-white focus:border-blue-400 focus:ring-2 focus:ring-blue-100 outline-none w-64 font-medium text-slate-700 transition-all"
+        className="pl-9 pr-4 py-2 bg-white/[0.05] border border-white/10 rounded-lg text-sm focus:bg-white/[0.08] focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 outline-none w-64 font-medium text-slate-300 placeholder:text-slate-500 transition-all"
       />
     </form>
   )

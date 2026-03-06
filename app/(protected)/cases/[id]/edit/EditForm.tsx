@@ -32,33 +32,33 @@ export default function EditForm({ caseItem }: { caseItem: any }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <label className="block text-sm font-bold text-slate-700 mb-2">Ärendets titel</label>
+        <label className="block text-sm font-bold text-slate-400 mb-2">Ärendets titel</label>
         <input 
           type="text" 
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 bg-slate-50 text-slate-900 shadow-sm"
+          className="w-full border border-white/10 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/[0.05] text-white placeholder:text-slate-500"
           required
         />
       </div>
 
       <div>
-        <label className="block text-sm font-bold text-slate-700 mb-2">Beskrivning / Anteckningar</label>
+        <label className="block text-sm font-bold text-slate-400 mb-2">Beskrivning / Anteckningar</label>
         <textarea 
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={4}
-          className="w-full border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 bg-slate-50 text-slate-900 shadow-sm"
+          className="w-full border border-white/10 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/[0.05] text-white placeholder:text-slate-500"
         />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-bold text-slate-700 mb-2">Status</label>
+          <label className="block text-sm font-bold text-slate-400 mb-2">Status</label>
           <select 
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            className="w-full border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 bg-slate-50 text-slate-900 shadow-sm"
+            className="w-full border border-white/10 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/[0.05] text-white placeholder:text-slate-500"
           >
             <option value="OPEN">Öppen (Pågående)</option>
             <option value="PENDING">Avvaktar</option>
@@ -68,19 +68,19 @@ export default function EditForm({ caseItem }: { caseItem: any }) {
         </div>
 
         <div>
-          <label className="block text-sm font-bold text-slate-700 mb-2">Timtaxa (kr/h)</label>
+          <label className="block text-sm font-bold text-slate-400 mb-2">Timtaxa (kr/h)</label>
           <input 
             type="number" 
             value={hourlyRate}
             onChange={(e) => setHourlyRate(Number(e.target.value))}
-            className="w-full border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 bg-slate-50 text-slate-900 shadow-sm"
+            className="w-full border border-white/10 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/[0.05] text-white placeholder:text-slate-500"
             required
             min="0"
           />
         </div>
       </div>
 
-      <div className="pt-4 border-t border-slate-100">
+      <div className="pt-4 border-t border-white/[0.06]">
         <button 
           type="submit" 
           disabled={isSubmitting}

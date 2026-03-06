@@ -37,11 +37,11 @@ export default function TemplateBuilder() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-100 p-8">
+    <main className="min-h-screen bg-slate-950 p-8">
       <div className="max-w-6xl mx-auto">
         
         <div className="mb-8">
-          <Link href="/dashboard" className="text-blue-600 hover:text-blue-800 font-bold inline-flex items-center gap-2 transition bg-blue-50 px-4 py-2 rounded-lg">
+          <Link href="/dashboard" className="text-blue-400 hover:text-blue-300 font-bold inline-flex items-center gap-2 transition bg-blue-500/10 px-4 py-2 rounded-lg">
             &larr; Tillbaka till översikten
           </Link>
         </div>
@@ -49,35 +49,35 @@ export default function TemplateBuilder() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           
           {/* Vänster: Formulär för att bygga mall */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-            <h1 className="text-2xl font-extrabold text-slate-900 mb-2">Skapa egen mall</h1>
-            <p className="text-slate-500 mb-6 text-sm">
+          <div className="bg-slate-900 rounded-2xl border border-white/[0.08] p-8">
+            <h1 className="text-2xl font-extrabold text-white mb-2">Skapa egen mall</h1>
+            <p className="text-slate-400 mb-6 text-sm">
               Använd koderna nedan i din text. När mallen används på ett ärende kommer koderna automatiskt bytas ut mot riktig information.
             </p>
 
-            <div className="bg-blue-50 border border-blue-200 p-4 rounded-xl mb-6 flex flex-wrap gap-2 text-xs font-bold font-mono text-blue-800">
-              <span className="bg-white px-2 py-1 rounded border border-blue-100">{'{{KLIENT}}'}</span>
-              <span className="bg-white px-2 py-1 rounded border border-blue-100">{'{{ORGNR}}'}</span>
-              <span className="bg-white px-2 py-1 rounded border border-blue-100">{'{{ÄRENDE}}'}</span>
-              <span className="bg-white px-2 py-1 rounded border border-blue-100">{'{{BYRÅ}}'}</span>
-              <span className="bg-white px-2 py-1 rounded border border-blue-100">{'{{DATUM}}'}</span>
+            <div className="bg-blue-500/10 border border-blue-500/20 p-4 rounded-xl mb-6 flex flex-wrap gap-2 text-xs font-bold font-mono text-blue-300">
+              <span className="bg-white/[0.08] px-2 py-1 rounded border border-blue-500/20 text-blue-300">{'{{KLIENT}}'}</span>
+              <span className="bg-white/[0.08] px-2 py-1 rounded border border-blue-500/20 text-blue-300">{'{{ORGNR}}'}</span>
+              <span className="bg-white/[0.08] px-2 py-1 rounded border border-blue-500/20 text-blue-300">{'{{ÄRENDE}}'}</span>
+              <span className="bg-white/[0.08] px-2 py-1 rounded border border-blue-500/20 text-blue-300">{'{{BYRÅ}}'}</span>
+              <span className="bg-white/[0.08] px-2 py-1 rounded border border-blue-500/20 text-blue-300">{'{{DATUM}}'}</span>
             </div>
 
             <form onSubmit={handleSave} className="space-y-4">
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1">Mallens namn</label>
+                <label className="block text-sm font-bold text-slate-400 mb-1">Mallens namn</label>
                 <input 
                   type="text" value={name} onChange={(e) => setName(e.target.value)} required
                   placeholder="T.ex. Samboavtal Standard"
-                  className="w-full border border-slate-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-600 outline-none" 
+                  className="w-full border border-white/10 p-3 rounded-lg focus:ring-2 focus:ring-blue-500/50 outline-none bg-white/[0.05] text-white" 
                 />
               </div>
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1">Avtalstext / Innehåll</label>
+                <label className="block text-sm font-bold text-slate-400 mb-1">Avtalstext / Innehåll</label>
                 <textarea 
                   value={content} onChange={(e) => setContent(e.target.value)} required rows={12}
                   placeholder="Härmed avtalar {{KLIENT}} och byrån {{BYRÅ}} följande angående {{ÄRENDE}}..."
-                  className="w-full border border-slate-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-600 outline-none font-serif" 
+                  className="w-full border border-white/10 p-3 rounded-lg focus:ring-2 focus:ring-blue-500/50 outline-none font-serif bg-white/[0.05] text-white" 
                 />
               </div>
               <button 
@@ -90,15 +90,15 @@ export default function TemplateBuilder() {
           </div>
 
           {/* Höger: Lista över skapade mallar */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 h-fit">
-            <h2 className="text-xl font-bold text-slate-900 mb-6">Era sparade mallar</h2>
+          <div className="bg-slate-900 rounded-2xl border border-white/[0.08] p-8 h-fit">
+            <h2 className="text-xl font-bold text-white mb-6">Era sparade mallar</h2>
             {templates.length === 0 ? (
               <p className="text-slate-500 italic text-sm">Inga egna mallar har skapats ännu.</p>
             ) : (
               <div className="space-y-3">
                 {templates.map(t => (
-                  <div key={t.id} className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
-                    <h3 className="font-bold text-slate-800">{t.name}</h3>
+                  <div key={t.id} className="p-4 bg-white/[0.04] border border-white/[0.06] rounded-xl">
+                    <h3 className="font-bold text-slate-100">{t.name}</h3>
                     <p className="text-xs text-slate-500 mt-1">Skapad: {new Date(t.createdAt).toLocaleDateString('sv-SE')}</p>
                   </div>
                 ))}

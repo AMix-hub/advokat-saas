@@ -34,11 +34,11 @@ export default function NewCaseForm({ clients, users }: { clients: any[], users:
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <label className="block text-sm font-bold text-slate-700 mb-2">Välj Klient</label>
+        <label className="block text-sm font-bold text-slate-400 mb-2">Välj Klient</label>
         <select 
           value={clientId}
           onChange={(e) => setClientId(e.target.value)}
-          className="w-full border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 bg-slate-50 text-slate-900 shadow-sm"
+          className="w-full border border-white/10 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/[0.05] text-white placeholder:text-slate-500"
           required
         >
           {clients.map(client => (
@@ -48,35 +48,35 @@ export default function NewCaseForm({ clients, users }: { clients: any[], users:
       </div>
 
       <div>
-        <label className="block text-sm font-bold text-slate-700 mb-2">Ärendets titel / Beskrivning</label>
+        <label className="block text-sm font-bold text-slate-400 mb-2">Ärendets titel / Beskrivning</label>
         <input 
           type="text" 
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="T.ex. Tvist angående avtalsbrott"
-          className="w-full border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 bg-slate-50 text-slate-900 shadow-sm"
+          className="w-full border border-white/10 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/[0.05] text-white placeholder:text-slate-500"
           required
         />
       </div>
 
       <div>
-        <label className="block text-sm font-bold text-slate-700 mb-2">Initiala anteckningar</label>
+        <label className="block text-sm font-bold text-slate-400 mb-2">Initiala anteckningar</label>
         <textarea 
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={4}
           placeholder="Kort bakgrund till ärendet..."
-          className="w-full border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 bg-slate-50 text-slate-900 shadow-sm"
+          className="w-full border border-white/10 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/[0.05] text-white placeholder:text-slate-500"
         />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-bold text-slate-700 mb-2">Ansvarig Handläggare</label>
+          <label className="block text-sm font-bold text-slate-400 mb-2">Ansvarig Handläggare</label>
           <select 
             value={assignedToId}
             onChange={(e) => setAssignedToId(e.target.value)}
-            className="w-full border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 bg-slate-50 text-slate-900 shadow-sm"
+            className="w-full border border-white/10 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/[0.05] text-white placeholder:text-slate-500"
           >
             {users.map(user => (
               <option key={user.id} value={user.id}>{user.name}</option>
@@ -85,19 +85,19 @@ export default function NewCaseForm({ clients, users }: { clients: any[], users:
         </div>
 
         <div>
-          <label className="block text-sm font-bold text-slate-700 mb-2">Timtaxa för detta ärende (kr/h)</label>
+          <label className="block text-sm font-bold text-slate-400 mb-2">Timtaxa för detta ärende (kr/h)</label>
           <input 
             type="number" 
             value={hourlyRate}
             onChange={(e) => setHourlyRate(Number(e.target.value))}
-            className="w-full border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 bg-slate-50 text-slate-900 shadow-sm"
+            className="w-full border border-white/10 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/[0.05] text-white placeholder:text-slate-500"
             required
             min="0"
           />
         </div>
       </div>
 
-      <div className="pt-4 border-t border-slate-100">
+      <div className="pt-4 border-t border-white/[0.06]">
         <button 
           type="submit" 
           disabled={isSubmitting}

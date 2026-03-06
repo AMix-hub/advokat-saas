@@ -52,13 +52,13 @@ export default function ConflictCheckPage() {
   const totalHits = results.clients.length + results.cases.length
 
   return (
-    <main className="min-h-screen bg-slate-100 print:bg-white">
+    <main className="min-h-screen bg-slate-950 print:bg-white">
       
       {/* --- STANDARD GRÄNSSNITT (Döljs vid utskrift) --- */}
       <div className="p-4 sm:p-8 max-w-7xl mx-auto print:hidden">
         
         <div className="mb-8">
-          <Link href="/dashboard" className="text-blue-600 hover:text-blue-800 font-bold inline-flex items-center gap-2 transition bg-blue-50 px-4 py-2 rounded-lg">
+          <Link href="/dashboard" className="text-blue-400 hover:text-blue-300 font-bold inline-flex items-center gap-2 transition bg-blue-500/10 px-4 py-2 rounded-lg">
             &larr; Tillbaka till översikten
           </Link>
         </div>
@@ -67,13 +67,13 @@ export default function ConflictCheckPage() {
           
           <div className="lg:col-span-2 space-y-8">
             {/* Sökmotorn */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+            <div className="bg-slate-900 rounded-2xl border border-white/[0.08] p-8">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center">
+                <div className="w-14 h-14 bg-indigo-500/20 text-indigo-400 rounded-2xl flex items-center justify-center">
                   <Scale className="w-7 h-7" />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-extrabold text-slate-900">Jävsprövning</h1>
+                  <h1 className="text-2xl font-extrabold text-white">Jävsprövning</h1>
                   <p className="text-slate-500 font-medium">Sök i hela registret. Sökningen loggförs automatiskt.</p>
                 </div>
               </div>
@@ -86,7 +86,7 @@ export default function ConflictCheckPage() {
                     value={query} 
                     onChange={(e) => setQuery(e.target.value)} 
                     placeholder="Sök på namn, org.nr eller nyckelord..."
-                    className="w-full border-2 border-slate-200 pl-12 pr-4 py-4 rounded-xl focus:outline-none focus:border-indigo-500 font-medium bg-slate-50 text-slate-900 transition"
+                    className="w-full border-2 border-white/10 pl-12 pr-4 py-4 rounded-xl focus:outline-none focus:border-indigo-500/50 font-medium bg-white/[0.05] text-white transition"
                     required
                   />
                 </div>
@@ -98,23 +98,23 @@ export default function ConflictCheckPage() {
 
             {/* Resultatvisning */}
             {hasSearched && (
-              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+              <div className="bg-slate-900 rounded-2xl border border-white/[0.08] p-8">
                 {totalHits === 0 ? (
                   <div className="text-center py-8">
                     <ShieldCheck className="w-16 h-16 text-emerald-500 mx-auto mb-4" />
-                    <h2 className="text-2xl font-black text-slate-900 mb-2">Ingen träff hittades</h2>
-                    <p className="text-slate-600 mb-8">Ett utmärkt resultat. Inget i databasen tyder på en jävssituation för "{query}".</p>
-                    <button onClick={handlePrint} className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-6 py-3 rounded-xl font-bold hover:bg-emerald-100 transition shadow-sm inline-flex items-center gap-2">
+                    <h2 className="text-2xl font-black text-white mb-2">Ingen träff hittades</h2>
+                    <p className="text-slate-400 mb-8">Ett utmärkt resultat. Inget i databasen tyder på en jävssituation för "{query}".</p>
+                    <button onClick={handlePrint} className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-6 py-3 rounded-xl font-bold hover:bg-emerald-500/20 transition inline-flex items-center gap-2">
                       <Printer className="w-5 h-5" /> Skriv ut Jävsintyg (PDF)
                     </button>
                   </div>
                 ) : (
                   <div>
-                    <div className="flex items-center gap-3 mb-8 p-4 bg-red-50 border border-red-200 rounded-xl">
+                    <div className="flex items-center gap-3 mb-8 p-4 bg-red-500/10 border border-red-500/20 rounded-xl">
                       <AlertOctagon className="w-8 h-8 text-red-600 flex-shrink-0" />
                       <div>
-                        <h2 className="text-lg font-bold text-red-900">Möjligt jäv upptäckt ({totalHits} träffar)</h2>
-                        <p className="text-sm text-red-700">Granska listan nedan noggrant innan ni åtar er uppdraget.</p>
+                        <h2 className="text-lg font-bold text-red-300">Möjligt jäv upptäckt ({totalHits} träffar)</h2>
+                        <p className="text-sm text-red-400">Granska listan nedan noggrant innan ni åtar er uppdraget.</p>
                       </div>
                     </div>
 
@@ -125,9 +125,9 @@ export default function ConflictCheckPage() {
                         </h3>
                         <div className="grid gap-3">
                           {results.clients.map(c => (
-                            <Link key={c.id} href={`/clients/${c.id}`} className="block p-4 bg-slate-50 border border-slate-200 rounded-xl hover:border-slate-400 transition">
-                              <p className="font-bold text-slate-900">{c.name}</p>
-                              <p className="text-sm text-slate-500">{c.orgNr} | {c.email}</p>
+                            <Link key={c.id} href={`/clients/${c.id}`} className="block p-4 bg-white/[0.04] border border-white/[0.08] rounded-xl hover:border-white/20 transition">
+                              <p className="font-bold text-white">{c.name}</p>
+                              <p className="text-sm text-slate-400">{c.orgNr} | {c.email}</p>
                             </Link>
                           ))}
                         </div>
@@ -141,10 +141,10 @@ export default function ConflictCheckPage() {
                         </h3>
                         <div className="grid gap-3">
                           {results.cases.map(c => (
-                            <Link key={c.id} href={`/cases/${c.id}`} className="block p-4 bg-slate-50 border border-slate-200 rounded-xl hover:border-slate-400 transition">
-                              <p className="font-bold text-slate-900">{c.title}</p>
-                              <p className="text-sm text-slate-500 line-clamp-2 mt-1">{c.description}</p>
-                              <span className="inline-block mt-2 text-xs font-bold px-2 py-1 bg-blue-100 text-blue-800 rounded">Ärendestatus: {statusLabel(c.status)}</span>
+                            <Link key={c.id} href={`/cases/${c.id}`} className="block p-4 bg-white/[0.04] border border-white/[0.08] rounded-xl hover:border-white/20 transition">
+                              <p className="font-bold text-white">{c.title}</p>
+                              <p className="text-sm text-slate-400 line-clamp-2 mt-1">{c.description}</p>
+                              <span className="inline-block mt-2 text-xs font-bold px-2 py-1 bg-blue-500/20 text-blue-400 rounded">Ärendestatus: {statusLabel(c.status)}</span>
                             </Link>
                           ))}
                         </div>
@@ -157,8 +157,8 @@ export default function ConflictCheckPage() {
           </div>
 
           {/* Audit Trail (Loggbok) */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 h-fit max-h-[800px] overflow-y-auto">
-            <h2 className="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2 sticky top-0 bg-white pb-2 border-b border-slate-100">
+          <div className="bg-slate-900 rounded-2xl border border-white/[0.08] p-6 h-fit max-h-[800px] overflow-y-auto">
+            <h2 className="text-lg font-bold text-slate-100 mb-6 flex items-center gap-2 sticky top-0 bg-slate-900 pb-2 border-b border-white/[0.06]">
               <History className="w-5 h-5 text-indigo-500" /> Sökhistorik (Audit Trail)
             </h2>
             <div className="space-y-4">
@@ -166,10 +166,10 @@ export default function ConflictCheckPage() {
                 <p className="text-sm text-slate-500 italic">Inga sökningar har gjorts ännu.</p>
               ) : (
                 logs.map(log => (
-                  <div key={log.id} className="p-3 bg-slate-50 rounded-lg border border-slate-100 text-sm">
+                  <div key={log.id} className="p-3 bg-white/[0.04] rounded-lg border border-white/[0.06] text-sm">
                     <div className="flex justify-between items-start mb-1">
-                      <span className="font-bold text-slate-800 truncate pr-2">"{log.searchTerm}"</span>
-                      <span className={`text-xs font-bold px-2 py-0.5 rounded-md ${log.matchesFound === 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>
+                      <span className="font-bold text-slate-100 truncate pr-2">"{log.searchTerm}"</span>
+                      <span className={`text-xs font-bold px-2 py-0.5 rounded-md ${log.matchesFound === 0 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}`}>
                         {log.matchesFound} träffar
                       </span>
                     </div>

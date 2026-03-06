@@ -15,11 +15,11 @@ export default async function TeamPage() {
   const admin = users[0]
 
   return (
-    <main className="min-h-screen bg-slate-100 p-8">
+    <main className="min-h-screen bg-slate-950 p-8">
       <div className="max-w-4xl mx-auto">
         
         <div className="mb-8">
-          <Link href="/dashboard" className="text-blue-600 hover:text-blue-800 font-bold inline-flex items-center gap-2 transition bg-blue-50 px-4 py-2 rounded-lg">
+          <Link href="/dashboard" className="text-blue-400 hover:text-blue-300 font-bold inline-flex items-center gap-2 transition bg-blue-500/10 px-4 py-2 rounded-lg">
             &larr; Tillbaka till översikten
           </Link>
         </div>
@@ -27,21 +27,21 @@ export default async function TeamPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           
           {/* Vänster: Lista på kollegor */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-            <h1 className="text-2xl font-extrabold text-slate-900 mb-6">Ditt Team</h1>
+          <div className="bg-slate-900 rounded-2xl border border-white/[0.08] p-8">
+            <h1 className="text-2xl font-extrabold text-white mb-6">Ditt Team</h1>
             <div className="space-y-4">
               {users.map((user, index) => (
-                <div key={user.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100">
+                <div key={user.id} className="flex items-center justify-between p-4 bg-white/[0.04] rounded-xl border border-white/[0.06]">
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-blue-100 text-blue-700 font-bold rounded-full flex items-center justify-center">
+                    <div className="w-10 h-10 bg-blue-500/20 text-blue-400 font-bold rounded-full flex items-center justify-center">
                       {user.name?.charAt(0) || 'U'}
                     </div>
                     <div>
-                      <p className="font-bold text-slate-800">{user.name} {index === 0 && <span className="text-xs bg-slate-200 text-slate-700 px-2 py-0.5 rounded ml-2">Admin</span>}</p>
+                      <p className="font-bold text-slate-100">{user.name} {index === 0 && <span className="text-xs bg-white/10 text-slate-300 px-2 py-0.5 rounded ml-2">Admin</span>}</p>
                       <p className="text-xs text-slate-500">{user.email}</p>
                     </div>
                   </div>
-                  <div className="text-xs font-bold text-slate-400 bg-white px-3 py-1.5 rounded-lg border border-slate-200">
+                  <div className="text-xs font-bold text-slate-400 bg-white/[0.08] px-3 py-1.5 rounded-lg border border-white/[0.08]">
                     {user.cases.length} ärenden
                   </div>
                 </div>

@@ -13,17 +13,17 @@ export default async function ClientsPage() {
   })
 
   return (
-    <main className="min-h-screen bg-slate-100 p-4 sm:p-8">
+    <main className="min-h-screen bg-slate-950 p-4 sm:p-8">
       <div className="max-w-6xl mx-auto">
 
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-8">
+        <div className="bg-slate-900 rounded-2xl border border-white/[0.08] p-5 sm:p-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-blue-500/20 text-blue-400 rounded-xl flex items-center justify-center">
                 <Users className="w-6 h-6" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-slate-800">Klientregister</h1>
+                <h1 className="text-2xl font-bold text-slate-100">Klientregister</h1>
                 <p className="text-slate-500 text-sm">Totalt {clients.length} registrerade klienter</p>
               </div>
             </div>
@@ -38,7 +38,7 @@ export default async function ClientsPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b-2 border-slate-100">
+                <tr className="border-b-2 border-white/[0.08]">
                   <th className="py-4 px-4 font-bold text-slate-500 uppercase text-xs tracking-wider">Klientnamn</th>
                   <th className="py-4 px-4 font-bold text-slate-500 uppercase text-xs tracking-wider">E-post</th>
                   <th className="py-4 px-4 font-bold text-slate-500 uppercase text-xs tracking-wider">Org.nr / Personnr</th>
@@ -55,19 +55,19 @@ export default async function ClientsPage() {
                   </tr>
                 ) : (
                   clients.map(client => (
-                    <tr key={client.id} className="border-b border-slate-50 hover:bg-slate-50 transition group">
-                      <td className="py-4 px-4 font-bold text-slate-900">{client.name}</td>
-                      <td className="py-4 px-4 text-slate-600">{client.email}</td>
-                      <td className="py-4 px-4 text-slate-600">{client.orgNr || '-'}</td>
+                    <tr key={client.id} className="border-b border-white/[0.05] hover:bg-white/[0.05] transition group">
+                      <td className="py-4 px-4 font-bold text-white">{client.name}</td>
+                      <td className="py-4 px-4 text-slate-400">{client.email}</td>
+                      <td className="py-4 px-4 text-slate-400">{client.orgNr || '-'}</td>
                       <td className="py-4 px-4 text-center">
-                        <span className="bg-blue-50 text-blue-700 font-bold px-3 py-1 rounded-full text-sm border border-blue-100">
+                        <span className="bg-blue-500/10 text-blue-400 font-bold px-3 py-1 rounded-full text-sm border border-blue-500/20">
                           {client.cases.length} st
                         </span>
                       </td>
                       <td className="py-4 px-4 text-right">
                         <Link 
                           href={`/clients/${client.id}`}
-                          className="text-sm font-bold text-blue-600 hover:text-blue-800 bg-white border border-slate-200 px-4 py-2 rounded-lg shadow-sm transition group-hover:border-blue-300 inline-block"
+                          className="text-sm font-bold text-blue-400 hover:text-blue-300 bg-white/[0.08] border border-white/[0.08] px-4 py-2 rounded-lg transition group-hover:border-blue-500/30 inline-block"
                         >
                           Visa profil &rarr;
                         </Link>

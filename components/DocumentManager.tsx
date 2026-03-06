@@ -58,25 +58,25 @@ export default function DocumentManager({ caseId, documents }: { caseId: string,
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 mt-6 sm:mt-8">
+    <div className="bg-slate-900 rounded-2xl border border-white/[0.08] p-6 sm:p-8 mt-6 sm:mt-8">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+        <h2 className="text-xl font-bold text-slate-100 flex items-center gap-2">
           <FileText className="w-5 h-5 text-indigo-500" /> Aktbilagor & Dokument
         </h2>
       </div>
       
       {/* Uppladdningszon */}
       <div className="mb-8">
-        <label className={`w-full border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center transition cursor-pointer ${isUploading ? 'bg-slate-50 border-slate-300' : 'bg-slate-50 border-indigo-200 hover:bg-indigo-50 hover:border-indigo-400'}`}>
+        <label className={`w-full border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center transition cursor-pointer ${isUploading ? 'bg-white/[0.04] border-white/[0.08]' : 'bg-white/[0.04] border-indigo-500/20 hover:bg-indigo-500/10 hover:border-indigo-500/40'}`}>
           {isUploading ? (
             <>
               <Loader2 className="w-10 h-10 text-indigo-500 animate-spin mb-3" />
-              <p className="font-bold text-slate-700">{uploadStatus}</p>
+              <p className="font-bold text-slate-300">{uploadStatus}</p>
             </>
           ) : (
             <>
               <UploadCloud className="w-10 h-10 text-indigo-500 mb-3" />
-              <p className="font-bold text-slate-700 mb-1">Klicka för att ladda upp bevisning eller avtal</p>
+              <p className="font-bold text-slate-300 mb-1">Klicka för att ladda upp bevisning eller avtal</p>
               <p className="text-xs text-slate-500">PDF, Word eller bildfiler. Krypterad överföring.</p>
             </>
           )}
@@ -93,18 +93,18 @@ export default function DocumentManager({ caseId, documents }: { caseId: string,
       {/* Dokumentlista */}
       <ul className="space-y-3">
         {documents.length === 0 && (
-          <div className="text-center py-6 text-slate-500 text-sm font-medium border border-slate-100 rounded-xl bg-slate-50">
+          <div className="text-center py-6 text-slate-500 text-sm font-medium border border-white/[0.06] rounded-xl bg-white/[0.04]">
             Inga dokument uppladdade ännu.
           </div>
         )}
         {documents.map(doc => (
-          <li key={doc.id} className="flex justify-between items-center p-4 bg-white border border-slate-200 rounded-xl hover:shadow-sm hover:border-indigo-300 transition group">
+          <li key={doc.id} className="flex justify-between items-center p-4 bg-white/[0.04] border border-white/[0.08] rounded-xl hover:shadow-sm hover:border-indigo-500/30 transition group">
             <div className="flex items-center gap-3 overflow-hidden">
-              <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg flex-shrink-0">
+              <div className="p-2 bg-indigo-500/20 text-indigo-400 rounded-lg flex-shrink-0">
                 <File className="w-5 h-5" />
               </div>
               <div className="min-w-0">
-                <p className="font-bold text-slate-800 truncate">{doc.name}</p>
+                <p className="font-bold text-slate-100 truncate">{doc.name}</p>
                 <p className="text-xs text-slate-500 font-medium">{new Date(doc.createdAt).toLocaleDateString('sv-SE')}</p>
               </div>
             </div>
@@ -113,7 +113,7 @@ export default function DocumentManager({ caseId, documents }: { caseId: string,
               href={doc.url} 
               target="_blank" 
               rel="noopener noreferrer" 
-              className="bg-slate-100 text-slate-600 p-2 rounded-lg font-bold hover:bg-indigo-100 hover:text-indigo-700 transition flex items-center gap-1 flex-shrink-0 ml-4"
+              className="bg-white/[0.08] text-slate-400 p-2 rounded-lg font-bold hover:bg-indigo-500/20 hover:text-indigo-400 transition flex items-center gap-1 flex-shrink-0 ml-4"
               title="Ladda ner"
             >
               <Download className="w-4 h-4" /> <span className="hidden sm:inline text-sm">Öppna</span>

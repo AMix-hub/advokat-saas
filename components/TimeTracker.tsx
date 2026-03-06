@@ -60,8 +60,8 @@ export default function TimeTracker({ caseId, timeEntries }: { caseId: string, t
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 mb-8">
-      <h2 className="text-xl font-bold text-slate-800 mb-6">Tidsregistrering</h2>
+    <div className="bg-slate-900 rounded-2xl border border-white/[0.08] p-8 mb-8">
+      <h2 className="text-xl font-bold text-slate-100 mb-6">Tidsregistrering</h2>
       
       {/* LIVE TIMER SEKTION */}
       <div className="bg-slate-900 rounded-xl p-6 mb-8 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-inner">
@@ -98,7 +98,7 @@ export default function TimeTracker({ caseId, timeEntries }: { caseId: string, t
           value={description} 
           onChange={(e) => setDescription(e.target.value)} 
           placeholder="Vad har du gjort? (T.ex. Telefonmöte klient)" 
-          className="flex-1 border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 bg-slate-50 text-slate-900 shadow-sm" 
+          className="flex-1 border border-white/10 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/[0.05] text-white" 
           required 
         />
         <div className="flex gap-4">
@@ -109,7 +109,7 @@ export default function TimeTracker({ caseId, timeEntries }: { caseId: string, t
             value={hours} 
             onChange={(e) => setHours(e.target.value)} 
             placeholder="Timmar (ex. 1.5)" 
-            className="w-32 border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 bg-slate-50 text-slate-900 shadow-sm" 
+            className="w-32 border border-white/10 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/[0.05] text-white" 
             required 
           />
           <button 
@@ -123,16 +123,16 @@ export default function TimeTracker({ caseId, timeEntries }: { caseId: string, t
       </form>
 
       {/* HISTORIK ÖVER LOGGAD TID */}
-      <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 border-b border-slate-100 pb-2">Tidigare loggat på ärendet</h3>
+      <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 border-b border-white/[0.06] pb-2">Tidigare loggat på ärendet</h3>
       <ul className="space-y-2">
         {timeEntries.length === 0 && <p className="text-slate-500 italic text-sm">Ingen tid loggad ännu.</p>}
         {timeEntries.map(entry => (
-          <li key={entry.id} className="flex justify-between items-center p-3 bg-slate-50 rounded-lg border border-slate-100 hover:border-slate-200 transition">
+          <li key={entry.id} className="flex justify-between items-center p-3 bg-white/[0.04] rounded-lg border border-white/[0.06] hover:border-white/[0.08] transition">
             <div>
-              <p className="font-semibold text-slate-800">{entry.description}</p>
+              <p className="font-semibold text-slate-100">{entry.description}</p>
               <p className="text-xs text-slate-500 font-medium">{new Date(entry.createdAt).toLocaleDateString('sv-SE')}</p>
             </div>
-            <span className="bg-blue-100 text-blue-800 font-bold px-3 py-1 rounded-md">
+            <span className="bg-blue-500/20 text-blue-300 font-bold px-3 py-1 rounded-md">
               {entry.hours} h
             </span>
           </li>

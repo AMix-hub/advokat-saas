@@ -48,31 +48,31 @@ export default async function CalendarPage() {
   ]
 
   return (
-    <main className="min-h-screen bg-slate-100 p-4 sm:p-8">
+    <main className="min-h-screen bg-slate-950 p-4 sm:p-8">
       <div className="max-w-6xl mx-auto">
 
         <div className="mb-6">
           <Link
             href="/dashboard"
-            className="text-blue-600 hover:text-blue-800 font-bold inline-flex items-center gap-1.5 transition bg-blue-50 px-3 py-2 rounded-lg text-sm"
+            className="text-blue-400 hover:text-blue-300 font-bold inline-flex items-center gap-1.5 transition bg-blue-500/10 px-3 py-2 rounded-lg text-sm"
           >
             <ArrowLeft className="w-4 h-4" /> Tillbaka
           </Link>
         </div>
 
         <div className="flex items-center gap-4 mb-8">
-          <div className="w-12 h-12 bg-violet-100 text-violet-600 rounded-xl flex items-center justify-center shadow-sm">
+          <div className="w-12 h-12 bg-violet-500/20 text-violet-400 rounded-xl flex items-center justify-center">
             <CalendarDays className="w-6 h-6" />
           </div>
           <div>
-            <h1 className="text-2xl font-black text-slate-900">Kalender</h1>
+            <h1 className="text-2xl font-black text-white">Kalender</h1>
             <p className="text-slate-500 text-sm font-medium">
               Deadlines och uppgifter över alla ärenden
             </p>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-8">
+        <div className="bg-slate-900 rounded-2xl border border-white/[0.08] p-5 sm:p-8">
           <CalendarView events={events} />
         </div>
 

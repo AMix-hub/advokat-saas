@@ -82,18 +82,18 @@ export default function InternalComments({ caseId }: { caseId: string }) {
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-      <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+    <div className="bg-slate-900 rounded-2xl border border-white/[0.08] p-6">
+      <h3 className="text-lg font-bold text-slate-100 mb-4 flex items-center gap-2">
         <MessageSquare className="w-5 h-5 text-blue-600" /> Interna anteckningar
       </h3>
 
       {/* Kommentarform */}
-      <form onSubmit={handleAddComment} className="mb-6 p-4 bg-slate-50 rounded-lg border border-slate-200">
+      <form onSubmit={handleAddComment} className="mb-6 p-4 bg-white/[0.04] rounded-lg border border-white/[0.06]">
         <textarea
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           placeholder="Skriv en intern anteckning här... (bara synlig för teamet)"
-          className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm resize-none"
+          className="w-full px-3 py-2 border border-white/10 rounded-lg text-sm resize-none bg-white/[0.05] text-white placeholder:text-slate-500"
           rows={3}
         />
         <div className="flex gap-2 mt-3 justify-end">
@@ -115,10 +115,10 @@ export default function InternalComments({ caseId }: { caseId: string }) {
       ) : (
         <div className="space-y-3">
           {comments.map((comment) => (
-            <div key={comment.id} className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <div key={comment.id} className="p-4 bg-blue-500/10 rounded-lg border border-blue-500/20">
               <div className="flex justify-between items-start mb-2">
                 <div>
-                  <p className="font-semibold text-slate-800">{comment.user.name || comment.user.email}</p>
+                  <p className="font-semibold text-slate-100">{comment.user.name || comment.user.email}</p>
                   <p className="text-xs text-slate-500">{new Date(comment.createdAt).toLocaleString('sv-SE')}</p>
                 </div>
                 <button
@@ -129,7 +129,7 @@ export default function InternalComments({ caseId }: { caseId: string }) {
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
-              <p className="text-slate-700 text-sm whitespace-pre-wrap">{comment.content}</p>
+              <p className="text-slate-300 text-sm whitespace-pre-wrap">{comment.content}</p>
             </div>
           ))}
         </div>

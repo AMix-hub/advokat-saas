@@ -44,16 +44,16 @@ const TYPE_LABEL: Record<string, string> = {
 }
 
 const TYPE_STYLE: Record<string, string> = {
-  CLIENT_AGREEMENT: 'bg-blue-50 text-blue-700 border-blue-200',
-  HOURLY_RATE:      'bg-emerald-50 text-emerald-700 border-emerald-200',
-  CONTINGENCY:      'bg-violet-50 text-violet-700 border-violet-200',
-  OTHER:            'bg-slate-100 text-slate-600 border-slate-200',
+  CLIENT_AGREEMENT: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+  HOURLY_RATE:      'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+  CONTINGENCY:      'bg-violet-500/10 text-violet-400 border-violet-500/20',
+  OTHER:            'bg-white/10 text-slate-300 border-white/[0.08]',
 }
 
 const STATUS_STYLE: Record<string, string> = {
-  ACTIVE:      'bg-emerald-50 text-emerald-700 border-emerald-200',
-  ARCHIVED:    'bg-slate-100 text-slate-500 border-slate-200',
-  SUPERSEDED:  'bg-amber-50 text-amber-700 border-amber-200',
+  ACTIVE:      'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+  ARCHIVED:    'bg-white/10 text-slate-400 border-white/[0.08]',
+  SUPERSEDED:  'bg-amber-500/10 text-amber-400 border-amber-500/20',
 }
 
 const STATUS_LABEL: Record<string, string> = {
@@ -151,14 +151,14 @@ export default function AgreementsPage() {
   const archived = agreements.filter(a => a.status !== 'ACTIVE')
 
   return (
-    <main className="min-h-screen bg-slate-100 p-4 sm:p-8">
+    <main className="min-h-screen bg-slate-950 p-4 sm:p-8">
       <div className="max-w-5xl mx-auto">
 
         {/* ── Back ──────────────────────────────────────────────────────── */}
         <div className="mb-6">
           <Link
             href="/dashboard"
-            className="text-blue-600 hover:text-blue-800 font-bold inline-flex items-center gap-1.5 transition bg-blue-50 px-3 py-2 rounded-lg text-sm"
+            className="text-blue-400 hover:text-blue-300 font-bold inline-flex items-center gap-1.5 transition bg-blue-500/10 px-3 py-2 rounded-lg text-sm"
           >
             <ArrowLeft className="w-4 h-4" /> Tillbaka
           </Link>
@@ -167,11 +167,11 @@ export default function AgreementsPage() {
         {/* ── Header ────────────────────────────────────────────────────── */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center shadow-sm">
+            <div className="w-12 h-12 bg-indigo-500/20 text-indigo-400 rounded-xl flex items-center justify-center">
               <FileSignature className="w-6 h-6" />
             </div>
             <div>
-              <h1 className="text-2xl font-black text-slate-900">Avtal</h1>
+              <h1 className="text-2xl font-black text-white">Avtal</h1>
               <p className="text-slate-500 text-sm font-medium">
                 Klientavtal, arvodesöverenskommelser och villkor
               </p>
@@ -188,34 +188,34 @@ export default function AgreementsPage() {
 
         {/* ── New agreement form ────────────────────────────────────────── */}
         {showForm && (
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 mb-8">
-            <h2 className="text-lg font-bold text-slate-800 mb-6">Skapa nytt avtal</h2>
+          <div className="bg-slate-900 rounded-2xl border border-white/[0.08] p-6 sm:p-8 mb-8">
+            <h2 className="text-lg font-bold text-slate-100 mb-6">Skapa nytt avtal</h2>
             {error && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm font-bold">
+              <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl text-sm font-bold">
                 {error}
               </div>
             )}
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-1.5">Titel *</label>
+                  <label className="block text-sm font-bold text-slate-400 mb-1.5">Titel *</label>
                   <input
                     type="text"
                     name="title"
                     value={form.title}
                     onChange={handleChange}
                     placeholder="T.ex. Klientöverenskommelse — Klient AB"
-                    className="w-full border border-slate-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                    className="w-full border border-white/10 p-3 rounded-xl focus:ring-2 focus:ring-blue-500/50 outline-none text-sm bg-white/[0.05] text-white"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-1.5">Avtalstyp</label>
+                  <label className="block text-sm font-bold text-slate-400 mb-1.5">Avtalstyp</label>
                   <select
                     name="type"
                     value={form.type}
                     onChange={handleChange}
-                    className="w-full border border-slate-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                    className="w-full border border-white/10 p-3 rounded-xl focus:ring-2 focus:ring-blue-500/50 outline-none text-sm bg-white/[0.05] text-white"
                   >
                     {Object.entries(TYPE_LABEL).map(([k, v]) => (
                       <option key={k} value={k}>{v}</option>
@@ -223,33 +223,33 @@ export default function AgreementsPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-1.5">Startdatum *</label>
+                  <label className="block text-sm font-bold text-slate-400 mb-1.5">Startdatum *</label>
                   <input
                     type="date"
                     name="startDate"
                     value={form.startDate}
                     onChange={handleChange}
-                    className="w-full border border-slate-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                    className="w-full border border-white/10 p-3 rounded-xl focus:ring-2 focus:ring-blue-500/50 outline-none text-sm bg-white/[0.05] text-white"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-1.5">Slutdatum</label>
+                  <label className="block text-sm font-bold text-slate-400 mb-1.5">Slutdatum</label>
                   <input
                     type="date"
                     name="endDate"
                     value={form.endDate}
                     onChange={handleChange}
-                    className="w-full border border-slate-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                    className="w-full border border-white/10 p-3 rounded-xl focus:ring-2 focus:ring-blue-500/50 outline-none text-sm bg-white/[0.05] text-white"
                   />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-bold text-slate-700 mb-1.5">Koppla till ärende (valfritt)</label>
+                  <label className="block text-sm font-bold text-slate-400 mb-1.5">Koppla till ärende (valfritt)</label>
                   <select
                     name="caseId"
                     value={form.caseId}
                     onChange={handleChange}
-                    className="w-full border border-slate-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                    className="w-full border border-white/10 p-3 rounded-xl focus:ring-2 focus:ring-blue-500/50 outline-none text-sm bg-white/[0.05] text-white"
                   >
                     <option value="">— Inget ärende —</option>
                     {cases.map(c => (
@@ -260,14 +260,14 @@ export default function AgreementsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1.5">Avtalsinnehåll *</label>
+                <label className="block text-sm font-bold text-slate-400 mb-1.5">Avtalsinnehåll *</label>
                 <textarea
                   name="content"
                   value={form.content}
                   onChange={handleChange}
                   rows={8}
                   placeholder="Skriv avtalstext här. T.ex. uppdragsbeskrivning, arvodesnivå, betalningsvillkor…"
-                  className="w-full border border-slate-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm resize-y font-mono"
+                  className="w-full border border-white/10 p-3 rounded-xl focus:ring-2 focus:ring-blue-500/50 outline-none text-sm resize-y font-mono bg-white/[0.05] text-white"
                   required
                 />
               </div>
@@ -283,7 +283,7 @@ export default function AgreementsPage() {
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="px-5 py-3 rounded-xl border border-slate-300 text-slate-600 font-bold hover:bg-slate-50 transition text-sm"
+                  className="px-5 py-3 rounded-xl border border-white/10 text-slate-400 font-bold hover:bg-white/[0.05] transition text-sm"
                 >
                   Avbryt
                 </button>
@@ -293,8 +293,8 @@ export default function AgreementsPage() {
         )}
 
         {/* ── Active agreements ─────────────────────────────────────────── */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 mb-6">
-          <h2 className="text-lg font-bold text-slate-800 mb-5 flex items-center gap-2">
+        <div className="bg-slate-900 rounded-2xl border border-white/[0.08] p-6 sm:p-8 mb-6">
+          <h2 className="text-lg font-bold text-slate-100 mb-5 flex items-center gap-2">
             <CheckCircle2 className="w-5 h-5 text-emerald-500" />
             Aktiva avtal
             <span className="ml-auto text-sm font-bold text-slate-400">{active.length} st</span>
@@ -303,13 +303,13 @@ export default function AgreementsPage() {
           {loading ? (
             <div className="text-slate-400 text-sm py-4">Hämtar avtal…</div>
           ) : active.length === 0 ? (
-            <div className="text-center py-10 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+            <div className="text-center py-10 bg-white/[0.04] rounded-xl border border-dashed border-white/[0.08]">
               <FileSignature className="w-8 h-8 text-slate-300 mx-auto mb-2" />
               <p className="text-slate-500 font-medium text-sm">Inga aktiva avtal ännu.</p>
               <p className="text-slate-400 text-xs mt-1">Klicka på "Nytt avtal" för att komma igång.</p>
             </div>
           ) : (
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-white/[0.06]">
               {active.map(ag => (
                 <AgreementRow
                   key={ag.id}
@@ -325,13 +325,13 @@ export default function AgreementsPage() {
 
         {/* ── Archived ─────────────────────────────────────────────────── */}
         {archived.length > 0 && (
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8">
-            <h2 className="text-lg font-bold text-slate-800 mb-5 flex items-center gap-2">
+          <div className="bg-slate-900 rounded-2xl border border-white/[0.08] p-6 sm:p-8">
+            <h2 className="text-lg font-bold text-slate-100 mb-5 flex items-center gap-2">
               <Archive className="w-5 h-5 text-slate-400" />
               Arkiverade / Ersatta
               <span className="ml-auto text-sm font-bold text-slate-400">{archived.length} st</span>
             </h2>
-            <div className="divide-y divide-slate-100 opacity-70">
+            <div className="divide-y divide-white/[0.06] opacity-70">
               {archived.map(ag => (
                 <AgreementRow
                   key={ag.id}
@@ -364,12 +364,12 @@ function AgreementRow({
   return (
     <div className="py-4">
       <div
-        className="flex flex-col sm:flex-row items-start sm:items-center gap-3 cursor-pointer hover:bg-slate-50 -mx-2 px-2 py-1 rounded-xl transition"
+        className="flex flex-col sm:flex-row items-start sm:items-center gap-3 cursor-pointer hover:bg-white/[0.04] -mx-2 px-2 py-1 rounded-xl transition"
         onClick={onToggle}
       >
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1 flex-wrap">
-            <span className="font-bold text-slate-900 text-sm">{ag.title}</span>
+            <span className="font-bold text-white text-sm">{ag.title}</span>
             <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full border ${TYPE_STYLE[ag.type] ?? TYPE_STYLE.OTHER}`}>
               {TYPE_LABEL[ag.type] ?? ag.type}
             </span>
@@ -394,7 +394,7 @@ function AgreementRow({
           {onArchive && ag.status === 'ACTIVE' && (
             <button
               onClick={e => { e.stopPropagation(); onArchive() }}
-              className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition"
+              className="p-1.5 text-slate-400 hover:text-slate-300 hover:bg-white/[0.08] rounded-lg transition"
               title="Arkivera"
             >
               <Archive className="w-4 h-4" />
@@ -407,9 +407,9 @@ function AgreementRow({
       </div>
 
       {expanded && (
-        <div className="mt-3 mx-2 p-4 bg-slate-50 rounded-xl border border-slate-100">
+        <div className="mt-3 mx-2 p-4 bg-white/[0.04] rounded-xl border border-white/[0.06]">
           <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Avtalsinnehåll</p>
-          <pre className="text-sm text-slate-700 whitespace-pre-wrap font-sans leading-relaxed">
+          <pre className="text-sm text-slate-300 whitespace-pre-wrap font-sans leading-relaxed">
             {ag.content}
           </pre>
           <p className="text-[11px] text-slate-400 mt-3">Version {ag.version} · Skapad {new Date(ag.createdAt).toLocaleDateString('sv-SE')}</p>

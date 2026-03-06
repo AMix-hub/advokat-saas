@@ -121,15 +121,15 @@ export default function InvoiceManager({ caseId }: { caseId?: string }) {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'DRAFT':
-        return 'bg-slate-100 text-slate-700 border-slate-300'
+        return 'bg-white/10 text-slate-300 border-white/20'
       case 'SENT':
-        return 'bg-blue-100 text-blue-700 border-blue-300'
+        return 'bg-blue-500/20 text-blue-400 border-blue-500/30'
       case 'PAID':
-        return 'bg-green-100 text-green-700 border-green-300'
+        return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
       case 'OVERDUE':
-        return 'bg-red-100 text-red-700 border-red-300'
+        return 'bg-red-500/20 text-red-400 border-red-500/30'
       default:
-        return 'bg-slate-100 text-slate-700 border-slate-300'
+        return 'bg-white/10 text-slate-300 border-white/20'
     }
   }
 
@@ -154,9 +154,9 @@ export default function InvoiceManager({ caseId }: { caseId?: string }) {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+      <div className="bg-slate-900 rounded-2xl border border-white/[0.08] p-6">
         <div className="flex justify-between items-center mb-6">
-          <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+          <h3 className="text-lg font-bold text-slate-100 flex items-center gap-2">
             <CreditCard className="w-5 h-5 text-emerald-600" /> Fakturor
           </h3>
           {caseId && (
@@ -171,20 +171,20 @@ export default function InvoiceManager({ caseId }: { caseId?: string }) {
 
         {/* Formulär för ny faktura */}
         {showForm && caseId && (
-          <form onSubmit={handleCreateInvoice} className="mb-6 p-4 bg-slate-50 rounded-lg border border-slate-200 space-y-4">
+          <form onSubmit={handleCreateInvoice} className="mb-6 p-4 bg-white/[0.04] rounded-lg border border-white/[0.06] space-y-4">
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">Förfallodag</label>
+              <label className="block text-sm font-bold text-slate-400 mb-2">Förfallodag</label>
               <input
                 type="date"
                 value={formData.dueDate}
                 onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                className="w-full px-3 py-2 border border-white/10 rounded-lg text-sm bg-white/[0.05] text-white"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">Fakturarader</label>
+              <label className="block text-sm font-bold text-slate-400 mb-2">Fakturarader</label>
               <div className="space-y-3 mb-3">
                 {formData.items.map((item, idx) => (
                   <div key={idx} className="flex gap-2">
@@ -197,7 +197,7 @@ export default function InvoiceManager({ caseId }: { caseId?: string }) {
                         newItems[idx].description = e.target.value
                         setFormData({ ...formData, items: newItems })
                       }}
-                      className="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                      className="flex-1 px-3 py-2 border border-white/10 rounded-lg text-sm bg-white/[0.05] text-white"
                     />
                     <input
                       type="number"
@@ -208,7 +208,7 @@ export default function InvoiceManager({ caseId }: { caseId?: string }) {
                         newItems[idx].quantity = parseFloat(e.target.value) || 0
                         setFormData({ ...formData, items: newItems })
                       }}
-                      className="w-20 px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                      className="w-20 px-3 py-2 border border-white/10 rounded-lg text-sm bg-white/[0.05] text-white"
                     />
                     <input
                       type="number"
@@ -219,7 +219,7 @@ export default function InvoiceManager({ caseId }: { caseId?: string }) {
                         newItems[idx].unitPrice = parseFloat(e.target.value) || 0
                         setFormData({ ...formData, items: newItems })
                       }}
-                      className="w-28 px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                      className="w-28 px-3 py-2 border border-white/10 rounded-lg text-sm bg-white/[0.05] text-white"
                     />
                     <button
                       type="button"
@@ -244,12 +244,12 @@ export default function InvoiceManager({ caseId }: { caseId?: string }) {
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">Anteckningar</label>
+              <label className="block text-sm font-bold text-slate-400 mb-2">Anteckningar</label>
               <textarea
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                 placeholder="T.ex. betalningsvillkor, tack för affären..."
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                className="w-full px-3 py-2 border border-white/10 rounded-lg text-sm bg-white/[0.05] text-white"
                 rows={3}
               />
             </div>
@@ -264,7 +264,7 @@ export default function InvoiceManager({ caseId }: { caseId?: string }) {
               <button
                 type="button"
                 onClick={() => setShowForm(false)}
-                className="flex-1 bg-slate-300 text-slate-700 py-2 rounded-lg font-bold hover:bg-slate-400 transition"
+                className="flex-1 bg-white/10 text-slate-300 py-2 rounded-lg font-bold hover:bg-white/[0.15] transition"
               >
                 Avbryt
               </button>
@@ -280,12 +280,12 @@ export default function InvoiceManager({ caseId }: { caseId?: string }) {
             {invoices.map((invoice) => (
               <div
                 key={invoice.id}
-                className="p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition"
+                className="p-4 border border-white/[0.08] rounded-lg hover:bg-white/[0.05] transition"
               >
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex-1">
-                    <div className="font-bold text-slate-900">{invoice.invoiceNumber}</div>
-                    <div className="text-sm text-slate-600">
+                    <div className="font-bold text-white">{invoice.invoiceNumber}</div>
+                    <div className="text-sm text-slate-400">
                       {invoice.case.client.name} • {invoice.case.title}
                     </div>
                   </div>
@@ -297,11 +297,11 @@ export default function InvoiceManager({ caseId }: { caseId?: string }) {
                 <div className="grid grid-cols-3 gap-4 mb-3 text-sm">
                   <div>
                     <p className="text-slate-500">Fakturadatum</p>
-                    <p className="font-semibold text-slate-900">{new Date(invoice.invoiceDate).toLocaleDateString('sv-SE')}</p>
+                    <p className="font-semibold text-white">{new Date(invoice.invoiceDate).toLocaleDateString('sv-SE')}</p>
                   </div>
                   <div>
                     <p className="text-slate-500">Förfallodag</p>
-                    <p className="font-semibold text-slate-900">{new Date(invoice.dueDate).toLocaleDateString('sv-SE')}</p>
+                    <p className="font-semibold text-white">{new Date(invoice.dueDate).toLocaleDateString('sv-SE')}</p>
                   </div>
                   <div>
                     <p className="text-slate-500">Belopp</p>
