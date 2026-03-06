@@ -17,15 +17,38 @@ async function main() {
   })
 
   // 2. Skapa en test-klient
-  const client = await prisma.client.create({
-    data: {
+  const client = await prisma.client.upsert({
+    where: { email: 'info@svensson.se' },
+    update: {},
+    create: {
       name: 'Svensson Entreprenad AB',
       email: 'info@svensson.se',
       orgNr: '556677-8899',
     },
   })
 
-  // 3. Skapa ett test-ärende
+  // 3. Skapa ett test-ärende (först ta bort gamla test-ärendet om det finns)
+  // Leta efter existande test-ärendet
+  const existingTestCase = await prisma.case.findFirst({
+    where: {
+      clientId: client.id,
+      title: 'Avtalsgranskning: Nybygge City'
+    }
+  })
+
+  // Om den finns, radera den och all tillhörande data
+  if (existingTestCase) {
+    await prisma.deadline.deleteMany({ where: { caseId: existingTestCase.id } })
+    await prisma.invoice.deleteMany({ where: { caseId: existingTestCase.id } })
+    await prisma.task.deleteMany({ where: { caseId: existingTestCase.id } })
+    await prisma.timeEntry.deleteMany({ where: { caseId: existingTestCase.id } })
+    await prisma.expense.deleteMany({ where: { caseId: existingTestCase.id } })
+    await prisma.document.deleteMany({ where: { caseId: existingTestCase.id } })
+    await prisma.log.deleteMany({ where: { caseId: existingTestCase.id } })
+    await prisma.case.delete({ where: { id: existingTestCase.id } })
+    console.log('🗑️  Tog bort gamla test-ärendet')
+  }
+
   const testCase = await prisma.case.create({
     data: {
       title: 'Avtalsgranskning: Nybygge City',
