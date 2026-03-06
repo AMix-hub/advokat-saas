@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import UserProfile from '@/components/UserProfile'
 import ClientCompliance from '@/components/ClientCompliance' // NY IMPORT
+import { statusLabel } from '@/lib/status'
 
 function getStatusBadge(status: string) {
   switch (status) {
@@ -11,16 +12,6 @@ function getStatusBadge(status: string) {
     case 'CLOSED': return 'bg-emerald-100 text-emerald-800 border-emerald-200'
     case 'ARCHIVED': return 'bg-slate-200 text-slate-700 border-slate-300'
     default: return 'bg-gray-100 text-gray-800'
-  }
-}
-
-function statusLabel(status: string) {
-  switch (status) {
-    case 'OPEN': return 'Öppen'
-    case 'PENDING': return 'Pågående'
-    case 'CLOSED': return 'Stängd'
-    case 'ARCHIVED': return 'Arkiverad'
-    default: return status
   }
 }
 

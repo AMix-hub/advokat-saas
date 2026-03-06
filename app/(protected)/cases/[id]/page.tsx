@@ -15,6 +15,7 @@ import InternalComments from '@/components/InternalComments'
 import CopyPortalLink from '@/components/CopyPortalLink'
 import Timeline from '@/components/Timeline'
 import { Briefcase, Edit, FileStack, FileText, ArrowLeft, Activity, AlertCircle } from 'lucide-react'
+import { statusLabel } from '@/lib/status'
 
 function getStatusBadge(status: string) {
   switch (status) {
@@ -23,16 +24,6 @@ function getStatusBadge(status: string) {
     case 'CLOSED': return 'bg-emerald-50 text-emerald-700 border-emerald-200'
     case 'ARCHIVED': return 'bg-slate-100 text-slate-600 border-slate-300'
     default: return 'bg-gray-50 text-gray-700 border-gray-200'
-  }
-}
-
-function statusLabel(status: string) {
-  switch (status) {
-    case 'OPEN': return 'Öppen'
-    case 'PENDING': return 'Pågående'
-    case 'CLOSED': return 'Stängd'
-    case 'ARCHIVED': return 'Arkiverad'
-    default: return status
   }
 }
 

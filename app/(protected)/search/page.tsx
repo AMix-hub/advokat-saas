@@ -4,16 +4,7 @@ import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
 import UserProfile from '@/components/UserProfile'
 import { Search, User, Briefcase, ArrowRight } from 'lucide-react'
-
-function statusLabel(status: string) {
-  switch (status) {
-    case 'OPEN': return 'Öppen'
-    case 'PENDING': return 'Pågående'
-    case 'CLOSED': return 'Stängd'
-    case 'ARCHIVED': return 'Arkiverad'
-    default: return status
-  }
-}
+import { statusLabel } from '@/lib/status'
 
 export default async function SearchResultsPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const resolvedParams = await searchParams;

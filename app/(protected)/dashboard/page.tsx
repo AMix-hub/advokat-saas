@@ -8,16 +8,7 @@ import UpcomingDeadlines from '@/components/UpcomingDeadlines'
 import FloatingActionButton from '@/components/FloatingActionButton'
 import NotificationBadge from '@/components/NotificationBadge'
 import { Building2, Download, Plus, Calendar, Clock, FileText, Briefcase, CheckCircle2, CircleDashed, AlertCircle } from 'lucide-react'
-
-function statusLabel(status: string) {
-  switch (status) {
-    case 'OPEN': return 'Öppen'
-    case 'PENDING': return 'Pågående'
-    case 'CLOSED': return 'Stängd'
-    case 'ARCHIVED': return 'Arkiverad'
-    default: return status
-  }
-}
+import { statusLabel } from '@/lib/status'
 
 export default async function Dashboard() {
   const cases = await prisma.case.findMany({

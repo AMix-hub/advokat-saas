@@ -3,16 +3,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import UserProfile from '@/components/UserProfile'
 import { Scale, Search, ShieldCheck, AlertOctagon, Printer, History, User, Briefcase } from 'lucide-react'
-
-function statusLabel(status: string) {
-  switch (status) {
-    case 'OPEN': return 'Öppen'
-    case 'PENDING': return 'Pågående'
-    case 'CLOSED': return 'Stängd'
-    case 'ARCHIVED': return 'Arkiverad'
-    default: return status
-  }
-}
+import { statusLabel } from '@/lib/status'
 
 export default function ConflictCheckPage() {
   const [query, setQuery] = useState('')

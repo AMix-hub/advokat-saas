@@ -1,17 +1,21 @@
 'use client'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import { Suspense } from 'react'
 import { Building2, User, Mail, Lock, KeyRound, ArrowRight, ShieldCheck, CheckCircle2 } from 'lucide-react'
 
-export default function RegisterPage() {
+function RegisterForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const codeFromUrl = searchParams.get('code') || ''
+
   const [formData, setFormData] = useState({
     name: '',
     firmName: '',
     email: '',
     password: '',
-    inviteCode: ''
+    inviteCode: codeFromUrl
   })
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [message, setMessage] = useState('')
@@ -75,7 +79,7 @@ export default function RegisterPage() {
         </div>
 
         <h1 className="text-2xl font-black text-slate-900 text-center mb-2">Aktivera licens</h1>
-        <p className="text-slate-500 font-medium text-center mb-8">Fyll i dina uppgifter och din licenskod för att sätta upp byråns konto.</p>
+        <p className="text-slate-500 font-medium text-center mb-8">Fyll i dina uppgifter för att sätta upp byråns konto.</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {status === 'error' && (
@@ -120,8 +124,22 @@ export default function RegisterPage() {
             <label className="block text-sm font-bold text-slate-700 mb-1">Licenskod</label>
             <div className="relative">
               <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-              <input type="text" name="inviteCode" value={formData.inviteCode} onChange={handleChange} placeholder="T.ex. CASECORE2026" className="w-full border-2 border-slate-200 pl-12 pr-4 py-3 rounded-xl focus:outline-none focus:border-blue-600 bg-slate-50 focus:bg-white text-slate-900 font-bold uppercase" required />
+              <input
+                type="text"
+                name="inviteCode"
+                value={formData.inviteCode}
+                onChange={handleChange}
+                placeholder="Ange din licenskod"
+                className={`w-full border-2 border-slate-200 pl-12 pr-4 py-3 rounded-xl focus:outline-none focus:border-blue-600 bg-slate-50 focus:bg-white text-slate-900 font-bold uppercase ${codeFromUrl ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : ''}`}
+                readOnly={!!codeFromUrl}
+                required
+              />
             </div>
+            {codeFromUrl && (
+              <p className="text-xs text-emerald-600 font-medium mt-1.5 flex items-center gap-1">
+                <CheckCircle2 className="w-3.5 h-3.5" /> Licenskod ifylld via din inbjudningslänk
+              </p>
+            )}
           </div>
 
           <button type="submit" disabled={status === 'loading'} className="w-full bg-slate-900 text-white py-4 rounded-xl font-bold hover:bg-slate-800 transition shadow-lg flex items-center justify-center gap-2 disabled:opacity-70 mt-4">
@@ -136,5 +154,19 @@ export default function RegisterPage() {
         </form>
       </div>
     </main>
+  )
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen flex bg-slate-50 font-sans items-center justify-center p-6">
+        <div className="max-w-md w-full bg-white p-8 rounded-[2rem] shadow-xl border border-slate-100 text-center">
+          <p className="text-slate-500 font-medium">Laddar...</p>
+        </div>
+      </main>
+    }>
+      <RegisterForm />
+    </Suspense>
   )
 }
