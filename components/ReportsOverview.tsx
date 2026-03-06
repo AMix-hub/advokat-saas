@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { BarChart3, TrendingUp, DollarSign, Clock, AlertCircle } from 'lucide-react'
+import { caseTypeLabel } from '@/lib/status'
 
 export default function ReportsOverview() {
   const [stats, setStats] = useState<any>(null)
@@ -101,7 +102,7 @@ export default function ReportsOverview() {
           {caseTypes.map((type) => (
             <div key={type.type} className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
               <div className="flex justify-between items-start mb-3">
-                <h4 className="font-bold text-slate-800">{type.type}</h4>
+                <h4 className="font-bold text-slate-800">{caseTypeLabel(type.type)}</h4>
                 <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-bold">
                   {type.count} st
                 </span>
