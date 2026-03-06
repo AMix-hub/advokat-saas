@@ -385,6 +385,11 @@ export default function InvoiceManager({ caseId, timeEntries = [], expenses = []
                 {invoice.status === 'DRAFT' && addItemsInvoiceId === invoice.id && (
                   <div className="mt-3 p-3 bg-white/[0.04] rounded-lg border border-white/[0.06] space-y-3">
                     <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">Lägg till fakturarader</p>
+                    <div className="flex gap-2 px-1" role="row">
+                      <span className="flex-1 text-xs text-slate-500" role="columnheader">Beskrivning</span>
+                      <span className="w-20 text-xs text-slate-500" role="columnheader">Antal</span>
+                      <span className="w-28 text-xs text-slate-500" role="columnheader">Pris/enhet (kr)</span>
+                    </div>
                     {newItems.map((item, idx) => (
                       <div key={idx} className="flex gap-2">
                         <input
