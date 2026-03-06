@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { CreditCard, Trash2, Eye, Plus, Download } from 'lucide-react'
+import { CreditCard, Trash2, Eye, Plus, X } from 'lucide-react'
 
 interface InvoiceItem {
   id: string
@@ -153,8 +153,9 @@ export default function InvoiceManager({ caseId }: { caseId?: string }) {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="bg-slate-900 rounded-2xl border border-white/[0.08] p-6">
+    <>
+      <div className="space-y-6">
+        <div className="bg-slate-900 rounded-2xl border border-white/[0.08] p-6">
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-lg font-bold text-slate-100 flex items-center gap-2">
             <CreditCard className="w-5 h-5 text-emerald-600" /> Fakturor
@@ -335,6 +336,7 @@ export default function InvoiceManager({ caseId }: { caseId?: string }) {
                     </button>
                   )}
                   <button
+                    onClick={() => setSelectedInvoice(invoice)}
                     className="bg-slate-600 text-white px-3 py-2 rounded-lg text-sm font-bold hover:bg-slate-700 transition flex items-center gap-1"
                     title="Visa detaljer"
                   >
@@ -347,5 +349,114 @@ export default function InvoiceManager({ caseId }: { caseId?: string }) {
         )}
       </div>
     </div>
+
+      {/* Invoice detail modal */}
+      {selectedInvoice && (
+        <div
+          className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
+          onClick={() => setSelectedInvoice(null)}
+        >
+          <div
+            className="bg-slate-900 border border-white/[0.10] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="invoice-modal-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal header */}
+            <div className="flex items-center justify-between p-6 border-b border-white/[0.08]">
+              <div>
+                <h2 id="invoice-modal-title" className="text-xl font-extrabold text-white">{selectedInvoice.invoiceNumber}</h2>
+                <p className="text-sm text-slate-400 mt-0.5">
+                  {selectedInvoice.case.client.name} · {selectedInvoice.case.title}
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className={`px-3 py-1 rounded-full text-sm font-bold border ${getStatusBadge(selectedInvoice.status)}`}>
+                  {getStatusLabel(selectedInvoice.status)}
+                </span>
+                <button
+                  onClick={() => setSelectedInvoice(null)}
+                  className="text-slate-400 hover:text-white transition"
+                  aria-label="Stäng"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Meta info */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 p-6 border-b border-white/[0.08] text-sm">
+              <div>
+                <p className="text-slate-500 mb-0.5">Fakturadatum</p>
+                <p className="font-semibold text-white">{new Date(selectedInvoice.invoiceDate).toLocaleDateString('sv-SE')}</p>
+              </div>
+              <div>
+                <p className="text-slate-500 mb-0.5">Förfallodag</p>
+                <p className="font-semibold text-white">{new Date(selectedInvoice.dueDate).toLocaleDateString('sv-SE')}</p>
+              </div>
+              <div>
+                <p className="text-slate-500 mb-0.5">Klient</p>
+                <p className="font-semibold text-white">{selectedInvoice.case.client.name}</p>
+                {selectedInvoice.case.client.orgNr && (
+                  <p className="text-slate-500 text-xs">Org.nr: {selectedInvoice.case.client.orgNr}</p>
+                )}
+              </div>
+            </div>
+
+            {/* Invoice items */}
+            <div className="p-6 border-b border-white/[0.08]">
+              <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wide mb-3">Fakturarader</h3>
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-left text-slate-500 border-b border-white/[0.06]">
+                    <th className="pb-2 font-semibold">Beskrivning</th>
+                    <th className="pb-2 font-semibold text-right w-16">Antal</th>
+                    <th className="pb-2 font-semibold text-right w-28">À-pris</th>
+                    <th className="pb-2 font-semibold text-right w-28">Belopp</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedInvoice.items.map((item) => (
+                    <tr key={item.id} className="border-b border-white/[0.04]">
+                      <td className="py-2 text-white">{item.description}</td>
+                      <td className="py-2 text-right text-slate-300">{item.quantity}</td>
+                      <td className="py-2 text-right text-slate-300">{item.unitPrice.toLocaleString('sv-SE')} kr</td>
+                      <td className="py-2 text-right font-semibold text-white">{item.amount.toLocaleString('sv-SE')} kr</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className="flex justify-end mt-4 pt-3 border-t border-white/[0.08]">
+                <div className="text-right">
+                  <span className="text-slate-400 text-sm mr-4">Totalt</span>
+                  <span className="text-2xl font-extrabold text-emerald-400">
+                    {selectedInvoice.totalAmount.toLocaleString('sv-SE')} kr
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Notes */}
+            {selectedInvoice.notes && (
+              <div className="px-6 py-4 border-b border-white/[0.08]">
+                <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wide mb-1">Anteckningar</h3>
+                <p className="text-slate-300 text-sm whitespace-pre-wrap">{selectedInvoice.notes}</p>
+              </div>
+            )}
+
+            {/* Footer */}
+            <div className="p-6 flex justify-end">
+              <button
+                onClick={() => setSelectedInvoice(null)}
+                className="px-6 py-2.5 bg-white/[0.08] hover:bg-white/[0.14] text-white rounded-xl font-bold text-sm transition"
+              >
+                Stäng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   )
 }
