@@ -1,9 +1,13 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
+import { getToken } from 'next-auth/jwt'
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
+    const token = await getToken({ req })
+    if (!token?.email) return NextResponse.json({ error: 'Ej inloggad' }, { status: 401 })
+
     const body = await req.json()
     
     const existingUser = await prisma.user.findUnique({

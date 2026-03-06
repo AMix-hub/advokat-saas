@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import UserProfile from '@/components/UserProfile'
 import { Scale, Search, ShieldCheck, AlertOctagon, Printer, History, User, Briefcase } from 'lucide-react'
+import { statusLabel } from '@/lib/status'
 
 export default function ConflictCheckPage() {
   const [query, setQuery] = useState('')
@@ -145,7 +146,7 @@ export default function ConflictCheckPage() {
                             <Link key={c.id} href={`/cases/${c.id}`} className="block p-4 bg-slate-50 border border-slate-200 rounded-xl hover:border-slate-400 transition">
                               <p className="font-bold text-slate-900">{c.title}</p>
                               <p className="text-sm text-slate-500 line-clamp-2 mt-1">{c.description}</p>
-                              <span className="inline-block mt-2 text-xs font-bold px-2 py-1 bg-blue-100 text-blue-800 rounded">Ärendestatus: {c.status}</span>
+                              <span className="inline-block mt-2 text-xs font-bold px-2 py-1 bg-blue-100 text-blue-800 rounded">Ärendestatus: {statusLabel(c.status)}</span>
                             </Link>
                           ))}
                         </div>

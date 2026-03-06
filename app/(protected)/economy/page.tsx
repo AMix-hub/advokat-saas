@@ -2,7 +2,6 @@ export const dynamic = 'force-dynamic'
 
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
-import UserProfile from '@/components/UserProfile'
 import { Wallet, TrendingUp, CheckCircle, Clock } from 'lucide-react'
 
 export default async function EconomyPage() {
@@ -28,20 +27,17 @@ export default async function EconomyPage() {
   return (
     <main className="min-h-screen bg-slate-50 p-4 sm:p-8">
       <div className="max-w-6xl mx-auto">
-        
-        <div className="flex justify-between items-center mb-10">
-          <Link href="/dashboard" className="text-blue-600 hover:text-blue-800 font-bold inline-flex items-center gap-2 transition bg-blue-50 px-4 py-2 rounded-lg">
-            &larr; Tillbaka till översikten
-          </Link>
-          <UserProfile />
-        </div>
 
-        <div className="mb-10 text-center">
-          <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm border border-emerald-200">
-            <Wallet className="w-8 h-8" />
+        <div className="mb-10">
+          <div className="flex items-center gap-4 mb-2">
+            <div className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center shadow-sm border border-emerald-200">
+              <Wallet className="w-7 h-7" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-extrabold text-slate-900">Ekonomi & Kassaflöde</h1>
+              <p className="text-slate-500 font-medium">Överblick över byråns fakturering och innestående värden.</p>
+            </div>
           </div>
-          <h1 className="text-3xl font-extrabold text-slate-900 mb-2">Ekonomi & Kassaflöde</h1>
-          <p className="text-slate-500 font-medium">Överblick över byråns fakturering och innestående värden.</p>
         </div>
 
         {/* Ekonomiska summeringar */}

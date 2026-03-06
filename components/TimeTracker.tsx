@@ -66,7 +66,7 @@ export default function TimeTracker({ caseId, timeEntries }: { caseId: string, t
       {/* LIVE TIMER SEKTION */}
       <div className="bg-slate-900 rounded-xl p-6 mb-8 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-inner">
         <div>
-          <p className="text-sm font-bold text-slate-400 mb-1 uppercase tracking-widest">Live Tidur</p>
+          <p className="text-sm font-bold text-slate-400 mb-1 uppercase tracking-widest">Tidtagare</p>
           <div className="text-4xl md:text-5xl font-black font-mono tracking-tight text-blue-400">
             {formatTime(seconds)}
           </div>

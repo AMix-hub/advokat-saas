@@ -1,7 +1,10 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { getToken } from 'next-auth/jwt'
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const token = await getToken({ req })
+  if (!token?.email) return NextResponse.json({ error: 'Ej inloggad' }, { status: 401 })
   try {
     const totalClients = await prisma.client.count();
     const openCases = await prisma.case.count({ where: { status: 'OPEN' } });

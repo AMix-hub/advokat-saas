@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
 import UserProfile from '@/components/UserProfile'
 import { Search, User, Briefcase, ArrowRight } from 'lucide-react'
+import { statusLabel } from '@/lib/status'
 
 export default async function SearchResultsPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const resolvedParams = await searchParams;
@@ -79,7 +80,7 @@ export default async function SearchResultsPage({ searchParams }: { searchParams
                     <Link key={c.id} href={`/cases/${c.id}`} className="flex items-center justify-between p-4 bg-white border border-slate-200 rounded-xl hover:border-blue-400 hover:shadow-md transition group">
                       <div>
                         <p className="font-bold text-slate-900 group-hover:text-blue-600">{c.title}</p>
-                        <p className="text-sm text-slate-500 mt-0.5">Klient: <span className="font-medium text-slate-700">{c.client.name}</span> • Status: {c.status}</p>
+                        <p className="text-sm text-slate-500 mt-0.5">Klient: <span className="font-medium text-slate-700">{c.client.name}</span> • Status: {statusLabel(c.status)}</p>
                       </div>
                       <ArrowRight className="w-5 h-5 text-slate-300 group-hover:text-blue-600 transition-transform group-hover:translate-x-1" />
                     </Link>

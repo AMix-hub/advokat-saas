@@ -1,14 +1,14 @@
 import { ReactNode } from 'react'
-import { SessionProvider } from 'next-auth/react'
+import SessionWrapper from '@/components/SessionWrapper'
 import Sidebar from '@/components/Sidebar'
 import MobileNavigation from '@/components/MobileNavigation'
 import UserProfile from '@/components/UserProfile'
-import { Building2, FileText } from 'lucide-react'
+import { FileText } from 'lucide-react'
 import Link from 'next/link'
 
 export default function ProtectedLayout({ children }: { children: ReactNode }) {
   return (
-    <SessionProvider>
+    <SessionWrapper>
       <div className="flex min-h-screen bg-slate-50 flex-col lg:flex-row">
         {/* Mobile Top Bar */}
         <div className="lg:hidden sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
@@ -36,6 +36,6 @@ export default function ProtectedLayout({ children }: { children: ReactNode }) {
           {children}
         </main>
       </div>
-    </SessionProvider>
+    </SessionWrapper>
   )
 }

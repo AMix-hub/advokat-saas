@@ -15,6 +15,7 @@ import InternalComments from '@/components/InternalComments'
 import CopyPortalLink from '@/components/CopyPortalLink'
 import Timeline from '@/components/Timeline'
 import { Briefcase, Edit, FileStack, FileText, ArrowLeft, Activity, AlertCircle } from 'lucide-react'
+import { statusLabel } from '@/lib/status'
 
 function getStatusBadge(status: string) {
   switch (status) {
@@ -76,7 +77,7 @@ export default async function CaseDetails({ params }: { params: Promise<{ id: st
                 <div className="w-full md:w-auto flex flex-col items-start md:items-end gap-3">
                   <span className={`text-xs font-bold px-3 py-1.5 rounded-full border flex items-center gap-1.5 w-fit ${getStatusBadge(caseItem.status)}`}>
                     {caseItem.status === 'PENDING' && <AlertCircle className="w-3 h-3" />}
-                    {caseItem.status}
+                    {statusLabel(caseItem.status)}
                   </span>
                   
                   {/* Action-knappar (Staplas på mobil, rad på dator) */}

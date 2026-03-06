@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { Resend } from 'resend'
 import crypto from 'crypto'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 
 export async function POST(req: Request) {
   try {
@@ -30,6 +30,11 @@ export async function POST(req: Request) {
     const resetLink = `${appUrl}/reset-password?token=${token}`
 
     // 4. Skicka mejlet! (onboarding@resend.dev fungerar alltid för testning innan din domän är helt godkänd)
+    if (!resend) {
+      console.error('RESEND_API_KEY is not configured. Cannot send password reset email.')
+      return NextResponse.json({ message: 'Om adressen finns i vårt register har ett mejl skickats.' })
+    }
+
     await resend.emails.send({
       from: 'CaseCore Support <onboarding@resend.dev>',
       to: email,

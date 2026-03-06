@@ -1,6 +1,7 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+import { getToken } from 'next-auth/jwt'
 
 // Kopplar upp mot ditt framtida AWS-kassaskåp
 const s3 = new S3Client({
@@ -11,8 +12,11 @@ const s3 = new S3Client({
   }
 })
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
+    const token = await getToken({ req })
+    if (!token?.email) return NextResponse.json({ error: 'Ej inloggad' }, { status: 401 })
+
     const { filename, contentType, caseId } = await req.json()
 
     // Om du inte har lagt in dina AWS-nycklar i .env ännu, stoppar vi här så appen inte kraschar

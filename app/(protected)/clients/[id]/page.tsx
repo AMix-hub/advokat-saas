@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import UserProfile from '@/components/UserProfile'
 import ClientCompliance from '@/components/ClientCompliance' // NY IMPORT
+import { statusLabel } from '@/lib/status'
 
 function getStatusBadge(status: string) {
   switch (status) {
@@ -116,7 +117,7 @@ export default async function ClientProfilePage({ params }: { params: Promise<{ 
                     </div>
                     <div className="flex items-center gap-4">
                       <span className={`text-xs font-bold px-3 py-1.5 rounded-full border ${getStatusBadge(caseItem.status)}`}>
-                        {caseItem.status}
+                        {statusLabel(caseItem.status)}
                       </span>
                     </div>
                   </div>
