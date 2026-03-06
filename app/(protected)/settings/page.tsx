@@ -48,29 +48,29 @@ export default function SettingsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-100 p-4 sm:p-8">
+    <main className="min-h-screen bg-slate-950 p-4 sm:p-8">
       <div className="max-w-3xl mx-auto">
 
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 md:p-12">
-          <div className="flex items-center gap-4 mb-8 border-b border-slate-100 pb-8">
+        <div className="bg-slate-900 rounded-2xl border border-white/[0.08] p-8 md:p-12">
+          <div className="flex items-center gap-4 mb-8 border-b border-white/[0.06] pb-8">
             <div className="w-16 h-16 bg-slate-900 text-white rounded-2xl flex items-center justify-center shadow-md">
               <SettingsIcon className="w-8 h-8" />
             </div>
             <div>
-              <h1 className="text-3xl font-extrabold text-slate-900">Inställningar</h1>
-              <p className="text-slate-500 font-medium">Byråprofil och White Labeling</p>
+              <h1 className="text-3xl font-extrabold text-white">Inställningar</h1>
+              <p className="text-slate-400 font-medium">Byråprofil och White Labeling</p>
             </div>
           </div>
 
           <form onSubmit={handleSave} className="space-y-8">
             
             {/* LOGOTYP / WHITE LABEL */}
-            <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200">
-              <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
+            <div className="bg-white/[0.04] p-6 rounded-2xl border border-white/[0.08]">
+              <h3 className="font-bold text-slate-100 mb-4 flex items-center gap-2">
                 <ImageIcon className="w-5 h-5 text-indigo-500" /> Byråns Logotyp
               </h3>
               <div className="flex flex-col sm:flex-row items-center gap-6">
-                <div className="w-32 h-32 bg-white rounded-xl border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden flex-shrink-0">
+                <div className="w-32 h-32 bg-white/[0.05] rounded-xl border-2 border-dashed border-white/20 flex items-center justify-center overflow-hidden flex-shrink-0">
                   {logo ? (
                     <img src={logo} alt="Logo" className="max-w-full max-h-full object-contain p-2" />
                   ) : (
@@ -78,8 +78,8 @@ export default function SettingsPage() {
                   )}
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm text-slate-500 mb-4">Ladda upp byråns logotyp. Denna kommer automatiskt att ersätta CaseCore-ikonen på Klientportaler och PDF-fakturor.</p>
-                  <label className="cursor-pointer bg-white border border-slate-300 text-slate-700 px-4 py-2 rounded-lg font-bold text-sm hover:bg-slate-50 transition shadow-sm inline-block">
+                  <p className="text-sm text-slate-400 mb-4">Ladda upp byråns logotyp. Denna kommer automatiskt att ersätta CaseCore-ikonen på Klientportaler och PDF-fakturor.</p>
+                  <label className="cursor-pointer bg-white/[0.08] border border-white/10 text-slate-300 px-4 py-2 rounded-lg font-bold text-sm hover:bg-white/[0.12] transition inline-block">
                     Välj bildfil...
                     <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
                   </label>
@@ -92,21 +92,21 @@ export default function SettingsPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-2">Ditt Namn</label>
-                <input type="text" value={name} onChange={(e) => setName(e.target.value)} required className="w-full border border-slate-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none" />
+                <label className="block text-sm font-bold text-slate-400 mb-2">Ditt Namn</label>
+                <input type="text" value={name} onChange={(e) => setName(e.target.value)} required className="w-full border border-white/10 p-3 rounded-xl focus:ring-2 focus:ring-blue-500/50 outline-none bg-white/[0.05] text-white" />
               </div>
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-2">Byråns Namn</label>
-                <input type="text" value={firmName} onChange={(e) => setFirmName(e.target.value)} required className="w-full border border-slate-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none" />
+                <label className="block text-sm font-bold text-slate-400 mb-2">Byråns Namn</label>
+                <input type="text" value={firmName} onChange={(e) => setFirmName(e.target.value)} required className="w-full border border-white/10 p-3 rounded-xl focus:ring-2 focus:ring-blue-500/50 outline-none bg-white/[0.05] text-white" />
               </div>
               <div className="md:col-span-2">
-                <label className="block text-sm font-bold text-slate-700 mb-2">Betalningsuppgifter (Bankgiro/Plusgiro)</label>
-                <input type="text" value={bankgiro} onChange={(e) => setBankgiro(e.target.value)} placeholder="T.ex. BG 123-4567" className="w-full border border-slate-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none" />
+                <label className="block text-sm font-bold text-slate-400 mb-2">Betalningsuppgifter (Bankgiro/Plusgiro)</label>
+                <input type="text" value={bankgiro} onChange={(e) => setBankgiro(e.target.value)} placeholder="T.ex. BG 123-4567" className="w-full border border-white/10 p-3 rounded-xl focus:ring-2 focus:ring-blue-500/50 outline-none bg-white/[0.05] text-white" />
                 <p className="text-xs text-slate-500 mt-2">Dessa uppgifter syns längst ner på fakturaunderlagen.</p>
               </div>
             </div>
 
-            <div className="pt-6 border-t border-slate-100 flex items-center gap-4">
+            <div className="pt-6 border-t border-white/[0.06] flex items-center gap-4">
               <button type="submit" disabled={isSubmitting} className="bg-slate-900 text-white px-8 py-3.5 rounded-xl font-bold hover:bg-slate-800 transition disabled:opacity-50 flex items-center gap-2 shadow-md w-full sm:w-auto justify-center">
                 {isSubmitting ? 'Sparar...' : 'Spara inställningar'}
               </button>
