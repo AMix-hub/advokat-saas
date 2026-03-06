@@ -27,7 +27,8 @@ export default function LoginPage() {
       setError('Felaktig e-postadress eller lösenord.')
       setIsLoading(false)
     } else {
-      router.push('/')
+      // Ändra från '/' till '/dashboard'
+      router.push('/dashboard')
       router.refresh()
     }
   }
