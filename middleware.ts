@@ -1,13 +1,14 @@
-import { withAuth } from "next-auth/middleware"
+export { default } from "next-auth/middleware"
 
-export default withAuth({
-  pages: {
-    signIn: "/login",
-  },
-})
-
-// Här bestämmer vi VILKA sidor som är låsta. 
-// Denna kod låser hela systemet (dashboard, ärenden) men lämnar API och login öppet.
 export const config = {
-  matcher: ["/((?!login|api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    /*
+     * Matchar alla sökvägar (kräver inloggning) FÖRUTOM:
+     * - api/auth (NextAuths egna rutter)
+     * - login (Inloggningssidan)
+     * - portal (Den publika klientportalen!)
+     * - _next/static, _next/image, favicon.ico (Filer för design och bilder)
+     */
+    "/((?!api/auth|login|portal|_next/static|_next/image|favicon.ico).*)"
+  ]
 }
