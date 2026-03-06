@@ -58,13 +58,16 @@ export default function Sidebar() {
     { href: '/agreements',     label: 'Avtal',            icon: FileSignature },
     { href: '/reports',        label: 'Rapporter',        icon: BarChart3 },
     { href: '/templates',      label: 'Mallar',           icon: FileText },
-    { href: '/docs',           label: 'Docs',             icon: BookOpen },
     { href: '/conflict-check', label: 'Jävsprövning',     icon: Scale },
-    { href: '/kyc',            label: 'KYC',              icon: ShieldCheck },
-    { href: '/kommunikation',  label: 'Klientkommunikation', icon: MessageSquare },
     { href: '/team',           label: 'Team',             icon: Users },
     { href: '/admin/activation-codes', label: 'Åtkomstkoder', icon: KeyRound },
     { href: '/settings',       label: 'Inställningar',    icon: Settings },
+  ]
+
+  const addOnItems = [
+    { href: '/docs',          label: 'CaseCore Docs',        icon: BookOpen },
+    { href: '/kyc',           label: 'CaseCore KYC',         icon: ShieldCheck },
+    { href: '/kommunikation', label: 'Klientkommunikation',  icon: MessageSquare },
   ]
 
   const handleSearch = (e: React.FormEvent) => {
@@ -135,6 +138,34 @@ export default function Sidebar() {
               </Link>
             )
           })}
+        </div>
+
+        <div className="mt-4 mb-2 border-t border-white/[0.06] pt-3">
+          <p className="text-[9px] font-bold text-purple-600 uppercase tracking-[0.15em] px-3 mb-2">Tillägg</p>
+          <div className="space-y-0.5">
+            {addOnItems.map((item) => {
+              const Icon = item.icon
+              const active = isActive(item.href)
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileOpen(false)}
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-sm font-semibold group ${
+                    active
+                      ? 'text-white bg-purple-500/15 border border-purple-500/25'
+                      : 'text-slate-500 hover:text-slate-100 hover:bg-white/[0.05] border border-transparent'
+                  }`}
+                >
+                  <Icon className={`w-4 h-4 flex-shrink-0 transition-colors ${active ? 'text-purple-400' : 'group-hover:text-slate-200'}`} />
+                  <span>{item.label}</span>
+                  {active && (
+                    <span className="ml-auto w-1.5 h-1.5 rounded-full bg-purple-400 shadow-[0_0_6px_rgba(192,132,252,0.8)]" />
+                  )}
+                </Link>
+              )
+            })}
+          </div>
         </div>
       </nav>
 

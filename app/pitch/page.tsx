@@ -17,6 +17,8 @@ import {
   MessageSquare,
   Database,
   Wallet,
+  BookOpen,
+  Plus,
 } from 'lucide-react'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -36,10 +38,9 @@ const comparisonRows: ComparisonRow[] = [
   { label: 'Användare',                      solo: '1',              byra: 'Upp till 10',    enterprise: 'Obegränsat'    },
   { label: 'Ärenden & klienter',             solo: 'Obegränsat',    byra: 'Obegränsat',     enterprise: 'Obegränsat'    },
   { label: 'Live-tidtagning',                solo: true,             byra: true,             enterprise: true             },
-  { label: 'KYC & penningtvättskontroll',    solo: true,             byra: true,             enterprise: true             },
   { label: 'Faktureringsunderlag (PDF)',      solo: true,             byra: true,             enterprise: true             },
   { label: 'Klientportaler',                 solo: true,             byra: true,             enterprise: true             },
-  { label: 'Dokumentmallar',                 solo: true,             byra: true,             enterprise: true             },
+  { label: 'Egna dokumentmallar',            solo: true,             byra: true,             enterprise: true             },
   { label: 'Ärendelogg & historik',          solo: true,             byra: true,             enterprise: true             },
   { label: 'White label (byråns logotyp)',   solo: false,            byra: true,             enterprise: true             },
   { label: 'Jävsprövning',                   solo: false,            byra: true,             enterprise: true             },
@@ -50,6 +51,45 @@ const comparisonRows: ComparisonRow[] = [
   { label: 'SLA-garanti (99,9% uptime)',     solo: false,            byra: false,            enterprise: true             },
   { label: 'Support',                        solo: 'E-post',         byra: 'Prioriterad',    enterprise: 'Dedikerad 24/7' },
   { label: 'Onboarding',                     solo: 'Självservice',  byra: '1-tim session',  enterprise: 'Full setup'     },
+]
+
+const addOnModules = [
+  {
+    icon: BookOpen,
+    title: 'CaseCore Docs',
+    price: '299 kr/mån',
+    desc: 'Automatiserad juridisk dokumentgenerering. Skapa kravbrev, fullmakter, uppdragsavtal och inlagor från smarta mallar med variabelfyllning.',
+    features: [
+      '6 inbyggda juridiska mallar',
+      'Variabeldriven dokumentgenerering',
+      'Live-förhandsgranskning',
+      'Utskrift & PDF-export',
+    ],
+  },
+  {
+    icon: ShieldCheck,
+    title: 'CaseCore KYC',
+    price: '399 kr/mån',
+    desc: 'Avancerad KYC/AML-modul med PEP-kontroller, sanktionslistscreening, riskbedömningar och GDPR-kompatibel export.',
+    features: [
+      'Riskbedömning per klient (Låg/Medel/Hög)',
+      'PEP & sanktionslistscreening',
+      'Fullständig KYC-checklista',
+      'GDPR-export till CSV',
+    ],
+  },
+  {
+    icon: MessageSquare,
+    title: 'Klientkommunikation',
+    price: '199 kr/mån',
+    desc: 'Skicka och ta emot meddelanden direkt till klienter kopplade till ärenden – allt loggat och sökbart i systemet.',
+    features: [
+      'Utgående meddelanden per klient',
+      'Inkorg för klientsvar',
+      'Koppling till ärende & tidsstämpel',
+      'Fullt sökbart meddelandearkiv',
+    ],
+  },
 ]
 
 const faqItems = [
@@ -220,7 +260,7 @@ export default function PitchLandingPage() {
                 <p className="text-xs text-slate-400 font-medium">eller 666 kr/mån vid årsavtal</p>
               </div>
               <ul className="space-y-3 mb-8 flex-1 text-sm">
-                {['1 användare', 'Obegränsade ärenden & klienter', 'Live-tidtagning', 'KYC & penningtvättskontroll', 'Faktureringsunderlag (PDF)', 'Klientportaler', 'Dokumentmallar', 'E-postsupport'].map(f => (
+                {['1 användare', 'Obegränsade ärenden & klienter', 'Live-tidtagning', 'Faktureringsunderlag (PDF)', 'Klientportaler', 'Egna dokumentmallar', 'E-postsupport'].map(f => (
                   <li key={f} className="flex items-center gap-3 text-slate-700">
                     <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
                     {f}
@@ -289,6 +329,57 @@ export default function PitchLandingPage() {
         </div>
       </section>
 
+      {/* ── Add-on Modules ─────────────────────────────────────────────────── */}
+      <section className="py-24 px-6 border-y border-white/[0.08]" style={{ background: '#0f172a' }}>
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-400 font-bold text-xs uppercase tracking-widest mb-6">
+              <Plus className="w-3.5 h-3.5" /> Köptillägg
+            </div>
+            <h2 className="text-3xl md:text-4xl font-black text-white mb-4">Utöka med specialmoduler</h2>
+            <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+              Aktivera kraftfulla tillägg vid behov — lägg till din befintliga plan som extra månadsavgift. Kan avaktiveras när som helst.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {addOnModules.map(({ icon: Icon, title, price, desc, features }) => (
+              <div
+                key={title}
+                className="relative p-7 rounded-2xl flex flex-col border border-purple-500/20 bg-purple-500/[0.05] hover:border-purple-400/40 transition-all duration-300"
+              >
+                <div className="flex items-start justify-between mb-5">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(167,139,250,0.15)' }}>
+                    <Icon className="w-6 h-6 text-purple-400" />
+                  </div>
+                  <span className="text-sm font-black text-purple-300 bg-purple-500/15 border border-purple-500/25 px-3 py-1 rounded-full">
+                    {price}
+                  </span>
+                </div>
+                <h3 className="text-lg font-black text-white mb-3">{title}</h3>
+                <p className="text-slate-400 text-sm leading-relaxed mb-6">{desc}</p>
+                <ul className="space-y-2 mb-8 flex-1">
+                  {features.map(f => (
+                    <li key={f} className="flex items-start gap-2 text-sm text-slate-400">
+                      <CheckCircle2 className="w-4 h-4 mt-0.5 flex-shrink-0 text-purple-400" />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href="mailto:demo@casecore.se"
+                  className="w-full flex items-center justify-center gap-2 py-3 px-5 rounded-xl font-bold text-sm transition-all bg-purple-500/20 text-purple-300 border border-purple-500/30 hover:bg-purple-500/30"
+                >
+                  Lägg till <ArrowRight className="w-4 h-4" />
+                </a>
+              </div>
+            ))}
+          </div>
+          <p className="text-center text-slate-600 text-sm mt-10">
+            Alla tillägg aktiveras omedelbart och faktureras månadsvis tillsammans med din plan.
+          </p>
+        </div>
+      </section>
+
       {/* ── Feature Comparison Table ───────────────────────────────────────── */}
       <section className="py-24 px-6 bg-white border-t border-slate-100">
         <div className="max-w-5xl mx-auto">
@@ -317,6 +408,9 @@ export default function PitchLandingPage() {
               </tbody>
             </table>
           </div>
+          <p className="text-center text-slate-400 text-xs mt-4">
+            * CaseCore Docs, CaseCore KYC och Klientkommunikation är köptillägg — se avsnittet ovan.
+          </p>
         </div>
       </section>
 
@@ -382,12 +476,11 @@ export default function PitchLandingPage() {
       <section className="py-20 px-6 bg-white border-t border-slate-100">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-2xl font-black text-slate-900 text-center mb-12">Ingår i alla planer</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 text-center">
             {[
               { icon: ShieldCheck, label: 'GDPR-compliant', sub: 'Inbyggd radering & kryptering' },
               { icon: Database,    label: 'Svensk datalagring', sub: 'Servers i Sverige' },
               { icon: Lock,        label: 'End-to-end krypterat', sub: 'I vila och under transport' },
-              { icon: Scale,       label: 'KYC & AML', sub: 'Inbyggd penningtvättskontroll' },
             ].map(({ icon: Icon, label, sub }) => (
               <div key={label} className="p-6 rounded-2xl bg-slate-50 border border-slate-100">
                 <Icon className="w-7 h-7 text-blue-600 mx-auto mb-3" />
