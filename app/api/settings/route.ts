@@ -1,37 +1,42 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { getToken } from 'next-auth/jwt'
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
-    const user = await prisma.user.findFirst()
+    // Kika i säkerhetstoken för att se VEM som skickar förfrågan
+    const token = await getToken({ req })
+    if (!token?.email) return NextResponse.json({ error: 'Ej inloggad' }, { status: 401 })
+
+    // Hämta just den användarens uppgifter
+    const user = await prisma.user.findUnique({
+      where: { email: token.email }
+    })
     return NextResponse.json({ user })
   } catch (error) {
     return NextResponse.json({ error: 'Kunde inte hämta inställningar' }, { status: 500 })
   }
 }
 
-export async function PATCH(req: Request) {
+export async function PATCH(req: NextRequest) {
   try {
+    const token = await getToken({ req })
+    if (!token?.email) return NextResponse.json({ error: 'Ej inloggad' }, { status: 401 })
+
     const body = await req.json()
     
-    const user = await prisma.user.findFirst()
-    
-    if (!user) {
-      return NextResponse.json({ error: 'Användare hittades inte' }, { status: 404 })
-    }
-
+    // Uppdatera endast den inloggade personens uppgifter
     const updatedUser = await prisma.user.update({
-      where: { id: user.id },
+      where: { email: token.email },
       data: {
         name: body.name,
         firmName: body.firmName,
-        bankgiro: body.bankgiro, // Sparar det nya bankgirot
+        bankgiro: body.bankgiro,
       }
     })
 
     return NextResponse.json({ success: true, user: updatedUser })
   } catch (error) {
-    console.error(error)
     return NextResponse.json({ error: 'Kunde inte spara inställningarna' }, { status: 500 })
   }
 }

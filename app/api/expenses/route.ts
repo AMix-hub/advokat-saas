@@ -1,8 +1,13 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { getToken } from 'next-auth/jwt'
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
+    const token = await getToken({ req })
+    const user = token?.email ? await prisma.user.findUnique({ where: { email: token.email } }) : null
+    const userName = user?.name || 'En kollega'
+
     const body = await req.json()
     
     const expense = await prisma.expense.create({
@@ -13,10 +18,10 @@ export async function POST(req: Request) {
       }
     })
     
-    // Logga händelsen automatiskt
+    // Skriv in ANVÄNDARENS NAMN i loggen!
     await prisma.log.create({
       data: { 
-        action: `Registrerade utlägg: ${body.amount} kr (${body.description})`, 
+        action: `${userName} registrerade ett utlägg: ${body.amount} kr (${body.description})`, 
         caseId: body.caseId 
       }
     })
