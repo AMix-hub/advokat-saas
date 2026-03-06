@@ -92,15 +92,15 @@ export default async function Dashboard() {
             {overdeadlines.length > 0 && (
               <NotificationBadge
                 type="overdue"
-                title="Överförfallna deadlines"
-                description={`Du har ${overdeadlines.length} deadline${overdeadlines.length !== 1 ? 's' : ''} som är försenta`}
+                title="Förfallna deadlines"
+                description={`Du har ${overdeadlines.length} deadline${overdeadlines.length !== 1 ? 's' : ''} som är förfallen`}
                 count={overdeadlines.length}
               />
             )}
             {unpaidInvoices.length > 0 && (
               <NotificationBadge
                 type="pending"
-                title="Obetälda fakturor"
+                title="Obetalda fakturor"
                 description={`${unpaidInvoices.length} faktura${unpaidInvoices.length !== 1 ? 'r' : ''} väntar på betalning`}
                 count={unpaidInvoices.length}
               />

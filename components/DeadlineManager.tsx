@@ -136,11 +136,11 @@ export default function DeadlineManager({ caseId }: { caseId?: string }) {
 
   return (
     <div className="space-y-6">
-      {/* Kommande Deadlines */}
+      {/* Kommande deadlines */}
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-blue-600" /> Kommande Deadlines
+            <Calendar className="w-5 h-5 text-blue-600" /> Kommande deadlines
           </h3>
           {caseId && (
             <button
