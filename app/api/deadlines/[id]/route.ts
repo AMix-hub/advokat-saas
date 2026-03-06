@@ -5,14 +5,16 @@ import { getToken } from 'next-auth/jwt'
 // GET en enskild deadline
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const token = await getToken({ req })
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+    const resolvedParams = await params
+
     const deadline = await prisma.deadline.findUnique({
-      where: { id: params.id },
+      where: { id: resolvedParams.id },
       include: { case: { include: { client: true } } }
     })
 
@@ -30,17 +32,18 @@ export async function GET(
 // PUT - Uppdatera deadline
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const token = await getToken({ req })
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+    const resolvedParams = await params
     const body = await req.json()
     const { title, description, dueDate, type, isCompleted } = body
 
     const deadline = await prisma.deadline.update({
-      where: { id: params.id },
+      where: { id: resolvedParams.id },
       data: {
         ...(title && { title }),
         ...(description !== undefined && { description }),
@@ -61,14 +64,16 @@ export async function PUT(
 // DELETE - Ta bort deadline
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const token = await getToken({ req })
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+    const resolvedParams = await params
+
     const deadline = await prisma.deadline.findUnique({
-      where: { id: params.id }
+      where: { id: resolvedParams.id }
     })
 
     if (!deadline) {
@@ -76,7 +81,7 @@ export async function DELETE(
     }
 
     await prisma.deadline.delete({
-      where: { id: params.id }
+      where: { id: resolvedParams.id }
     })
 
     return NextResponse.json({ message: 'Deadline raderad' })

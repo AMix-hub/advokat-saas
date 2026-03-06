@@ -5,14 +5,16 @@ import { getToken } from 'next-auth/jwt'
 // GET en enskild faktura
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const token = await getToken({ req })
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+    const resolvedParams = await params
+
     const invoice = await prisma.invoice.findUnique({
-      where: { id: params.id },
+      where: { id: resolvedParams.id },
       include: { items: true, case: { include: { client: true } } }
     })
 
@@ -30,18 +32,19 @@ export async function GET(
 // PUT - Uppdatera faktura
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const token = await getToken({ req })
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+    const resolvedParams = await params
     const body = await req.json()
     const { status, dueDate, notes } = body
 
     // Uppdatera bara dessa fält (status, dueDate, notes)
     const invoice = await prisma.invoice.update({
-      where: { id: params.id },
+      where: { id: resolvedParams.id },
       data: {
         ...(status && { status }),
         ...(dueDate && { dueDate: new Date(dueDate) }),
@@ -60,14 +63,16 @@ export async function PUT(
 // DELETE - Ta bort faktura (bara om den är DRAFT)
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const token = await getToken({ req })
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+    const resolvedParams = await params
+
     const invoice = await prisma.invoice.findUnique({
-      where: { id: params.id }
+      where: { id: resolvedParams.id }
     })
 
     if (!invoice) {
@@ -84,7 +89,7 @@ export async function DELETE(
 
     // Delete cascade kommer hantera items automatiskt
     await prisma.invoice.delete({
-      where: { id: params.id }
+      where: { id: resolvedParams.id }
     })
 
     return NextResponse.json({ message: 'Faktura raderad' })
