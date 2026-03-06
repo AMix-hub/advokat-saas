@@ -111,7 +111,7 @@ export default function ActivationCodesClient() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white/[0.12] text-white rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-white/[0.08] text-white rounded-xl flex items-center justify-center">
               <KeyRound className="w-5 h-5" />
             </div>
             <div>
@@ -201,7 +201,7 @@ export default function ActivationCodesClient() {
               <button
                 type="submit"
                 disabled={creating}
-                className="bg-white/[0.12] text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-white/[0.18] transition disabled:opacity-50 flex items-center gap-2"
+                className="bg-white/[0.08] text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-white/[0.12] transition disabled:opacity-50 flex items-center gap-2"
               >
                 <Plus className="w-4 h-4" /> {creating ? 'Skapar...' : 'Skapa kod'}
               </button>
