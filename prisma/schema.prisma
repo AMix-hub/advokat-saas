@@ -14,7 +14,7 @@ model User {
   firmName  String?  @default("Advokatbyrån AB")
   bankgiro  String?  
   password  String
-  cases     Case[]   // NYTT: Koppling till ärenden
+  cases     Case[]
   createdAt DateTime @default(now())
 }
 
@@ -36,16 +36,26 @@ model Case {
   clientId     String
   client       Client      @relation(fields: [clientId], references: [id])
   
-  // NYTT: Vem på byrån som är ansvarig för ärendet
   assignedToId String?
   assignedTo   User?       @relation(fields: [assignedToId], references: [id])
 
   logs         Log[]
   documents    Document[]
   timeEntries  TimeEntry[]
-  tasks        Task[]      
+  tasks        Task[]
+  expenses     Expense[]   // NYTT: Koppling till utlägg
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
+}
+
+// NY MODELL: Utlägg och kostnader
+model Expense {
+  id          String   @id @default(cuid())
+  description String
+  amount      Float
+  caseId      String
+  case        Case     @relation(fields: [caseId], references: [id])
+  createdAt   DateTime @default(now())
 }
 
 model Task {
@@ -84,11 +94,9 @@ model TimeEntry {
   createdAt   DateTime @default(now())
 }
 
-// Lägg till detta längst ner i filen, under dina andra modeller:
-
 model CustomTemplate {
   id        String   @id @default(cuid())
-  name      String   // Namnet på mallen (t.ex. "Samboavtal")
-  content   String   // Själva texten med {{KODER}}
+  name      String
+  content   String
   createdAt DateTime @default(now())
 }

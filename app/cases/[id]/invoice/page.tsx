@@ -10,7 +10,8 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
     where: { id: resolvedParams.id },
     include: { 
       client: true, 
-      timeEntries: { orderBy: { createdAt: 'asc' } } 
+      timeEntries: { orderBy: { createdAt: 'asc' } },
+      expenses: { orderBy: { createdAt: 'asc' } } // Hämtar in utläggen
     }
   })
 
@@ -18,10 +19,14 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
 
   const user = await prisma.user.findFirst()
 
+  // Uträkningar
   const totalHours = caseItem.timeEntries.reduce((acc, curr) => acc + curr.hours, 0)
-  const subTotal = totalHours * caseItem.hourlyRate
-  const vat = subTotal * 0.25
-  const total = subTotal + vat
+  const subTotalTime = totalHours * caseItem.hourlyRate
+  const vat = subTotalTime * 0.25
+  const totalExpenses = caseItem.expenses.reduce((acc, curr) => acc + curr.amount, 0)
+  
+  // Totalsumma: Arvode + Moms + Utlägg
+  const total = subTotalTime + vat + totalExpenses
 
   const today = new Date().toLocaleDateString('sv-SE')
   const dueDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString('sv-SE')
@@ -76,45 +81,59 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                 <tr className="border-b-2 border-slate-800 text-left">
                   <th className="py-3 font-bold text-slate-800">Datum</th>
                   <th className="py-3 font-bold text-slate-800">Åtgärd / Beskrivning</th>
-                  <th className="py-3 font-bold text-slate-800 text-right">Timmar</th>
-                  <th className="py-3 font-bold text-slate-800 text-right">Belopp (exkl. moms)</th>
+                  <th className="py-3 font-bold text-slate-800 text-right">Mängd</th>
+                  <th className="py-3 font-bold text-slate-800 text-right">Belopp</th>
                 </tr>
               </thead>
               <tbody>
-                {caseItem.timeEntries.length === 0 ? (
+                {/* Tidsloggar */}
+                {caseItem.timeEntries.map(entry => (
+                  <tr key={entry.id} className="border-b border-slate-100">
+                    <td className="py-4 text-slate-600">{new Date(entry.createdAt).toLocaleDateString('sv-SE')}</td>
+                    <td className="py-4 font-medium">{entry.description} <span className="text-xs text-slate-400 ml-2">(Arvode)</span></td>
+                    <td className="py-4 text-right text-slate-600">{entry.hours} h</td>
+                    <td className="py-4 text-right font-medium">{(entry.hours * caseItem.hourlyRate).toLocaleString('sv-SE')} kr</td>
+                  </tr>
+                ))}
+                
+                {/* Utlägg (NYTT) */}
+                {caseItem.expenses.map(expense => (
+                  <tr key={expense.id} className="border-b border-slate-100 bg-slate-50/50">
+                    <td className="py-4 text-slate-600">{new Date(expense.createdAt).toLocaleDateString('sv-SE')}</td>
+                    <td className="py-4 font-medium">{expense.description} <span className="text-xs text-amber-600 ml-2">(Utlägg)</span></td>
+                    <td className="py-4 text-right text-slate-600">-</td>
+                    <td className="py-4 text-right font-medium">{expense.amount.toLocaleString('sv-SE')} kr</td>
+                  </tr>
+                ))}
+
+                {caseItem.timeEntries.length === 0 && caseItem.expenses.length === 0 && (
                   <tr>
                     <td colSpan={4} className="py-8 text-center text-slate-500 italic border-b border-slate-100">
-                      Inga tidsloggar registrerade på detta ärende ännu.
+                      Inga poster registrerade på detta ärende ännu.
                     </td>
                   </tr>
-                ) : (
-                  caseItem.timeEntries.map(entry => (
-                    <tr key={entry.id} className="border-b border-slate-100">
-                      <td className="py-4 text-slate-600">{new Date(entry.createdAt).toLocaleDateString('sv-SE')}</td>
-                      <td className="py-4 font-medium">{entry.description}</td>
-                      <td className="py-4 text-right text-slate-600">{entry.hours} h</td>
-                      <td className="py-4 text-right font-medium">{(entry.hours * caseItem.hourlyRate).toLocaleString('sv-SE')} kr</td>
-                    </tr>
-                  ))
                 )}
               </tbody>
             </table>
 
+            {/* Uppdaterad Summering */}
             <div className="flex justify-end">
               <div className="w-80">
                 <div className="flex justify-between py-2 text-slate-600">
-                  <span>Totalt antal timmar:</span>
-                  <span className="font-bold">{totalHours.toFixed(1)} h</span>
+                  <span>Arvode (exkl. moms):</span>
+                  <span>{subTotalTime.toLocaleString('sv-SE')} kr</span>
                 </div>
                 <div className="flex justify-between py-2 text-slate-600">
-                  <span>Delsumma (exkl. moms):</span>
-                  <span>{subTotal.toLocaleString('sv-SE')} kr</span>
-                </div>
-                <div className="flex justify-between py-2 text-slate-600 border-b border-slate-200">
-                  <span>Moms (25%):</span>
+                  <span>Moms på arvode (25%):</span>
                   <span>{vat.toLocaleString('sv-SE')} kr</span>
                 </div>
-                <div className="flex justify-between py-4 text-xl font-black text-slate-900">
+                {totalExpenses > 0 && (
+                  <div className="flex justify-between py-2 text-slate-600 border-t border-slate-100 mt-2 pt-2">
+                    <span>Utlägg (Momsfritt):</span>
+                    <span>{totalExpenses.toLocaleString('sv-SE')} kr</span>
+                  </div>
+                )}
+                <div className="flex justify-between py-4 text-xl font-black text-slate-900 border-t-2 border-slate-800 mt-2">
                   <span>ATT BETALA:</span>
                   <span>{total.toLocaleString('sv-SE')} kr</span>
                 </div>
@@ -122,7 +141,6 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
             </div>
           </div>
 
-          {/* Sidfot med betalningsuppgifter */}
           <div className="mt-16 pt-8 border-t-2 border-slate-800 text-sm text-slate-600 flex justify-between">
             <div>
               <p className="font-bold text-slate-800 mb-1">Betalningsuppgifter</p>

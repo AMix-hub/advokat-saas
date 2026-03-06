@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
-// Uppdatera ett ärende (Detta lade vi till i förra steget)
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const resolvedParams = await params;
@@ -18,10 +17,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     })
 
     await prisma.log.create({
-      data: { 
-        action: `Ärendet uppdaterades (Ny status: ${body.status})`, 
-        caseId: resolvedParams.id 
-      }
+      data: { action: `Ärendet uppdaterades (Ny status: ${body.status})`, caseId: resolvedParams.id }
     })
 
     return NextResponse.json(updatedCase)
@@ -30,18 +26,17 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   }
 }
 
-// NYTT: Radera ett ärende helt och hållet
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const resolvedParams = await params;
     
-    // 1. Ta först bort alla relaterade rader så vi inte får felmeddelanden i databasen
+    // Ta bort alla relaterade rader INKLUSIVE utlägg (expenses)
     await prisma.log.deleteMany({ where: { caseId: resolvedParams.id } })
     await prisma.task.deleteMany({ where: { caseId: resolvedParams.id } })
     await prisma.timeEntry.deleteMany({ where: { caseId: resolvedParams.id } })
     await prisma.document.deleteMany({ where: { caseId: resolvedParams.id } })
+    await prisma.expense.deleteMany({ where: { caseId: resolvedParams.id } }) // NY RAD
     
-    // 2. Ta därefter bort själva ärendet
     await prisma.case.delete({ where: { id: resolvedParams.id } })
 
     return NextResponse.json({ success: true })

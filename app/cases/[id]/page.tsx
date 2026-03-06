@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation'
 import CaseControls from '@/components/CaseControls'
 import DocumentManager from '@/components/DocumentManager'
 import TimeTracker from '@/components/TimeTracker'
+import ExpenseTracker from '@/components/ExpenseTracker' // NY IMPORT
 import UserProfile from '@/components/UserProfile'
 import TaskList from '@/components/TaskList'
 
@@ -28,6 +29,7 @@ export default async function CaseDetails({ params }: { params: Promise<{ id: st
       client: true, 
       documents: { orderBy: { createdAt: 'desc' } },
       timeEntries: { orderBy: { createdAt: 'desc' } },
+      expenses: { orderBy: { createdAt: 'desc' } }, // Hämta utlägg
       logs: { orderBy: { createdAt: 'desc' } },
       tasks: { orderBy: { createdAt: 'desc' } }
     }
@@ -64,23 +66,13 @@ export default async function CaseDetails({ params }: { params: Promise<{ id: st
                   </span>
                   
                   <div className="flex flex-wrap justify-end gap-2 mt-2">
-                    <Link 
-                      href={`/cases/${caseItem.id}/edit`} 
-                      className="bg-white text-slate-700 border border-slate-300 px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-50 transition shadow-sm flex items-center gap-2"
-                    >
+                    <Link href={`/cases/${caseItem.id}/edit`} className="bg-white text-slate-700 border border-slate-300 px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-50 transition shadow-sm flex items-center gap-2">
                       ✏️ Redigera
                     </Link>
-                    {/* HÄR ÄR DEN UPPDATERADE KNAPPEN TILL HUBBEN */}
-                    <Link 
-                      href={`/cases/${caseItem.id}/templates`} 
-                      className="bg-indigo-50 text-indigo-700 border border-indigo-200 px-4 py-2 rounded-lg text-sm font-bold hover:bg-indigo-100 transition shadow-sm flex items-center gap-2"
-                    >
+                    <Link href={`/cases/${caseItem.id}/templates`} className="bg-indigo-50 text-indigo-700 border border-indigo-200 px-4 py-2 rounded-lg text-sm font-bold hover:bg-indigo-100 transition shadow-sm flex items-center gap-2">
                       📑 Dokumentmallar
                     </Link>
-                    <Link 
-                      href={`/cases/${caseItem.id}/invoice`} 
-                      className="bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-800 transition shadow-sm flex items-center gap-2"
-                    >
+                    <Link href={`/cases/${caseItem.id}/invoice`} className="bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-800 transition shadow-sm flex items-center gap-2">
                       📄 Faktura
                     </Link>
                   </div>
@@ -94,6 +86,10 @@ export default async function CaseDetails({ params }: { params: Promise<{ id: st
 
             <TaskList caseId={caseItem.id} tasks={caseItem.tasks} />
             <TimeTracker caseId={caseItem.id} timeEntries={caseItem.timeEntries} />
+            
+            {/* HÄR ÄR DEN NYA KOMPONENTEN */}
+            <ExpenseTracker caseId={caseItem.id} expenses={caseItem.expenses} />
+            
             <DocumentManager caseId={caseItem.id} documents={caseItem.documents} />
 
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 mt-8">
