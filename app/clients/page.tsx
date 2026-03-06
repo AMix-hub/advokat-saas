@@ -28,7 +28,7 @@ export default async function ClientsPage() {
             </div>
             
             <div className="hidden md:flex gap-6">
-              <Link href="/" className="font-bold text-slate-500 hover:text-slate-900 transition">Översikt</Link>
+              <Link href="/dashboard" className="font-bold text-slate-500 hover:text-slate-900 transition">Översikt</Link>
               <Link href="/clients" className="font-bold text-slate-900 border-b-2 border-blue-600 pb-1">Klientregister</Link>
             </div>
           </div>
