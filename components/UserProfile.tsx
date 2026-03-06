@@ -2,16 +2,13 @@
 import { signOut } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { Wallet, LogOut, Users, Settings, Scale } from 'lucide-react'
 
 export default function UserProfile() {
   const [user, setUser] = useState<{ name?: string | null, email?: string | null } | null>(null)
 
   useEffect(() => {
-    fetch('/api/settings')
-      .then(res => res.json())
-      .then(data => {
-        if (data.user) setUser({ name: data.user.name, email: data.user.email })
-      })
+    fetch('/api/settings').then(res => res.json()).then(data => { if (data.user) setUser({ name: data.user.name, email: data.user.email }) })
   }, [])
 
   if (!user) return <div className="h-12 w-48 animate-pulse bg-slate-200 rounded-xl"></div>
@@ -29,27 +26,24 @@ export default function UserProfile() {
       
       <div className="w-px h-8 bg-slate-200 mx-2"></div>
       
-      {/* NY LÄNK: Jävsprövning */}
-      <Link href="/conflict-check" className="text-sm font-bold text-amber-600 hover:text-amber-700 transition flex items-center gap-1">
-        <span>⚖️</span> Jäv
+      <Link href="/conflict-check" className="text-sm font-bold text-slate-500 hover:text-amber-600 transition flex items-center gap-1" title="Jävsprövning">
+        <Scale className="w-4 h-4" /> <span className="hidden md:inline">Jäv</span>
+      </Link>
+      
+      {/* NY LÄNK: EKONOMI */}
+      <Link href="/economy" className="text-sm font-bold text-slate-500 hover:text-emerald-600 transition flex items-center gap-1" title="Ekonomi">
+        <Wallet className="w-4 h-4" /> <span className="hidden md:inline">Ekonomi</span>
       </Link>
 
       <div className="w-px h-4 bg-slate-200 mx-1"></div>
 
-      <Link href="/team" className="text-sm font-bold text-slate-500 hover:text-blue-600 transition">
-        Team
-      </Link>
-      <Link href="/settings" className="text-sm font-bold text-slate-500 hover:text-blue-600 transition">
-        Inställningar
-      </Link>
+      <Link href="/team" className="text-sm font-bold text-slate-500 hover:text-blue-600 transition" title="Team"><Users className="w-4 h-4" /></Link>
+      <Link href="/settings" className="text-sm font-bold text-slate-500 hover:text-blue-600 transition" title="Inställningar"><Settings className="w-4 h-4" /></Link>
 
       <div className="w-px h-4 bg-slate-200 mx-1"></div>
       
-      <button
-        onClick={() => signOut({ callbackUrl: '/login' })}
-        className="text-sm font-bold text-slate-500 hover:text-red-600 transition"
-      >
-        Logga ut
+      <button onClick={() => signOut({ callbackUrl: '/login' })} className="text-sm font-bold text-slate-400 hover:text-red-600 transition" title="Logga ut">
+        <LogOut className="w-4 h-4" />
       </button>
     </div>
   )

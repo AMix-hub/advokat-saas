@@ -19,36 +19,41 @@ model User {
 }
 
 model Client {
-  id        String   @id @default(cuid())
-  name      String
-  email     String   @unique
-  orgNr     String?
-  cases     Case[]
-  createdAt DateTime @default(now())
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  orgNr        String?
+  // NYTT: Säljfunktioner för Compliance (KYC & GDPR)
+  kycCompleted Boolean  @default(false)
+  pepStatus    Boolean  @default(false)
+  kycNotes     String?
+  isAnonymized Boolean  @default(false)
+  
+  cases        Case[]
+  createdAt    DateTime @default(now())
 }
 
 model Case {
-  id           String      @id @default(cuid())
-  title        String
-  description  String?
-  status       String      @default("OPEN")
-  hourlyRate   Float       @default(2000)
-  clientId     String
-  client       Client      @relation(fields: [clientId], references: [id])
-  
-  assignedToId String?
-  assignedTo   User?       @relation(fields: [assignedToId], references: [id])
-
-  logs         Log[]
-  documents    Document[]
-  timeEntries  TimeEntry[]
-  tasks        Task[]
-  expenses     Expense[]   // NYTT: Koppling till utlägg
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  id            String      @id @default(cuid())
+  title         String
+  description   String?
+  status        String      @default("OPEN")
+  // NYTT: Fakturastatus för Ekonomisidan
+  invoiceStatus String      @default("UNBILLED") 
+  hourlyRate    Float       @default(2000)
+  clientId      String
+  client        Client      @relation(fields: [clientId], references: [id])
+  assignedToId  String?
+  assignedTo    User?       @relation(fields: [assignedToId], references: [id])
+  logs          Log[]
+  documents     Document[]
+  timeEntries   TimeEntry[]
+  tasks         Task[]
+  expenses      Expense[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 }
 
-// NY MODELL: Utlägg och kostnader
 model Expense {
   id          String   @id @default(cuid())
   description String
