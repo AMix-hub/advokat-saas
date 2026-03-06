@@ -66,7 +66,8 @@ export default function InvoiceManager({ caseId, timeEntries = [], expenses = []
 
   useEffect(() => {
     fetchInvoices()
-  }, [caseId])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [caseId, timeEntries.length, expenses.length])
 
   const fetchInvoices = async () => {
     try {
@@ -352,11 +353,22 @@ export default function InvoiceManager({ caseId, timeEntries = [], expenses = []
             {invoices.map((invoice) => (
               <div
                 key={invoice.id}
-                className="p-4 border border-white/[0.08] rounded-lg hover:bg-white/[0.05] transition"
+                className={`p-4 border rounded-lg transition ${
+                  invoice.status === 'DRAFT'
+                    ? 'border-emerald-500/40 bg-emerald-500/[0.04] hover:bg-emerald-500/[0.07]'
+                    : 'border-white/[0.08] hover:bg-white/[0.05]'
+                }`}
               >
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex-1">
-                    <div className="font-bold text-white">{invoice.invoiceNumber}</div>
+                    <div className="font-bold text-white flex items-center gap-2">
+                      {invoice.invoiceNumber}
+                      {invoice.status === 'DRAFT' && (
+                        <span className="text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                          Aktiv faktura
+                        </span>
+                      )}
+                    </div>
                     <div className="text-sm text-slate-400">
                       {invoice.case.client.name} • {invoice.case.title}
                     </div>
@@ -377,9 +389,42 @@ export default function InvoiceManager({ caseId, timeEntries = [], expenses = []
                   </div>
                   <div>
                     <p className="text-slate-500">Belopp</p>
-                    <p className="font-semibold text-emerald-600 text-lg">{invoice.totalAmount.toLocaleString('sv-SE')} kr</p>
+                    <p className="font-semibold text-emerald-400 text-lg">{invoice.totalAmount.toLocaleString('sv-SE')} kr</p>
                   </div>
                 </div>
+
+                {/* Fakturarader — alltid synliga för utkast-fakturor */}
+                {invoice.status === 'DRAFT' && (
+                  <div className="mt-3 mb-3 rounded-lg border border-white/[0.06] overflow-hidden">
+                    <div className="bg-white/[0.03] px-3 py-2 border-b border-white/[0.06]">
+                      <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">Fakturarader</p>
+                    </div>
+                    {invoice.items.length === 0 ? (
+                      <p className="text-slate-500 text-sm italic px-3 py-3">Inga rader ännu — tid och utlägg läggs till automatiskt.</p>
+                    ) : (
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="text-left text-slate-500 border-b border-white/[0.06]">
+                            <th className="px-3 py-2 font-semibold">Beskrivning</th>
+                            <th className="px-3 py-2 font-semibold text-right w-16">Antal</th>
+                            <th className="px-3 py-2 font-semibold text-right w-28">À-pris</th>
+                            <th className="px-3 py-2 font-semibold text-right w-28">Belopp</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {invoice.items.map((item) => (
+                            <tr key={item.id} className="border-b border-white/[0.04] last:border-0">
+                              <td className="px-3 py-2 text-slate-200">{item.description}</td>
+                              <td className="px-3 py-2 text-right text-slate-400">{item.quantity}</td>
+                              <td className="px-3 py-2 text-right text-slate-400">{item.unitPrice.toLocaleString('sv-SE')} kr</td>
+                              <td className="px-3 py-2 text-right font-semibold text-white">{item.amount.toLocaleString('sv-SE')} kr</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    )}
+                  </div>
+                )}
 
                 {/* Lägg till rader (bara för utkast) */}
                 {invoice.status === 'DRAFT' && addItemsInvoiceId === invoice.id && (
