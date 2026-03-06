@@ -1,0 +1,84 @@
+export const dynamic = 'force-dynamic'
+
+import { prisma } from '@/lib/prisma'
+import Link from 'next/link'
+import UserProfile from '@/components/UserProfile'
+import { CheckSquare, Calendar, Briefcase, ArrowRight } from 'lucide-react'
+
+export default async function GlobalTasksPage() {
+  const allTasks = await prisma.task.findMany({
+    where: { isCompleted: false },
+    include: { case: { include: { client: true } } },
+    orderBy: { dueDate: 'asc' }
+  })
+
+  return (
+    <main className="min-h-screen bg-slate-50 p-4 sm:p-8">
+      <div className="max-w-5xl mx-auto">
+        
+        <div className="flex justify-between items-center mb-10">
+          <Link href="/" className="text-blue-600 hover:text-blue-800 font-bold inline-flex items-center gap-2 transition bg-blue-50 px-4 py-2 rounded-lg text-sm">
+            &larr; Tillbaka till översikten
+          </Link>
+          <UserProfile />
+        </div>
+
+        <div className="mb-10 flex items-center gap-4">
+          <div className="w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center shadow-sm">
+            <CheckSquare className="w-7 h-7" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-extrabold text-slate-900">Mina Uppgifter</h1>
+            <p className="text-slate-500 font-medium">Byråns samlade deadlines och att-göra över alla ärenden.</p>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+          {allTasks.length === 0 ? (
+            <div className="p-12 text-center text-slate-500">
+              <CheckSquare className="w-12 h-12 mx-auto mb-4 text-emerald-400 opacity-50" />
+              <p className="text-lg font-bold">Allt är avklarat!</p>
+              <p className="text-sm">Du har inga väntande uppgifter på några ärenden.</p>
+            </div>
+          ) : (
+            <div className="divide-y divide-slate-100">
+              {allTasks.map(task => {
+                const isOverdue = task.dueDate && new Date(task.dueDate).setHours(0,0,0,0) < new Date().setHours(0,0,0,0)
+                
+                return (
+                  <div key={task.id} className="p-6 hover:bg-slate-50 transition flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-1">
+                        <h3 className={`font-bold text-lg ${isOverdue ? 'text-red-600' : 'text-slate-900'}`}>{task.title}</h3>
+                        {isOverdue && <span className="text-[10px] font-bold bg-red-100 text-red-700 px-2 py-0.5 rounded-full uppercase">Försenad</span>}
+                      </div>
+                      <p className="text-sm text-slate-500 flex items-center gap-2">
+                        <Briefcase className="w-4 h-4" /> {task.case.title} <span className="opacity-50">|</span> Klient: {task.case.client.name}
+                      </p>
+                    </div>
+                    
+                    <div className="flex items-center gap-6 w-full md:w-auto justify-between">
+                      {task.dueDate ? (
+                        <div className={`text-sm font-bold flex items-center gap-1.5 ${isOverdue ? 'text-red-600' : 'text-slate-600'}`}>
+                          <Calendar className="w-4 h-4" />
+                          {new Date(task.dueDate).toLocaleDateString('sv-SE')}
+                        </div>
+                      ) : (
+                        <div className="text-sm text-slate-400 italic">Inget datum</div>
+                      )}
+                      
+                      <Link href={`/cases/${task.caseId}`} className="bg-slate-100 text-slate-700 hover:bg-slate-200 px-4 py-2 rounded-lg font-bold text-sm transition flex items-center gap-1">
+                        Till ärendet <ArrowRight className="w-4 h-4" />
+                      </Link>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </div>
+
+      </div>
+    </main>
+  )
+}

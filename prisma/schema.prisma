@@ -14,6 +14,7 @@ model User {
   firmName  String?  @default("Advokatbyrån AB")
   bankgiro  String?  
   password  String
+  logo      String?  // NYTT: Fält för Base64-logotyp
   cases     Case[]
   createdAt DateTime @default(now())
 }
@@ -23,12 +24,10 @@ model Client {
   name         String
   email        String   @unique
   orgNr        String?
-  // NYTT: Säljfunktioner för Compliance (KYC & GDPR)
   kycCompleted Boolean  @default(false)
   pepStatus    Boolean  @default(false)
   kycNotes     String?
   isAnonymized Boolean  @default(false)
-  
   cases        Case[]
   createdAt    DateTime @default(now())
 }
@@ -38,7 +37,6 @@ model Case {
   title         String
   description   String?
   status        String      @default("OPEN")
-  // NYTT: Fakturastatus för Ekonomisidan
   invoiceStatus String      @default("UNBILLED") 
   hourlyRate    Float       @default(2000)
   clientId      String

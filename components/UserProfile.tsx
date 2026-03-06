@@ -2,7 +2,7 @@
 import { signOut } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { Wallet, LogOut, Users, Settings, Scale } from 'lucide-react'
+import { Wallet, LogOut, Users, Settings, Scale, CheckSquare } from 'lucide-react'
 
 export default function UserProfile() {
   const [user, setUser] = useState<{ name?: string | null, email?: string | null } | null>(null)
@@ -26,11 +26,15 @@ export default function UserProfile() {
       
       <div className="w-px h-8 bg-slate-200 mx-2"></div>
       
+      {/* NY LÄNK: MINA UPPGIFTER */}
+      <Link href="/tasks" className="text-sm font-bold text-slate-500 hover:text-blue-600 transition flex items-center gap-1" title="Uppgifter">
+        <CheckSquare className="w-4 h-4" /> <span className="hidden md:inline">Uppgifter</span>
+      </Link>
+
       <Link href="/conflict-check" className="text-sm font-bold text-slate-500 hover:text-amber-600 transition flex items-center gap-1" title="Jävsprövning">
         <Scale className="w-4 h-4" /> <span className="hidden md:inline">Jäv</span>
       </Link>
       
-      {/* NY LÄNK: EKONOMI */}
       <Link href="/economy" className="text-sm font-bold text-slate-500 hover:text-emerald-600 transition flex items-center gap-1" title="Ekonomi">
         <Wallet className="w-4 h-4" /> <span className="hidden md:inline">Ekonomi</span>
       </Link>
