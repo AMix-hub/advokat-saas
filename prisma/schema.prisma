@@ -21,6 +21,7 @@ model User {
   conflictLogs  ConflictLog[]
   internalComments InternalComment[]
   createdAgreements Agreement[]   @relation("CreatedBy")
+  sentMessages      Message[]      @relation("SentMessages")
   createdAt     DateTime         @default(now())
 }
 
@@ -34,6 +35,7 @@ model Client {
   kycNotes     String?
   isAnonymized Boolean  @default(false)
   cases        Case[]
+  messages     Message[]
   createdAt    DateTime @default(now())
 }
 
@@ -64,6 +66,7 @@ model Case {
   invoices      Invoice[]
   internalComments InternalComment[]
   agreements    Agreement[]
+  messages      Message[]
   createdAt     DateTime            @default(now())
   updatedAt     DateTime            @updatedAt
 }
@@ -254,6 +257,22 @@ model ActivationCode {
   expiresAt   DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+}
+
+// NY MODELL: Klientkommunikation – meddelanden mellan jurist och klient
+model Message {
+  id         String   @id @default(cuid())
+  subject    String
+  body       String   @db.Text
+  direction  String   @default("OUTBOUND") // OUTBOUND (till klient) | INBOUND (från klient)
+  isRead     Boolean  @default(false)
+  senderId   String?
+  sender     User?    @relation("SentMessages", fields: [senderId], references: [id], onDelete: SetNull)
+  clientId   String
+  client     Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  caseId     String?
+  case       Case?    @relation(fields: [caseId], references: [id], onDelete: SetNull)
+  createdAt  DateTime @default(now())
 }
 
 // NY MODELL: E-mail och SMS-logg

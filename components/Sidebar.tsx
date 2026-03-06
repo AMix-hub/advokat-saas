@@ -20,6 +20,7 @@ import {
   CalendarDays,
   FileSignature,
   KeyRound,
+  MessageSquare,
 } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 
@@ -56,6 +57,7 @@ export default function Sidebar() {
     { href: '/reports',        label: 'Rapporter',        icon: BarChart3 },
     { href: '/templates',      label: 'Mallar',           icon: FileText },
     { href: '/conflict-check', label: 'Jävsprövning',     icon: Scale },
+    { href: '/kommunikation',  label: 'Klientkommunikation', icon: MessageSquare },
     { href: '/team',           label: 'Team',             icon: Users },
     { href: '/admin/activation-codes', label: 'Åtkomstkoder', icon: KeyRound },
     { href: '/settings',       label: 'Inställningar',    icon: Settings },
