@@ -54,7 +54,7 @@ export default function SettingsPage() {
       <div className="max-w-3xl mx-auto">
         
         <div className="flex justify-between items-center mb-10">
-          <Link href="/" className="text-blue-600 hover:text-blue-800 font-bold inline-flex items-center gap-2 transition bg-blue-50 px-4 py-2 rounded-lg">
+          <Link href="/dashboard" className="text-blue-600 hover:text-blue-800 font-bold inline-flex items-center gap-2 transition bg-blue-50 px-4 py-2 rounded-lg">
             &larr; Tillbaka till översikten
           </Link>
           <UserProfile />

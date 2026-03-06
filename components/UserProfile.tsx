@@ -8,7 +8,17 @@ export default function UserProfile() {
   const [user, setUser] = useState<{ name?: string | null, email?: string | null } | null>(null)
 
   useEffect(() => {
-    fetch('/api/settings').then(res => res.json()).then(data => { if (data.user) setUser({ name: data.user.name, email: data.user.email }) })
+    const fetchUser = async () => {
+      try {
+        const res = await fetch('/api/settings')
+        if (!res.ok) throw new Error('Failed to fetch user')
+        const data = await res.json()
+        if (data.user) setUser({ name: data.user.name, email: data.user.email })
+      } catch (error) {
+        console.error('Error fetching user:', error)
+      }
+    }
+    fetchUser()
   }, [])
 
   if (!user) return <div className="h-12 w-48 animate-pulse bg-slate-200 rounded-xl"></div>

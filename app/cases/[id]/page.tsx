@@ -45,7 +45,7 @@ export default async function CaseDetails({ params }: { params: Promise<{ id: st
         
         {/* Tillbaka-knapp och profil */}
         <div className="flex justify-between items-center mb-6 sm:mb-8">
-          <Link href="/" className="text-blue-600 hover:text-blue-800 font-bold inline-flex items-center gap-1.5 transition bg-blue-50 px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm">
+          <Link href="/dashboard" className="text-blue-600 hover:text-blue-800 font-bold inline-flex items-center gap-1.5 transition bg-blue-50 px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm">
             <ArrowLeft className="w-4 h-4" /> <span className="hidden xs:inline">Tillbaka till översikten</span><span className="xs:hidden">Tillbaka</span>
           </Link>
           <UserProfile />
