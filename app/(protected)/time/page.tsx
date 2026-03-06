@@ -18,7 +18,7 @@ export default async function TimePage() {
   const totalHours = timeEntries.reduce((acc, entry) => acc + entry.hours, 0)
 
   return (
-    <main className="min-h-screen bg-slate-50 p-4 sm:p-8">
+    <main className="min-h-screen bg-slate-100 p-4 sm:p-8">
       <div className="max-w-5xl mx-auto">
 
         <div className="mb-10 flex items-center gap-4">

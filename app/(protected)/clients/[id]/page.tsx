@@ -1,7 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import UserProfile from '@/components/UserProfile'
 import ClientCompliance from '@/components/ClientCompliance' // NY IMPORT
 import { statusLabel } from '@/lib/status'
 
@@ -43,14 +42,13 @@ export default async function ClientProfilePage({ params }: { params: Promise<{ 
   })
 
   return (
-    <main className="min-h-screen bg-slate-50 p-4 sm:p-8">
+    <main className="min-h-screen bg-slate-100 p-4 sm:p-8">
       <div className="max-w-6xl mx-auto">
         
-        <div className="flex justify-between items-center mb-10">
+        <div className="mb-8">
           <Link href="/clients" className="text-blue-600 hover:text-blue-800 font-bold inline-flex items-center gap-2 transition bg-blue-50 px-4 py-2 rounded-lg">
             &larr; Tillbaka till klientregistret
           </Link>
-          <UserProfile />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">

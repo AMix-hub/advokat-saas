@@ -4,7 +4,6 @@ import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
 import { Briefcase, Plus, Clock, AlertCircle } from 'lucide-react'
 import { statusLabel, caseTypeLabel } from '@/lib/status'
-import UserProfile from '@/components/UserProfile'
 
 function getStatusBadge(status: string) {
   switch (status) {
@@ -26,13 +25,8 @@ export default async function CasesPage() {
   })
 
   return (
-    <main className="min-h-screen bg-slate-50 p-4 sm:p-8">
+    <main className="min-h-screen bg-slate-100 p-4 sm:p-8">
       <div className="max-w-6xl mx-auto">
-
-        <div className="flex justify-between items-center mb-6">
-          <div />
-          <UserProfile />
-        </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">

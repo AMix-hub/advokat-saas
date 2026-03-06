@@ -1,22 +1,19 @@
 export const dynamic = 'force-dynamic'
 
-import { BarChart3, TrendingUp } from 'lucide-react'
+import { BarChart3 } from 'lucide-react'
 import Link from 'next/link'
-import UserProfile from '@/components/UserProfile'
 import ReportsOverview from '@/components/ReportsOverview'
 import { ArrowLeft } from 'lucide-react'
 
 export default async function ReportsPage() {
   return (
-    <main className="min-h-screen bg-slate-50 p-4 sm:p-8">
+    <main className="min-h-screen bg-slate-100 p-4 sm:p-8">
       <div className="max-w-6xl mx-auto">
         
-        {/* Toppmeny */}
-        <div className="flex justify-between items-center mb-8">
+        <div className="mb-8">
           <Link href="/dashboard" className="text-blue-600 hover:text-blue-800 font-bold inline-flex items-center gap-1.5 transition bg-blue-50 px-3 py-2 rounded-lg text-sm">
             <ArrowLeft className="w-4 h-4" /> Tillbaka
           </Link>
-          <UserProfile />
         </div>
 
         {/* Header */}
