@@ -26,14 +26,86 @@ async function main() {
   })
 
   // 3. Skapa ett test-ärende
-  await prisma.case.create({
+  const testCase = await prisma.case.create({
     data: {
       title: 'Avtalsgranskning: Nybygge City',
       description: 'Genomgång av entreprenadavtal.',
       clientId: client.id,
       status: 'OPEN',
+      hourlyRate: 1500,
       logs: { create: { action: 'Ärende skapat via system-initiering.' } }
     },
+  })
+
+  // 4. Skapa test-deadlines
+  const tomorrow = new Date()
+  tomorrow.setDate(tomorrow.getDate() + 1)
+  
+  const nextWeek = new Date()
+  nextWeek.setDate(nextWeek.getDate() + 7)
+  
+  const nextMonth = new Date()
+  nextMonth.setDate(nextMonth.getDate() + 30)
+
+  await prisma.deadline.create({
+    data: {
+      title: 'Inlämning av svarsmål',
+      description: 'Inlämna svarsmål till domstolen',
+      caseId: testCase.id,
+      dueDate: nextWeek,
+      type: 'LAW_DEADLINE',
+      isCompleted: false
+    }
+  })
+
+  await prisma.deadline.create({
+    data: {
+      title: 'Domstolsförhandling',
+      description: 'Muntligt förbindelse inför Stockholm Tingsrätt',
+      caseId: testCase.id,
+      dueDate: nextMonth,
+      type: 'COURT_DATE',
+      isCompleted: false
+    }
+  })
+
+  await prisma.deadline.create({
+    data: {
+      title: 'Klientsamtal - uppdatering',
+      description: 'Ring klienten och uppdatera om ärendets status',
+      caseId: testCase.id,
+      dueDate: tomorrow,
+      type: 'REMINDER',
+      isCompleted: false
+    }
+  })
+
+  // 5. Skapa test-faktura
+  await prisma.invoice.create({
+    data: {
+      invoiceNumber: `2024-001`,
+      invoiceDate: new Date(),
+      dueDate: new Date(new Date().setDate(new Date().getDate() + 30)),
+      status: 'DRAFT',
+      totalAmount: 45000,
+      caseId: testCase.id,
+      items: {
+        create: [
+          {
+            description: 'Juridisk rådgivning - 20 timmar',
+            quantity: 20,
+            unitPrice: 1500,
+            amount: 30000
+          },
+          {
+            description: 'Dokumentgranskning',
+            quantity: 10,
+            unitPrice: 1500,
+            amount: 15000
+          }
+        ]
+      }
+    }
   })
 
   console.log('Databasen uppdaterad! Din inloggning är:')
