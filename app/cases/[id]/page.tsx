@@ -63,13 +63,19 @@ export default async function CaseDetails({ params }: { params: Promise<{ id: st
                     {caseItem.status}
                   </span>
                   
-                  {/* Ny layout med två knappar i rad */}
-                  <div className="flex gap-2">
+                  {/* Dokument & Kontroll-knappar samlade */}
+                  <div className="flex flex-wrap justify-end gap-2 mt-2">
                     <Link 
                       href={`/cases/${caseItem.id}/edit`} 
                       className="bg-white text-slate-700 border border-slate-300 px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-50 transition shadow-sm flex items-center gap-2"
                     >
                       ✏️ Redigera
+                    </Link>
+                    <Link 
+                      href={`/cases/${caseItem.id}/templates/engagement-letter`} 
+                      className="bg-indigo-50 text-indigo-700 border border-indigo-200 px-4 py-2 rounded-lg text-sm font-bold hover:bg-indigo-100 transition shadow-sm flex items-center gap-2"
+                    >
+                      📝 Uppdragsavtal
                     </Link>
                     <Link 
                       href={`/cases/${caseItem.id}/invoice`} 
