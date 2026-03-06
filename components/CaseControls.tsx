@@ -39,8 +39,8 @@ export default function CaseControls({ caseItem }: { caseItem: any }) {
     <div className="space-y-6 print:hidden">
       
       {/* FAKTURASTASUS (SÄLJFUNKTION) */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-        <h3 className="text-lg font-bold text-slate-800 mb-2 flex items-center gap-2">
+      <div className="bg-slate-900 rounded-2xl border border-white/[0.08] p-6">
+        <h3 className="text-lg font-bold text-slate-100 mb-2 flex items-center gap-2">
           <CreditCard className="w-5 h-5 text-emerald-600" /> Faktureringsstatus
         </h3>
         <p className="text-sm text-slate-500 mb-4 leading-relaxed">
@@ -52,9 +52,9 @@ export default function CaseControls({ caseItem }: { caseItem: any }) {
           onChange={handleInvoiceStatusChange}
           disabled={isSavingStatus}
           className={`w-full p-3 rounded-xl font-bold border-2 focus:outline-none transition appearance-none cursor-pointer ${
-            invoiceStatus === 'UNBILLED' ? 'border-slate-300 bg-slate-50 text-slate-700' :
-            invoiceStatus === 'SENT' ? 'border-amber-400 bg-amber-50 text-amber-800' :
-            'border-emerald-400 bg-emerald-50 text-emerald-800'
+            invoiceStatus === 'UNBILLED' ? 'border-white/10 bg-white/[0.05] text-slate-300' :
+            invoiceStatus === 'SENT' ? 'border-amber-500/30 bg-amber-500/10 text-amber-300' :
+            'border-emerald-500/30 bg-emerald-500/10 text-emerald-300'
           }`}
         >
           <option value="UNBILLED">⏳ Ej fakturerat</option>
@@ -64,8 +64,8 @@ export default function CaseControls({ caseItem }: { caseItem: any }) {
         {isSavingStatus && <p className="text-xs text-slate-400 mt-2 italic text-center">Uppdaterar...</p>}
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-red-100 p-6">
-        <h3 className="text-lg font-bold text-slate-800 mb-2">Farlig zon</h3>
+      <div className="bg-slate-900 rounded-2xl border border-red-500/10 p-6">
+        <h3 className="text-lg font-bold text-slate-100 mb-2">Farlig zon</h3>
         <p className="text-sm text-slate-500 mb-6 leading-relaxed">
           Behöver du ta bort ärendet helt? Observera att detta inte går att ångra.
         </p>
@@ -73,7 +73,7 @@ export default function CaseControls({ caseItem }: { caseItem: any }) {
         <button 
           onClick={handleDelete}
           disabled={isDeleting}
-          className="w-full bg-red-50 text-red-600 border border-red-200 px-4 py-3 rounded-xl font-bold hover:bg-red-600 hover:text-white transition disabled:opacity-50 shadow-sm flex items-center justify-center gap-2"
+          className="w-full bg-red-500/10 text-red-400 border border-red-500/20 px-4 py-3 rounded-xl font-bold hover:bg-red-600 hover:text-white transition disabled:opacity-50 flex items-center justify-center gap-2"
         >
           <Trash2 className="w-5 h-5" /> {isDeleting ? 'Raderar...' : 'Radera ärende'}
         </button>
