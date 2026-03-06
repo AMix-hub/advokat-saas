@@ -40,7 +40,7 @@ export default function ReportsOverview() {
   return (
     <div className="space-y-6">
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-slate-200">
+      <div className="flex gap-2 border-b border-white/[0.08]">
         {[
           { id: 'overview', label: '📊 Översikt', icon: BarChart3 },
           { id: 'types', label: '📁 Ärendekategorier', icon: TrendingUp },
@@ -52,7 +52,7 @@ export default function ReportsOverview() {
             className={`px-4 py-3 font-bold border-b-2 transition ${
               activeTab === tab.id
                 ? 'text-blue-600 border-blue-600'
-                : 'text-slate-500 border-transparent hover:text-slate-700'
+                : 'text-slate-500 border-transparent hover:text-slate-300'
             }`}
           >
             {tab.label}
@@ -63,11 +63,11 @@ export default function ReportsOverview() {
       {/* OVERVIEW TAB */}
       {activeTab === 'overview' && stats && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+          <div className="bg-slate-900 rounded-2xl border border-white/[0.08] p-6">
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-sm font-bold text-slate-500 mb-1">Totala ärenden</p>
-                <p className="text-3xl font-black text-slate-900">{stats.totalCases}</p>
+                <p className="text-3xl font-black text-white">{stats.totalCases}</p>
                 <p className="text-xs text-slate-500 mt-2">
                   🔵 {stats.openCases} öppna • ✅ {stats.closedCases} avslutade
                 </p>
@@ -75,7 +75,7 @@ export default function ReportsOverview() {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+          <div className="bg-slate-900 rounded-2xl border border-white/[0.08] p-6">
             <div>
               <p className="text-sm font-bold text-slate-500 mb-1">Inbetald intäkt</p>
               <p className="text-3xl font-black text-emerald-600">
@@ -84,7 +84,7 @@ export default function ReportsOverview() {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+          <div className="bg-slate-900 rounded-2xl border border-white/[0.08] p-6">
             <div>
               <p className="text-sm font-bold text-slate-500 mb-1">Loggade timmar</p>
               <p className="text-3xl font-black text-blue-600">{stats.totalHours.toFixed(1)} h</p>
@@ -100,10 +100,10 @@ export default function ReportsOverview() {
       {activeTab === 'types' && caseTypes && (
         <div className="space-y-4">
           {caseTypes.map((type) => (
-            <div key={type.type} className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+            <div key={type.type} className="bg-slate-900 rounded-2xl border border-white/[0.08] p-6">
               <div className="flex justify-between items-start mb-3">
-                <h4 className="font-bold text-slate-800">{caseTypeLabel(type.type)}</h4>
-                <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-bold">
+                <h4 className="font-bold text-slate-100">{caseTypeLabel(type.type)}</h4>
+                <span className="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-sm font-bold">
                   {type.count} st
                 </span>
               </div>
@@ -130,22 +130,22 @@ export default function ReportsOverview() {
           {profitability.slice(0, 10).map((item) => (
             <div
               key={item.caseId}
-              className={`bg-white rounded-2xl shadow-sm border-2 p-6 ${
+              className={`rounded-2xl border-2 p-6 ${
                 item.profitMargin < 20
-                  ? 'border-red-200 bg-red-50'
+                  ? 'border-red-500/20 bg-red-500/10'
                   : item.profitMargin < 40
-                  ? 'border-amber-200 bg-amber-50'
-                  : 'border-green-200 bg-green-50'
+                  ? 'border-amber-500/20 bg-amber-500/10'
+                  : 'border-emerald-500/20 bg-emerald-500/10'
               }`}
             >
               <div className="flex justify-between items-start mb-3">
-                <h4 className="font-bold text-slate-800">{item.title}</h4>
+                <h4 className="font-bold text-slate-100">{item.title}</h4>
                 <span className={`px-3 py-1 rounded-full text-sm font-bold ${
                   item.profitMargin < 20
-                    ? 'bg-red-100 text-red-700'
+                    ? 'bg-red-500/20 text-red-400'
                     : item.profitMargin < 40
-                    ? 'bg-amber-100 text-amber-700'
-                    : 'bg-green-100 text-green-700'
+                    ? 'bg-amber-500/20 text-amber-400'
+                    : 'bg-emerald-500/20 text-emerald-400'
                 }`}>
                   {item.profitMargin.toFixed(0)}% marg
                 </span>

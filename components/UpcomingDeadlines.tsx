@@ -69,10 +69,10 @@ export default function UpcomingDeadlines() {
             href={`/cases/${deadline.case.id}`}
             className={`p-3 rounded-lg border-2 transition cursor-pointer hover:shadow-md ${
               isOverdue
-                ? 'bg-red-50 border-red-200 text-red-700'
+                ? 'bg-red-500/10 border-red-500/20 text-red-400'
                 : isUrgent
-                ? 'bg-amber-50 border-amber-200 text-amber-700'
-                : 'bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100'
+                ? 'bg-amber-500/10 border-amber-500/20 text-amber-400'
+                : 'bg-blue-500/10 border-blue-500/20 text-blue-400 hover:bg-blue-500/20'
             }`}
           >
             <div className="flex justify-between items-start gap-2">

@@ -10,28 +10,28 @@ interface NotificationBadgeProps {
 export default function NotificationBadge({ type, title, description, count }: NotificationBadgeProps) {
   const config = {
     overdue: {
-      bg: 'bg-red-50 border-red-200',
-      text: 'text-red-700',
+      bg: 'bg-red-500/10 border-red-500/20',
+      text: 'text-red-400',
       icon: AlertTriangle,
-      title: 'text-red-900'
+      title: 'text-red-300'
     },
     pending: {
-      bg: 'bg-amber-50 border-amber-200',
-      text: 'text-amber-700',
+      bg: 'bg-amber-500/10 border-amber-500/20',
+      text: 'text-amber-400',
       icon: Clock,
-      title: 'text-amber-900'
+      title: 'text-amber-200'
     },
     success: {
-      bg: 'bg-green-50 border-green-200',
-      text: 'text-green-700',
+      bg: 'bg-emerald-500/10 border-emerald-500/20',
+      text: 'text-emerald-400',
       icon: CheckCircle2,
-      title: 'text-green-900'
+      title: 'text-emerald-300'
     },
     info: {
-      bg: 'bg-blue-50 border-blue-200',
-      text: 'text-blue-700',
+      bg: 'bg-blue-500/10 border-blue-500/20',
+      text: 'text-blue-400',
       icon: AlertCircle,
-      title: 'text-blue-900'
+      title: 'text-blue-300'
     }
   }
 
