@@ -17,6 +17,8 @@ import {
   Scale,
   Zap,
   Search,
+  CalendarDays,
+  FileSignature,
 } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 
@@ -42,17 +44,19 @@ export default function Sidebar() {
   }
 
   const navItems = [
-    { href: '/dashboard', label: 'Översikt', icon: Home },
-    { href: '/clients', label: 'Klientregister', icon: Users },
-    { href: '/cases', label: 'Ärenden', icon: FileText },
-    { href: '/tasks', label: 'Uppgifter', icon: CheckSquare },
-    { href: '/time', label: 'Tidsregistrering', icon: Clock },
-    { href: '/economy', label: 'Ekonomi', icon: DollarSign },
-    { href: '/reports', label: 'Rapporter', icon: BarChart3 },
-    { href: '/templates', label: 'Mallar', icon: FileText },
-    { href: '/conflict-check', label: 'Jävsprövning', icon: Scale },
-    { href: '/team', label: 'Team', icon: Users },
-    { href: '/settings', label: 'Inställningar', icon: Settings },
+    { href: '/dashboard',      label: 'Översikt',         icon: Home },
+    { href: '/clients',        label: 'Klientregister',   icon: Users },
+    { href: '/cases',          label: 'Ärenden',          icon: FileText },
+    { href: '/calendar',       label: 'Kalender',         icon: CalendarDays },
+    { href: '/tasks',          label: 'Uppgifter',        icon: CheckSquare },
+    { href: '/time',           label: 'Tidsregistrering', icon: Clock },
+    { href: '/economy',        label: 'Ekonomi',          icon: DollarSign },
+    { href: '/agreements',     label: 'Avtal',            icon: FileSignature },
+    { href: '/reports',        label: 'Rapporter',        icon: BarChart3 },
+    { href: '/templates',      label: 'Mallar',           icon: FileText },
+    { href: '/conflict-check', label: 'Jävsprövning',     icon: Scale },
+    { href: '/team',           label: 'Team',             icon: Users },
+    { href: '/settings',       label: 'Inställningar',    icon: Settings },
   ]
 
   const handleSearch = (e: React.FormEvent) => {
