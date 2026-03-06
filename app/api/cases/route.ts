@@ -1,32 +1,40 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { getToken } from 'next-auth/jwt'
 
-export async function GET() {
+export async function POST(req: NextRequest) {
   try {
-    const cases = await prisma.case.findMany({
-      include: { client: true }
-    })
-    return NextResponse.json(cases)
-  } catch (error) {
-    return NextResponse.json({ error: 'Kunde inte hämta ärenden' }, { status: 500 })
-  }
-}
+    // Hämta inloggad användare för loggboken
+    const token = await getToken({ req })
+    const user = token?.email ? await prisma.user.findUnique({ where: { email: token.email } }) : null
+    const userName = user?.name || 'En handläggare'
 
-export async function POST(req: Request) {
-  try {
-    const { title, description, clientId } = await req.json()
+    const body = await req.json()
+    
+    // Skapa det nya ärendet i databasen
     const newCase = await prisma.case.create({
       data: {
-        title,
-        description,
-        clientId,
-        logs: {
-          create: { action: 'Ärende skapat via webbgränssnitt' }
-        }
+        title: body.title,
+        description: body.description,
+        hourlyRate: parseFloat(body.hourlyRate),
+        status: 'OPEN',
+        clientId: body.clientId,
+        assignedToId: body.assignedToId || user?.id, // Sätt ansvarig
       }
     })
-    return NextResponse.json(newCase, { status: 201 })
+
+    // Skapa en första händelse i loggboken
+    await prisma.log.create({
+      data: { 
+        action: `${userName} skapade ärendet och öppnade akten.`, 
+        caseId: newCase.id 
+      }
+    })
+
+    // Returnera det nya ärendet så vi kan skicka användaren till rätt sida
+    return NextResponse.json(newCase)
   } catch (error) {
-    return NextResponse.json({ error: 'Kunde inte skapa ärende' }, { status: 500 })
+    console.error(error)
+    return NextResponse.json({ error: 'Kunde inte skapa ärendet' }, { status: 500 })
   }
 }
