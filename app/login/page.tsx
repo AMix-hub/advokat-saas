@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { Building2, Lock, Mail, ArrowRight, ShieldCheck } from 'lucide-react'
 
 export default function LoginPage() {
@@ -16,7 +17,6 @@ export default function LoginPage() {
     setIsLoading(true)
     setError('')
 
-    // Använder NextAuth för att logga in
     const res = await signIn('credentials', {
       redirect: false,
       email,
@@ -27,7 +27,6 @@ export default function LoginPage() {
       setError('Felaktig e-postadress eller lösenord.')
       setIsLoading(false)
     } else {
-      // Skickar användaren till startsidan vid lyckad inloggning
       router.push('/')
       router.refresh()
     }
@@ -92,7 +91,11 @@ export default function LoginPage() {
                 <input type="checkbox" className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-600" />
                 <span className="text-sm font-bold text-slate-600">Kom ihåg mig</span>
               </label>
-              <a href="#" className="text-sm font-bold text-blue-600 hover:text-blue-800 transition">Glömt lösenordet?</a>
+              
+              {/* HÄR ÄR DEN UPPDATERADE LÄNKEN */}
+              <Link href="/forgot-password" className="text-sm font-bold text-blue-600 hover:text-blue-800 transition">
+                Glömt lösenordet?
+              </Link>
             </div>
 
             <button 
@@ -110,9 +113,8 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* HÖGER SIDA - Branding (Syns bara på större skärmar) */}
+      {/* HÖGER SIDA - Branding */}
       <div className="hidden lg:flex w-1/2 bg-slate-900 p-12 relative overflow-hidden items-center justify-center">
-        {/* Dekorativa bakgrundselement */}
         <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-blue-600 rounded-full opacity-20 blur-3xl"></div>
         <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-80 h-80 bg-emerald-500 rounded-full opacity-10 blur-3xl"></div>
         

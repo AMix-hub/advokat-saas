@@ -16,7 +16,7 @@ model User {
   password     String
   logo         String?  
   cases        Case[]
-  conflictLogs ConflictLog[] // NYTT: Koppling till jävsloggar
+  conflictLogs ConflictLog[]
   createdAt    DateTime      @default(now())
 }
 
@@ -53,7 +53,6 @@ model Case {
   updatedAt     DateTime    @updatedAt
 }
 
-// NY MODELL: Jävsprövnings-logg (Audit Trail)
 model ConflictLog {
   id           String   @id @default(cuid())
   searchTerm   String
@@ -113,4 +112,15 @@ model CustomTemplate {
   name      String
   content   String
   createdAt DateTime @default(now())
+}
+
+// NY MODELL: För lösenordsåterställning
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  email     String
+  token     String   @unique
+  expires   DateTime
+  createdAt DateTime @default(now())
+
+  @@unique([email, token])
 }
