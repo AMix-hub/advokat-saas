@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { prisma } from '@/lib/prisma'
 import { notFound } from 'next/navigation'
 import { CheckCircle2, CircleDashed, Calendar, Briefcase, Mail, User, Info } from 'lucide-react'
@@ -19,12 +21,13 @@ export default async function ClientPortalPage({ params }: { params: Promise<{ i
     where: { id: resolvedParams.id },
     include: { 
       client: true,
-      tasks: { orderBy: { dueDate: 'asc' } } // Sortera på datum
+      tasks: { orderBy: { dueDate: 'asc' } } 
     }
   })
 
   if (!caseItem) return notFound()
 
+  // Hämtar administratören och dennes uppladdade logga
   const admin = await prisma.user.findFirst()
 
   const totalTasks = caseItem.tasks.length
@@ -32,19 +35,22 @@ export default async function ClientPortalPage({ params }: { params: Promise<{ i
   const progressPercentage = totalTasks === 0 ? (caseItem.status === 'CLOSED' ? 100 : 10) : Math.round((completedTasks / totalTasks) * 100)
   
   const statusInfo = getClientStatus(caseItem.status)
-  
-  // Plocka fram max 3 kommande (ej avklarade) uppgifter att visa säkert för klienten
   const upcomingTasks = caseItem.tasks.filter(t => !t.isCompleted).slice(0, 3)
 
   return (
     <main className="min-h-screen bg-slate-100 flex flex-col items-center py-8 px-4 sm:py-12 sm:px-6">
       <div className="max-w-3xl w-full">
         
-        {/* Header med Byråns namn */}
-        <div className="text-center mb-8 sm:mb-10">
-          <div className="w-14 h-14 sm:w-16 sm:h-16 bg-slate-900 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-            <Briefcase className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
-          </div>
+        {/* Header med Byråns namn ELLER Byråns logga */}
+        <div className="text-center mb-8 sm:mb-10 flex flex-col items-center">
+          {admin?.logo ? (
+            <img src={admin.logo} alt="Byråns logotyp" className="h-16 sm:h-20 object-contain mb-4" />
+          ) : (
+            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-slate-900 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+              <Briefcase className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+            </div>
+          )}
+          
           <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
             {admin?.firmName || 'Advokatbyrån AB'}
           </h1>
@@ -65,7 +71,6 @@ export default async function ClientPortalPage({ params }: { params: Promise<{ i
               </span>
             </div>
 
-            {/* Ärendedetaljer - Säker information */}
             <div className="grid grid-cols-2 gap-4 mb-8 bg-slate-50 p-4 rounded-2xl border border-slate-100 text-sm">
               <div>
                 <p className="text-slate-400 font-medium mb-1 flex items-center gap-1.5"><Info className="w-4 h-4" /> Ref.nummer</p>
@@ -77,7 +82,6 @@ export default async function ClientPortalPage({ params }: { params: Promise<{ i
               </div>
             </div>
 
-            {/* Förloppsmätare */}
             <div className="mb-10">
               <div className="flex justify-between items-end mb-2">
                 <span className="text-sm font-bold text-slate-600">Arbetsprocess</span>
@@ -91,7 +95,6 @@ export default async function ClientPortalPage({ params }: { params: Promise<{ i
               </div>
             </div>
 
-            {/* Nästa steg (Automatiskt från uppgifter) */}
             <div className="mb-6">
               <h3 className="font-bold text-slate-800 mb-4 text-lg">Aktuella händelser / Nästa steg</h3>
               {upcomingTasks.length === 0 ? (
@@ -120,7 +123,6 @@ export default async function ClientPortalPage({ params }: { params: Promise<{ i
             </div>
           </div>
 
-          {/* Kontaktuppgifter - Mobilanpassad stack */}
           <div className="bg-slate-900 p-6 sm:p-10 text-white flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
             <div>
               <p className="text-xs text-slate-400 font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5">

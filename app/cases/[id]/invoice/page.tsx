@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { prisma } from '@/lib/prisma'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
@@ -11,21 +13,20 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
     include: { 
       client: true, 
       timeEntries: { orderBy: { createdAt: 'asc' } },
-      expenses: { orderBy: { createdAt: 'asc' } } // Hämtar in utläggen
+      expenses: { orderBy: { createdAt: 'asc' } }
     }
   })
 
   if (!caseItem) return notFound()
 
+  // Hämtar den första användaren/admin för att få byråuppgifter och LOGOTYP
   const user = await prisma.user.findFirst()
 
-  // Uträkningar
   const totalHours = caseItem.timeEntries.reduce((acc, curr) => acc + curr.hours, 0)
   const subTotalTime = totalHours * caseItem.hourlyRate
   const vat = subTotalTime * 0.25
   const totalExpenses = caseItem.expenses.reduce((acc, curr) => acc + curr.amount, 0)
   
-  // Totalsumma: Arvode + Moms + Utlägg
   const total = subTotalTime + vat + totalExpenses
 
   const today = new Date().toLocaleDateString('sv-SE')
@@ -50,8 +51,13 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                 <h1 className="text-4xl font-black tracking-tight mb-2">FAKTURAUNDERLAG</h1>
                 <p className="text-slate-500 font-medium">Ärende: {caseItem.title}</p>
               </div>
-              <div className="text-right">
-                <h2 className="text-2xl font-bold text-slate-800">{user?.firmName || 'Advokatbyrån AB'}</h2>
+              <div className="text-right flex flex-col items-end">
+                {/* LOGOTYP VISNING */}
+                {user?.logo ? (
+                  <img src={user.logo} alt="Byråns logotyp" className="max-h-20 max-w-[200px] object-contain mb-3" />
+                ) : (
+                  <h2 className="text-2xl font-bold text-slate-800">{user?.firmName || 'Advokatbyrån AB'}</h2>
+                )}
                 <p className="text-slate-500 mt-1">{user?.name || 'Handläggare'}</p>
                 <p className="text-slate-500">{user?.email}</p>
               </div>
@@ -86,7 +92,6 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                 </tr>
               </thead>
               <tbody>
-                {/* Tidsloggar */}
                 {caseItem.timeEntries.map(entry => (
                   <tr key={entry.id} className="border-b border-slate-100">
                     <td className="py-4 text-slate-600">{new Date(entry.createdAt).toLocaleDateString('sv-SE')}</td>
@@ -96,7 +101,6 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                   </tr>
                 ))}
                 
-                {/* Utlägg (NYTT) */}
                 {caseItem.expenses.map(expense => (
                   <tr key={expense.id} className="border-b border-slate-100 bg-slate-50/50">
                     <td className="py-4 text-slate-600">{new Date(expense.createdAt).toLocaleDateString('sv-SE')}</td>
@@ -116,7 +120,6 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
               </tbody>
             </table>
 
-            {/* Uppdaterad Summering */}
             <div className="flex justify-end">
               <div className="w-80">
                 <div className="flex justify-between py-2 text-slate-600">
