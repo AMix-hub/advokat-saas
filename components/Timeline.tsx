@@ -37,18 +37,18 @@ export default function Timeline({ events, title }: TimelineProps) {
 
   const getColor = (type?: string) => {
     switch (type) {
-      case 'create': return 'text-blue-600 bg-blue-50'
-      case 'update': return 'text-amber-600 bg-amber-50'
-      case 'delete': return 'text-red-600 bg-red-50'
-      case 'comment': return 'text-purple-600 bg-purple-50'
-      case 'status': return 'text-green-600 bg-green-50'
-      default: return 'text-slate-600 bg-slate-50'
+      case 'create': return 'text-blue-400 bg-blue-500/10'
+      case 'update': return 'text-amber-400 bg-amber-500/10'
+      case 'delete': return 'text-red-400 bg-red-500/10'
+      case 'comment': return 'text-purple-400 bg-purple-500/10'
+      case 'status': return 'text-emerald-400 bg-emerald-500/10'
+      default: return 'text-slate-400 bg-white/[0.04]'
     }
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-      <h3 className="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
+    <div className="bg-slate-900 rounded-2xl border border-white/[0.08] p-6">
+      <h3 className="text-lg font-bold text-slate-100 mb-6 flex items-center gap-2">
         <Clock className="w-5 h-5 text-slate-500" /> 
         {title || 'Aktivitetslogg'}
       </h3>
@@ -60,15 +60,15 @@ export default function Timeline({ events, title }: TimelineProps) {
           const isLast = index === events.length - 1
 
           return (
-            <div key={event.id} className={`flex gap-4 pb-6 ${!isLast ? 'border-b border-slate-100' : ''}`}>
+            <div key={event.id} className={`flex gap-4 pb-6 ${!isLast ? 'border-b border-white/[0.06]' : ''}`}>
               {/* Icon */}
-              <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${colorClass} ring-4 ring-white`}>
+              <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${colorClass} ring-4 ring-slate-900`}>
                 <Icon className="w-5 h-5" />
               </div>
 
               {/* Content */}
               <div className="flex-1 pt-1">
-                <p className="font-semibold text-slate-800">{event.action}</p>
+                <p className="font-semibold text-slate-100">{event.action}</p>
                 {event.user && (
                   <p className="text-xs text-slate-500 mt-1 font-bold">
                     av {event.user}

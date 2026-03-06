@@ -14,17 +14,17 @@ export default async function EditCasePage({ params }: { params: Promise<{ id: s
   if (!caseItem) return notFound()
 
   return (
-    <main className="min-h-screen bg-slate-100 p-8">
+    <main className="min-h-screen bg-slate-950 p-8">
       <div className="max-w-3xl mx-auto">
         <div className="mb-8">
-          <Link href={`/cases/${caseItem.id}`} className="text-blue-600 hover:text-blue-800 font-bold inline-flex items-center gap-2 transition bg-blue-50 px-4 py-2 rounded-lg">
+          <Link href={`/cases/${caseItem.id}`} className="text-blue-400 hover:text-blue-300 font-bold inline-flex items-center gap-2 transition bg-blue-500/10 px-4 py-2 rounded-lg">
             &larr; Avbryt och gå tillbaka
           </Link>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-          <h1 className="text-3xl font-extrabold text-slate-900 mb-2">Redigera ärende</h1>
-          <p className="text-slate-600 mb-8">
+        <div className="bg-slate-900 rounded-2xl border border-white/[0.08] p-8">
+          <h1 className="text-3xl font-extrabold text-white mb-2">Redigera ärende</h1>
+          <p className="text-slate-400 mb-8">
             Uppdatera information för <span className="font-bold">{caseItem.title}</span> (Klient: {caseItem.client.name})
           </p>
           
