@@ -1,8 +1,12 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { getToken } from 'next-auth/jwt'
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
+    const token = await getToken({ req })
+    if (!token?.email) return NextResponse.json({ error: 'Ej inloggad' }, { status: 401 })
+
     const body = await req.json()
     const task = await prisma.task.create({
       data: {
@@ -23,8 +27,11 @@ export async function POST(req: Request) {
   }
 }
 
-export async function PATCH(req: Request) {
+export async function PATCH(req: NextRequest) {
   try {
+    const token = await getToken({ req })
+    if (!token?.email) return NextResponse.json({ error: 'Ej inloggad' }, { status: 401 })
+
     const body = await req.json()
     const task = await prisma.task.update({
       where: { id: body.id },
@@ -36,8 +43,11 @@ export async function PATCH(req: Request) {
   }
 }
 
-export async function DELETE(req: Request) {
+export async function DELETE(req: NextRequest) {
   try {
+    const token = await getToken({ req })
+    if (!token?.email) return NextResponse.json({ error: 'Ej inloggad' }, { status: 401 })
+
     const body = await req.json()
     await prisma.task.delete({ where: { id: body.id } })
     return NextResponse.json({ success: true })

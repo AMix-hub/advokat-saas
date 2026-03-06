@@ -1,6 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useState } from 'react'
 import { 
   Home, 
   Users, 
@@ -12,12 +13,15 @@ import {
   BarChart3,
   AlertCircle,
   Calendar,
-  LogOut
+  LogOut,
+  Menu,
+  X
 } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 
 export default function Sidebar() {
   const pathname = usePathname()
+  const [mobileOpen, setMobileOpen] = useState(false)
 
   const isActive = (route: string) => {
     if (route === '/dashboard') return pathname === '/dashboard'
@@ -31,16 +35,17 @@ export default function Sidebar() {
     { href: '/tasks', label: 'Uppgifter', icon: CheckSquare },
     { href: '/time', label: 'Tidsregistrering', icon: Clock },
     { href: '/economy', label: 'Ekonomi', icon: DollarSign },
+    { href: '/reports', label: 'Rapporter', icon: BarChart3 },
     { href: '/templates', label: 'Mallar', icon: FileText },
     { href: '/team', label: 'Team', icon: Users },
     { href: '/settings', label: 'Inställningar', icon: Settings },
   ]
 
-  return (
-    <aside className="w-64 bg-white border-r border-slate-200 min-h-screen sticky top-0 hidden lg:flex flex-col shadow-sm">
+  const sidebarContent = (
+    <>
       {/* Logo */}
       <div className="p-6 border-b border-slate-200">
-        <Link href="/dashboard" className="flex items-center gap-2 group">
+        <Link href="/dashboard" className="flex items-center gap-2 group" onClick={() => setMobileOpen(false)}>
           <div className="w-10 h-10 bg-gradient-to-br from-slate-900 to-blue-900 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-blue-500/50 transition-shadow">
             <FileText className="w-6 h-6 text-white" />
           </div>
@@ -61,6 +66,7 @@ export default function Sidebar() {
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={() => setMobileOpen(false)}
                 className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all font-bold text-sm ${
                   active
                     ? 'bg-blue-50 text-blue-700 border border-blue-200 shadow-sm'
@@ -85,6 +91,41 @@ export default function Sidebar() {
           Logga ut
         </button>
       </div>
-    </aside>
+    </>
+  )
+
+  return (
+    <>
+      {/* Mobile hamburger button */}
+      <button
+        onClick={() => setMobileOpen(true)}
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white border border-slate-200 rounded-lg shadow-md"
+        aria-label="Öppna meny"
+      >
+        <Menu className="w-6 h-6 text-slate-700" />
+      </button>
+
+      {/* Mobile overlay */}
+      {mobileOpen && (
+        <div className="lg:hidden fixed inset-0 z-50 flex">
+          <div className="fixed inset-0 bg-black/30" onClick={() => setMobileOpen(false)} />
+          <aside className="relative w-72 bg-white flex flex-col shadow-xl z-10">
+            <button
+              onClick={() => setMobileOpen(false)}
+              className="absolute top-4 right-4 p-1 text-slate-400 hover:text-slate-700"
+              aria-label="Stäng meny"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            {sidebarContent}
+          </aside>
+        </div>
+      )}
+
+      {/* Desktop sidebar */}
+      <aside className="w-64 bg-white border-r border-slate-200 min-h-screen sticky top-0 hidden lg:flex flex-col shadow-sm">
+        {sidebarContent}
+      </aside>
+    </>
   )
 }

@@ -2,7 +2,6 @@ export const dynamic = 'force-dynamic'
 
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
-import UserProfile from '@/components/UserProfile'
 import { CheckSquare, Calendar, Briefcase, ArrowRight } from 'lucide-react'
 
 export default async function GlobalTasksPage() {
@@ -15,13 +14,6 @@ export default async function GlobalTasksPage() {
   return (
     <main className="min-h-screen bg-slate-50 p-4 sm:p-8">
       <div className="max-w-5xl mx-auto">
-        
-        <div className="flex justify-between items-center mb-10">
-          <Link href="/dashboard" className="text-blue-600 hover:text-blue-800 font-bold inline-flex items-center gap-2 transition bg-blue-50 px-4 py-2 rounded-lg text-sm">
-            &larr; Tillbaka till översikten
-          </Link>
-          <UserProfile />
-        </div>
 
         <div className="mb-10 flex items-center gap-4">
           <div className="w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center shadow-sm">
