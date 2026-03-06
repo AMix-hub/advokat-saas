@@ -25,6 +25,36 @@ export async function POST(req: NextRequest) {
         caseId: body.caseId 
       }
     })
+
+    // Lägg automatiskt till tidsraden på aktiv utkast-faktura om en finns
+    const draftInvoice = await prisma.invoice.findFirst({
+      where: { caseId: body.caseId, status: 'DRAFT' }
+    })
+
+    if (draftInvoice) {
+      const caseData = await prisma.case.findUnique({
+        where: { id: body.caseId },
+        select: { hourlyRate: true }
+      })
+      const hourlyRate = caseData?.hourlyRate ?? 0
+      const hours = parseFloat(body.hours)
+      const itemAmount = hours * hourlyRate
+
+      await prisma.invoiceItem.create({
+        data: {
+          description: body.description,
+          quantity: hours,
+          unitPrice: hourlyRate,
+          amount: itemAmount,
+          invoiceId: draftInvoice.id
+        }
+      })
+
+      await prisma.invoice.update({
+        where: { id: draftInvoice.id },
+        data: { totalAmount: { increment: itemAmount } }
+      })
+    }
     
     return NextResponse.json(timeEntry)
   } catch (error) {
