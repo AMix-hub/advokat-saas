@@ -8,15 +8,16 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  firmName  String?  @default("Advokatbyrån AB")
-  bankgiro  String?  
-  password  String
-  logo      String?  // NYTT: Fält för Base64-logotyp
-  cases     Case[]
-  createdAt DateTime @default(now())
+  id           String        @id @default(cuid())
+  email        String        @unique
+  name         String?
+  firmName     String?       @default("Advokatbyrån AB")
+  bankgiro     String?  
+  password     String
+  logo         String?  
+  cases        Case[]
+  conflictLogs ConflictLog[] // NYTT: Koppling till jävsloggar
+  createdAt    DateTime      @default(now())
 }
 
 model Client {
@@ -50,6 +51,16 @@ model Case {
   expenses      Expense[]
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
+}
+
+// NY MODELL: Jävsprövnings-logg (Audit Trail)
+model ConflictLog {
+  id           String   @id @default(cuid())
+  searchTerm   String
+  matchesFound Int
+  userId       String?
+  user         User?    @relation(fields: [userId], references: [id])
+  createdAt    DateTime @default(now())
 }
 
 model Expense {

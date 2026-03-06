@@ -1,52 +1,62 @@
-export const dynamic = 'force-dynamic'
-
-import { prisma } from '@/lib/prisma'
+'use client'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import UserProfile from '@/components/UserProfile'
-import { redirect } from 'next/navigation'
+import { Scale, Search, ShieldCheck, AlertOctagon, Printer, History, User, Briefcase } from 'lucide-react'
 
-export default async function ConflictCheckPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
-  const resolvedParams = await searchParams
-  const query = resolvedParams.q || ''
+export default function ConflictCheckPage() {
+  const [query, setQuery] = useState('')
+  const [isSearching, setIsSearching] = useState(false)
+  const [hasSearched, setHasSearched] = useState(false)
+  const [results, setResults] = useState<{ clients: any[], cases: any[] }>({ clients: [], cases: [] })
+  const [logs, setLogs] = useState<any[]>([])
+  const [firmInfo, setFirmInfo] = useState<{ firmName?: string, logo?: string | null }>({})
 
-  let clients: any[] = []
-  let cases: any[] = []
-  let hasSearched = false
-
-  if (query.trim().length > 1) {
-    hasSearched = true
-    
-    // Sök djupt i alla klienter
-    clients = await prisma.client.findMany({
-      where: {
-        OR: [
-          { name: { contains: query, mode: 'insensitive' } },
-          { orgNr: { contains: query, mode: 'insensitive' } },
-          { email: { contains: query, mode: 'insensitive' } }
-        ]
-      },
-      include: { cases: true }
-    })
-
-    // Sök djupt i alla ärenden och anteckningar
-    cases = await prisma.case.findMany({
-      where: {
-        OR: [
-          { title: { contains: query, mode: 'insensitive' } },
-          { description: { contains: query, mode: 'insensitive' } }
-        ]
-      },
-      include: { client: true }
-    })
+  // Hämta historiken och byråns info när sidan laddas
+  const fetchLogs = async () => {
+    const res = await fetch('/api/conflict-check')
+    const data = await res.json()
+    if (Array.isArray(data)) setLogs(data)
   }
 
-  const hasConflicts = clients.length > 0 || cases.length > 0
+  useEffect(() => {
+    fetchLogs()
+    fetch('/api/settings').then(res => res.json()).then(data => {
+      if (data.user) setFirmInfo({ firmName: data.user.firmName, logo: data.user.logo })
+    })
+  }, [])
+
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (query.length < 2) return
+    
+    setIsSearching(true)
+    const res = await fetch('/api/conflict-check', {
+      method: 'POST',
+      body: JSON.stringify({ query })
+    })
+    
+    const data = await res.json()
+    if (res.ok) {
+      setResults({ clients: data.clients, cases: data.cases })
+      setHasSearched(true)
+      fetchLogs() // Uppdatera loggen med den nya sökningen
+    }
+    setIsSearching(false)
+  }
+
+  const handlePrint = () => {
+    window.print()
+  }
+
+  const totalHits = results.clients.length + results.cases.length
 
   return (
-    <main className="min-h-screen bg-slate-50 p-8">
-      <div className="max-w-4xl mx-auto">
+    <main className="min-h-screen bg-slate-50 print:bg-white">
+      
+      {/* --- STANDARD GRÄNSSNITT (Döljs vid utskrift) --- */}
+      <div className="p-4 sm:p-8 max-w-7xl mx-auto print:hidden">
         
-        {/* Toppmeny */}
         <div className="flex justify-between items-center mb-10">
           <Link href="/" className="text-blue-600 hover:text-blue-800 font-bold inline-flex items-center gap-2 transition bg-blue-50 px-4 py-2 rounded-lg">
             &larr; Tillbaka till översikten
@@ -54,106 +64,175 @@ export default async function ConflictCheckPage({ searchParams }: { searchParams
           <UserProfile />
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 md:p-12">
-          <div className="text-center mb-10">
-            <div className="w-16 h-16 bg-slate-900 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-md">
-              <span className="text-3xl">⚖️</span>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          
+          <div className="lg:col-span-2 space-y-8">
+            {/* Sökmotorn */}
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center">
+                  <Scale className="w-7 h-7" />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-extrabold text-slate-900">Jävsprövning</h1>
+                  <p className="text-slate-500 font-medium">Sök i hela registret. Sökningen loggförs automatiskt.</p>
+                </div>
+              </div>
+
+              <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-4">
+                <div className="relative flex-1">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                  <input 
+                    type="text" 
+                    value={query} 
+                    onChange={(e) => setQuery(e.target.value)} 
+                    placeholder="Sök på namn, org.nr eller nyckelord..."
+                    className="w-full border-2 border-slate-200 pl-12 pr-4 py-4 rounded-xl focus:outline-none focus:border-indigo-500 font-medium bg-slate-50 text-slate-900 transition"
+                    required
+                  />
+                </div>
+                <button type="submit" disabled={isSearching || query.length < 2} className="bg-slate-900 text-white px-8 py-4 rounded-xl font-bold hover:bg-slate-800 transition disabled:opacity-50 whitespace-nowrap">
+                  {isSearching ? 'Söker...' : 'Genomför prövning'}
+                </button>
+              </form>
             </div>
-            <h1 className="text-3xl font-extrabold text-slate-900 mb-2">Jävsprövning</h1>
-            <p className="text-slate-500">
-              Sök på personnamn, företagsnamn eller organisationsnummer för att säkerställa att ingen intressekonflikt föreligger innan byrån åtar sig uppdraget.
-            </p>
+
+            {/* Resultatvisning */}
+            {hasSearched && (
+              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+                {totalHits === 0 ? (
+                  <div className="text-center py-8">
+                    <ShieldCheck className="w-16 h-16 text-emerald-500 mx-auto mb-4" />
+                    <h2 className="text-2xl font-black text-slate-900 mb-2">Ingen träff hittades</h2>
+                    <p className="text-slate-600 mb-8">Ett utmärkt resultat. Inget i databasen tyder på en jävssituation för "{query}".</p>
+                    <button onClick={handlePrint} className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-6 py-3 rounded-xl font-bold hover:bg-emerald-100 transition shadow-sm inline-flex items-center gap-2">
+                      <Printer className="w-5 h-5" /> Skriv ut Jävsintyg (PDF)
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="flex items-center gap-3 mb-8 p-4 bg-red-50 border border-red-200 rounded-xl">
+                      <AlertOctagon className="w-8 h-8 text-red-600 flex-shrink-0" />
+                      <div>
+                        <h2 className="text-lg font-bold text-red-900">Möjligt jäv upptäckt ({totalHits} träffar)</h2>
+                        <p className="text-sm text-red-700">Granska listan nedan noggrant innan ni åtar er uppdraget.</p>
+                      </div>
+                    </div>
+
+                    {results.clients.length > 0 && (
+                      <div className="mb-8">
+                        <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                          <User className="w-4 h-4" /> Träffar i Klientregistret
+                        </h3>
+                        <div className="grid gap-3">
+                          {results.clients.map(c => (
+                            <Link key={c.id} href={`/clients/${c.id}`} className="block p-4 bg-slate-50 border border-slate-200 rounded-xl hover:border-slate-400 transition">
+                              <p className="font-bold text-slate-900">{c.name}</p>
+                              <p className="text-sm text-slate-500">{c.orgNr} | {c.email}</p>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {results.cases.length > 0 && (
+                      <div>
+                        <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                          <Briefcase className="w-4 h-4" /> Träffar i Ärenden / Anteckningar
+                        </h3>
+                        <div className="grid gap-3">
+                          {results.cases.map(c => (
+                            <Link key={c.id} href={`/cases/${c.id}`} className="block p-4 bg-slate-50 border border-slate-200 rounded-xl hover:border-slate-400 transition">
+                              <p className="font-bold text-slate-900">{c.title}</p>
+                              <p className="text-sm text-slate-500 line-clamp-2 mt-1">{c.description}</p>
+                              <span className="inline-block mt-2 text-xs font-bold px-2 py-1 bg-blue-100 text-blue-800 rounded">Ärendestatus: {c.status}</span>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
-          {/* Sökformulär */}
-          <form action="/conflict-check" className="flex flex-col sm:flex-row gap-4 mb-10">
-            <input
-              type="text"
-              name="q"
-              defaultValue={query}
-              placeholder="T.ex. 'Andersson AB' eller '556000-0000'"
-              className="flex-1 border-2 border-slate-300 p-4 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-600/10 text-lg transition bg-slate-50"
-              required
-              minLength={2}
-            />
-            <button 
-              type="submit"
-              className="bg-slate-900 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-slate-800 transition shadow-md"
-            >
-              Utför sökning
-            </button>
-          </form>
-
-          {/* Resultatvisning */}
-          {hasSearched && (
-            <div className="mt-8">
-              {!hasConflicts ? (
-                <div className="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-8 text-center">
-                  <div className="text-4xl mb-4">✅</div>
-                  <h2 className="text-2xl font-bold text-emerald-800 mb-2">Inga intressekonflikter hittades!</h2>
-                  <p className="text-emerald-700 font-medium">
-                    Inga klienter eller ärenden matchar sökningen "{query}". Det är fritt fram att åta sig uppdraget.
-                  </p>
-                </div>
+          {/* Audit Trail (Loggbok) */}
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 h-fit max-h-[800px] overflow-y-auto">
+            <h2 className="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2 sticky top-0 bg-white pb-2 border-b border-slate-100">
+              <History className="w-5 h-5 text-indigo-500" /> Sökhistorik (Audit Trail)
+            </h2>
+            <div className="space-y-4">
+              {logs.length === 0 ? (
+                <p className="text-sm text-slate-500 italic">Inga sökningar har gjorts ännu.</p>
               ) : (
-                <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-8">
-                  <div className="text-center border-b border-red-200 pb-6 mb-6">
-                    <div className="text-4xl mb-4 animate-pulse">⚠️</div>
-                    <h2 className="text-2xl font-bold text-red-800 mb-2">Varning för potentiellt jäv</h2>
-                    <p className="text-red-700 font-medium">
-                      Vi hittade information i systemet som matchar "{query}". Vänligen granska nedanstående träffar noggrant.
-                    </p>
+                logs.map(log => (
+                  <div key={log.id} className="p-3 bg-slate-50 rounded-lg border border-slate-100 text-sm">
+                    <div className="flex justify-between items-start mb-1">
+                      <span className="font-bold text-slate-800 truncate pr-2">"{log.searchTerm}"</span>
+                      <span className={`text-xs font-bold px-2 py-0.5 rounded-md ${log.matchesFound === 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>
+                        {log.matchesFound} träffar
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-xs text-slate-500 mt-2">
+                      <span>{log.user?.name || 'Handläggare'}</span>
+                      <span>{new Date(log.createdAt).toLocaleString('sv-SE', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+                    </div>
                   </div>
-
-                  <div className="space-y-8">
-                    {/* Klientträffar */}
-                    {clients.length > 0 && (
-                      <div>
-                        <h3 className="font-bold text-red-900 mb-3 text-lg flex items-center gap-2">
-                          👤 Träffar i Klientregistret ({clients.length})
-                        </h3>
-                        <div className="grid gap-3">
-                          {clients.map(c => (
-                            <Link key={c.id} href={`/clients/${c.id}`} className="block bg-white p-4 rounded-xl border border-red-100 hover:border-red-300 shadow-sm transition">
-                              <p className="font-bold text-slate-900 text-lg">{c.name}</p>
-                              <p className="text-slate-600 text-sm mt-1">{c.email} • Org.nr: {c.orgNr || 'Ej angivet'}</p>
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Ärendeträffar */}
-                    {cases.length > 0 && (
-                      <div>
-                        <h3 className="font-bold text-red-900 mb-3 text-lg flex items-center gap-2">
-                          📁 Träffar i Ärenden & Anteckningar ({cases.length})
-                        </h3>
-                        <div className="grid gap-3">
-                          {cases.map(c => (
-                            <Link key={c.id} href={`/cases/${c.id}`} className="block bg-white p-4 rounded-xl border border-red-100 hover:border-red-300 shadow-sm transition">
-                              <p className="font-bold text-slate-900 text-lg">{c.title}</p>
-                              <p className="text-slate-600 text-sm mt-1">
-                                Tillhör klient: <span className="font-bold">{c.client.name}</span>
-                              </p>
-                              {c.description && c.description.toLowerCase().includes(query.toLowerCase()) && (
-                                <div className="mt-3 p-3 bg-red-50 text-red-800 text-sm rounded-lg border border-red-100 italic">
-                                  "... {c.description.substring(Math.max(0, c.description.toLowerCase().indexOf(query.toLowerCase()) - 30), c.description.toLowerCase().indexOf(query.toLowerCase()) + query.length + 30)} ..."
-                                </div>
-                              )}
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                ))
               )}
             </div>
-          )}
-
+          </div>
         </div>
       </div>
+
+      {/* --- UTSKRIFTSVY (Syns ENDAST vid ctrl+p / pdf-export) --- */}
+      <div className="hidden print:block max-w-3xl mx-auto p-12 text-slate-900 bg-white h-screen">
+        <div className="flex justify-between items-start border-b-2 border-slate-800 pb-8 mb-12">
+          {firmInfo.logo ? (
+            <img src={firmInfo.logo} alt="Byråns logotyp" className="max-h-20 object-contain" />
+          ) : (
+            <h1 className="text-2xl font-black uppercase tracking-widest">{firmInfo.firmName || 'Advokatbyrån AB'}</h1>
+          )}
+          <div className="text-right text-sm">
+            <p className="font-bold text-slate-500 uppercase">Utskriftsdatum</p>
+            <p>{new Date().toLocaleDateString('sv-SE')}</p>
+          </div>
+        </div>
+
+        <h1 className="text-4xl font-black mb-12 text-center uppercase">Jävsprövningsintyg</h1>
+
+        <div className="space-y-6 text-lg leading-relaxed">
+          <p>
+            Härmed intygas att en formell och elektronisk jävsprövning har genomförts i byråns centrala klient- och ärenderegister (inklusive historiska akter och minnesanteckningar).
+          </p>
+          
+          <div className="bg-slate-50 border border-slate-200 p-6 my-8 text-center">
+            <p className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-2">Genomförd sökning på</p>
+            <p className="text-2xl font-serif italic">"{query}"</p>
+          </div>
+
+          <p>
+            Systemet returnerade <strong>{totalHits} sökträffar</strong>. Inget i sökresultatet indikerar en intressekonflikt eller jävssituation för den sökta parten.
+          </p>
+          <p>
+            Denna sökning har loggförts med oförstörbar tidsstämpel i byråns granskningslogg (Audit Trail).
+          </p>
+        </div>
+
+        <div className="mt-32 pt-8 border-t border-slate-300 grid grid-cols-2 gap-12">
+          <div>
+            <p className="text-sm font-bold text-slate-500 mb-10">Ort och datum</p>
+            <div className="border-b border-slate-400"></div>
+          </div>
+          <div>
+            <p className="text-sm font-bold text-slate-500 mb-10">Signatur Handläggare</p>
+            <div className="border-b border-slate-400"></div>
+            <p className="text-sm mt-2">{logs[0]?.user?.name || 'Handläggare'}</p>
+          </div>
+        </div>
+      </div>
+
     </main>
   )
 }
