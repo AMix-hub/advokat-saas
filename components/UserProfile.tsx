@@ -29,7 +29,13 @@ export default function UserProfile() {
       
       <div className="w-px h-8 bg-slate-200 mx-2"></div>
       
-      {/* LÄNKAR TILL TEAM OCH INSTÄLLNINGAR */}
+      {/* NY LÄNK: Jävsprövning */}
+      <Link href="/conflict-check" className="text-sm font-bold text-amber-600 hover:text-amber-700 transition flex items-center gap-1">
+        <span>⚖️</span> Jäv
+      </Link>
+
+      <div className="w-px h-4 bg-slate-200 mx-1"></div>
+
       <Link href="/team" className="text-sm font-bold text-slate-500 hover:text-blue-600 transition">
         Team
       </Link>
