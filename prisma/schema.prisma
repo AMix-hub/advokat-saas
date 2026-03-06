@@ -83,3 +83,12 @@ model TimeEntry {
   case        Case     @relation(fields: [caseId], references: [id])
   createdAt   DateTime @default(now())
 }
+
+// Lägg till detta längst ner i filen, under dina andra modeller:
+
+model CustomTemplate {
+  id        String   @id @default(cuid())
+  name      String   // Namnet på mallen (t.ex. "Samboavtal")
+  content   String   // Själva texten med {{KODER}}
+  createdAt DateTime @default(now())
+}
