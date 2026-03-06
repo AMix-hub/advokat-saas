@@ -26,6 +26,16 @@ function getStatusBadge(status: string) {
   }
 }
 
+function statusLabel(status: string) {
+  switch (status) {
+    case 'OPEN': return 'Öppen'
+    case 'PENDING': return 'Pågående'
+    case 'CLOSED': return 'Stängd'
+    case 'ARCHIVED': return 'Arkiverad'
+    default: return status
+  }
+}
+
 export default async function CaseDetails({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
 
@@ -76,7 +86,7 @@ export default async function CaseDetails({ params }: { params: Promise<{ id: st
                 <div className="w-full md:w-auto flex flex-col items-start md:items-end gap-3">
                   <span className={`text-xs font-bold px-3 py-1.5 rounded-full border flex items-center gap-1.5 w-fit ${getStatusBadge(caseItem.status)}`}>
                     {caseItem.status === 'PENDING' && <AlertCircle className="w-3 h-3" />}
-                    {caseItem.status}
+                    {statusLabel(caseItem.status)}
                   </span>
                   
                   {/* Action-knappar (Staplas på mobil, rad på dator) */}

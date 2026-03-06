@@ -9,6 +9,16 @@ import FloatingActionButton from '@/components/FloatingActionButton'
 import NotificationBadge from '@/components/NotificationBadge'
 import { Building2, Download, Plus, Calendar, Clock, FileText, Briefcase, CheckCircle2, CircleDashed, AlertCircle } from 'lucide-react'
 
+function statusLabel(status: string) {
+  switch (status) {
+    case 'OPEN': return 'Öppen'
+    case 'PENDING': return 'Pågående'
+    case 'CLOSED': return 'Stängd'
+    case 'ARCHIVED': return 'Arkiverad'
+    default: return status
+  }
+}
+
 export default async function Dashboard() {
   const cases = await prisma.case.findMany({
     include: {
@@ -92,15 +102,15 @@ export default async function Dashboard() {
             {overdeadlines.length > 0 && (
               <NotificationBadge
                 type="overdue"
-                title="Överförfallna deadlines"
-                description={`Du har ${overdeadlines.length} deadline${overdeadlines.length !== 1 ? 's' : ''} som är försenta`}
+                title="Förfallna deadlines"
+                description={`Du har ${overdeadlines.length} deadline${overdeadlines.length !== 1 ? 's' : ''} som är försenade`}
                 count={overdeadlines.length}
               />
             )}
             {unpaidInvoices.length > 0 && (
               <NotificationBadge
                 type="pending"
-                title="Obetälda fakturor"
+                title="Obetalda fakturor"
                 description={`${unpaidInvoices.length} faktura${unpaidInvoices.length !== 1 ? 'r' : ''} väntar på betalning`}
                 count={unpaidInvoices.length}
               />
@@ -202,7 +212,7 @@ export default async function Dashboard() {
                           'bg-slate-100 text-slate-600 border-slate-300'
                         }`}>
                           {caseItem.status === 'PENDING' && <AlertCircle className="w-3 h-3" />}
-                          {caseItem.status}
+                          {statusLabel(caseItem.status)}
                         </span>
                       </div>
                     </div>

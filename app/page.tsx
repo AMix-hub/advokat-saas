@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Building2, ShieldCheck, ArrowRight, LayoutDashboard, Clock, Scale, Users, FileText, CheckCircle2 } from 'lucide-react'
+import { Building2, ShieldCheck, ArrowRight, Clock, Scale, Users, FileText, CheckCircle2 } from 'lucide-react'
 
 export default function LandingPage() {
   return (
@@ -42,13 +42,17 @@ export default function LandingPage() {
         </p>
         
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link href="/dashboard" className="w-full sm:w-auto bg-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-blue-700 transition shadow-lg flex items-center justify-center gap-2 text-lg">
-            <LayoutDashboard className="w-5 h-5" /> Till min Dashboard
+          <Link href="/register" className="w-full sm:w-auto bg-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-blue-700 transition shadow-lg flex items-center justify-center gap-2 text-lg">
+            Kom igång <ArrowRight className="w-5 h-5" />
           </Link>
           <Link href="/pitch" className="w-full sm:w-auto bg-white text-slate-900 border-2 border-slate-200 px-8 py-4 rounded-xl font-bold hover:border-slate-300 transition flex items-center justify-center gap-2 text-lg">
             Se priser & demo <ArrowRight className="w-5 h-5" />
           </Link>
         </div>
+
+        <p className="text-sm text-slate-400 mt-8 font-medium">
+          GDPR-anpassat · Svensk datalagring · End-to-end-kryptering
+        </p>
       </div>
 
       {/* Feature Highlights */}
@@ -93,7 +97,7 @@ export default function LandingPage() {
             <div className="w-12 h-12 bg-violet-100 text-violet-600 rounded-xl flex items-center justify-center mb-5">
               <CheckCircle2 className="w-6 h-6" />
             </div>
-            <h3 className="text-lg font-bold text-slate-900 mb-2">White Label</h3>
+            <h3 className="text-lg font-bold text-slate-900 mb-2">Eget varumärke</h3>
             <p className="text-slate-500 text-sm leading-relaxed">Ladda upp byråns logotyp och varumärk hela plattformen. Era klienter ser bara er byrå.</p>
           </div>
         </div>

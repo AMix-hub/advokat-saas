@@ -14,6 +14,16 @@ function getStatusBadge(status: string) {
   }
 }
 
+function statusLabel(status: string) {
+  switch (status) {
+    case 'OPEN': return 'Öppen'
+    case 'PENDING': return 'Pågående'
+    case 'CLOSED': return 'Stängd'
+    case 'ARCHIVED': return 'Arkiverad'
+    default: return status
+  }
+}
+
 export default async function ClientProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
 
@@ -116,7 +126,7 @@ export default async function ClientProfilePage({ params }: { params: Promise<{ 
                     </div>
                     <div className="flex items-center gap-4">
                       <span className={`text-xs font-bold px-3 py-1.5 rounded-full border ${getStatusBadge(caseItem.status)}`}>
-                        {caseItem.status}
+                        {statusLabel(caseItem.status)}
                       </span>
                     </div>
                   </div>
