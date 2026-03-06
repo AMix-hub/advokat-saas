@@ -115,6 +115,12 @@ export default async function Dashboard() {
               </h2>
               
               <div className="flex flex-col xs:flex-row gap-2 w-full sm:w-auto">
+                <Link
+                  href="/reports"
+                  className="w-full sm:w-auto justify-center bg-indigo-50 text-indigo-700 border border-indigo-200 px-4 py-2.5 rounded-lg font-bold hover:bg-indigo-100 transition shadow-sm flex items-center gap-2 text-sm"
+                >
+                  📊 Rapporter
+                </Link>
                 <a 
                   href="/api/export" 
                   className="w-full sm:w-auto justify-center bg-emerald-50 text-emerald-700 border border-emerald-200 px-4 py-2.5 rounded-lg font-bold hover:bg-emerald-100 transition shadow-sm flex items-center gap-2 text-sm"

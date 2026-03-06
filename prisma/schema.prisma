@@ -8,16 +8,20 @@ datasource db {
 }
 
 model User {
-  id           String        @id @default(cuid())
-  email        String        @unique
-  name         String?
-  firmName     String?       @default("Advokatbyrån AB")
-  bankgiro     String?  
-  password     String
-  logo         String?  
-  cases        Case[]
-  conflictLogs ConflictLog[]
-  createdAt    DateTime      @default(now())
+  id            String           @id @default(cuid())
+  email         String           @unique
+  name          String?
+  firmName      String?          @default("Advokatbyrån AB")
+  firmId        String?
+  firm          Firm?            @relation(fields: [firmId], references: [id])
+  bankgiro      String?  
+  password      String
+  logo          String?  
+  cases         Case[]
+  conflictLogs  ConflictLog[]
+  internalComments InternalComment[]
+  createdAgreements Agreement[]   @relation("CreatedBy")
+  createdAt     DateTime         @default(now())
 }
 
 model Client {
@@ -34,21 +38,23 @@ model Client {
 }
 
 model Case {
-  id            String        @id @default(cuid())
+  id            String              @id @default(cuid())
   title         String
   description   String?
-  status        String        @default("OPEN")
-  caseType      String?       // DISPUTE, PROPERTY, WILL, CONTRACT, OTHER
-  invoiceStatus String        @default("UNBILLED") 
-  hourlyRate    Float         @default(2000)
-  budgetedHours Float?        // Planerad arbetstid
-  opposingParty String?       // Motpart i tvisten
-  courtName     String?       // Domstol om tillämplig
-  caseDeadline  DateTime?     // Ärendets slutdatum
+  status        String              @default("OPEN")
+  caseType      String?             // DISPUTE, PROPERTY, WILL, CONTRACT, OTHER
+  invoiceStatus String              @default("UNBILLED") 
+  hourlyRate    Float               @default(2000)
+  budgetedHours Float?              // Planerad arbetstid
+  opposingParty String?             // Motpart i tvisten
+  courtName     String?             // Domstol om tillämplig
+  caseDeadline  DateTime?           // Ärendets slutdatum
   clientId      String
-  client        Client        @relation(fields: [clientId], references: [id])
+  client        Client              @relation(fields: [clientId], references: [id])
+  firmId        String?
+  firm          Firm?               @relation("FirmCases", fields: [firmId], references: [id])
   assignedToId  String?
-  assignedTo    User?         @relation(fields: [assignedToId], references: [id])
+  assignedTo    User?               @relation(fields: [assignedToId], references: [id])
   logs          Log[]
   documents     Document[]
   timeEntries   TimeEntry[]
@@ -56,8 +62,10 @@ model Case {
   expenses      Expense[]
   deadlines     Deadline[]
   invoices      Invoice[]
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  internalComments InternalComment[]
+  agreements    Agreement[]
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
 }
 
 model ConflictLog {
@@ -172,4 +180,83 @@ model InvoiceItem {
   invoiceId   String
   invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
+}
+
+// NY MODELL: Multi-tenant - Firma/Byrå
+model Firm {
+  id              String   @id @default(cuid())
+  name            String
+  email           String   @unique
+  cvr             String?  // CVR-nummer för danske/norske firmer
+  orgNumber       String?  // Organisationsnummer
+  address         String?
+  phone           String?
+  website         String?
+  users           User[]
+  cases           Case[]   @relation("FirmCases")
+  agreements      Agreement[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// NY MODELL: Interner kommentarer (privata anteckningar)
+model InternalComment {
+  id          String   @id @default(cuid())
+  content     String   @db.Text
+  caseId      String
+  case        Case     @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// NY MODELL: Avtal och överenskommelser
+model Agreement {
+  id              String   @id @default(cuid())
+  title           String   // t.ex "Klientöverenskommelse", "Honoraravtal"
+  type            String   @default("CLIENT_AGREEMENT") // CLIENT_AGREEMENT, HOURLY_RATE, CONTINGENCY, OTHER
+  content         String   @db.Text
+  status          String   @default("ACTIVE") // ACTIVE, ARCHIVED, SUPERSEDED
+  startDate       DateTime
+  endDate         DateTime?
+  version         Int      @default(1)
+  firmId          String?
+  firm            Firm?    @relation(fields: [firmId], references: [id])
+  caseId          String?
+  case            Case?    @relation(fields: [caseId], references: [id], onDelete: SetNull)
+  createdById     String
+  createdBy       User     @relation("CreatedBy", fields: [createdById], references: [id], onDelete: Cascade)
+  changes         AgreementChange[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// NY MODELL: Avtalshistorik
+model AgreementChange {
+  id          String   @id @default(cuid())
+  agreementId String
+  agreement   Agreement @relation(fields: [agreementId], references: [id], onDelete: Cascade)
+  oldVersion  String   @db.Text
+  newVersion  String   @db.Text
+  description String?
+  changedAt   DateTime @default(now())
+}
+
+// NY MODELL: E-mail och SMS-logg
+model NotificationLog {
+  id            String   @id @default(cuid())
+  type          String   // EMAIL, SMS
+  recipient     String   // Email eller telefonnummer
+  subject       String?
+  message       String   @db.Text
+  status        String   @default("PENDING") // PENDING, SENT, FAILED, BOUNCED
+  caseId        String?
+  deadlineId    String?
+  invoiceId     String?
+  retries       Int      @default(0)
+  error         String?  @db.Text
+  sentAt        DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }

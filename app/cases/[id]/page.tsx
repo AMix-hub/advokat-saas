@@ -11,6 +11,7 @@ import UserProfile from '@/components/UserProfile'
 import TaskList from '@/components/TaskList'
 import DeadlineManager from '@/components/DeadlineManager'
 import InvoiceManager from '@/components/InvoiceManager'
+import InternalComments from '@/components/InternalComments'
 import CopyPortalLink from '@/components/CopyPortalLink'
 import { Briefcase, Edit, FileStack, FileText, ArrowLeft, Activity, AlertCircle } from 'lucide-react'
 
@@ -102,6 +103,7 @@ export default async function CaseDetails({ params }: { params: Promise<{ id: st
             <TaskList caseId={caseItem.id} tasks={caseItem.tasks} />
             <DeadlineManager caseId={caseItem.id} />
             <InvoiceManager caseId={caseItem.id} />
+            <InternalComments caseId={caseItem.id} />
             <TimeTracker caseId={caseItem.id} timeEntries={caseItem.timeEntries} />
             <ExpenseTracker caseId={caseItem.id} expenses={caseItem.expenses} />
             <DocumentManager caseId={caseItem.id} documents={caseItem.documents} />
