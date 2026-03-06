@@ -63,7 +63,6 @@ export default async function CaseDetails({ params }: { params: Promise<{ id: st
                     {caseItem.status}
                   </span>
                   
-                  {/* Dokument & Kontroll-knappar samlade */}
                   <div className="flex flex-wrap justify-end gap-2 mt-2">
                     <Link 
                       href={`/cases/${caseItem.id}/edit`} 
@@ -71,11 +70,12 @@ export default async function CaseDetails({ params }: { params: Promise<{ id: st
                     >
                       ✏️ Redigera
                     </Link>
+                    {/* HÄR ÄR DEN UPPDATERADE KNAPPEN TILL HUBBEN */}
                     <Link 
-                      href={`/cases/${caseItem.id}/templates/engagement-letter`} 
+                      href={`/cases/${caseItem.id}/templates`} 
                       className="bg-indigo-50 text-indigo-700 border border-indigo-200 px-4 py-2 rounded-lg text-sm font-bold hover:bg-indigo-100 transition shadow-sm flex items-center gap-2"
                     >
-                      📝 Uppdragsavtal
+                      📑 Dokumentmallar
                     </Link>
                     <Link 
                       href={`/cases/${caseItem.id}/invoice`} 
