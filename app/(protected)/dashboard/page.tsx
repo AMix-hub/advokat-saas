@@ -113,7 +113,7 @@ export default async function Dashboard() {
           <div className="gradient-warning bg-slate-900 p-5 sm:p-6 rounded-2xl border border-white/[0.08] flex items-start justify-between hover:shadow-lg hover:scale-105 transition-all duration-300">
             <div>
               <p className="text-xs sm:text-sm font-bold text-slate-500 mb-1">Fakturerbart värde</p>
-              <p className="text-2xl sm:text-3xl font-black text-amber-600">{(totalRevenue/1000).toFixed(1)} k kr</p>
+              <p className="text-2xl sm:text-3xl font-black text-amber-600">{totalRevenue.toLocaleString('sv-SE')} kr</p>
             </div>
             <div className="p-3 bg-amber-500/10 rounded-xl"><FileText className="w-5 h-5 text-amber-600" /></div>
           </div>

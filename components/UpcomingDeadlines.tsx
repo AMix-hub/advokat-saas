@@ -86,9 +86,10 @@ export default function UpcomingDeadlines() {
               {isOverdue ? (
                 <span className="text-red-600">⚠️ Förfallen</span>
               ) : (
-                <span className="text-sm">
-                  📅 {new Date(deadline.dueDate).toLocaleDateString('sv-SE')}
-                  {isUrgent && <span className="ml-2 font-bold text-amber-600">{daysUntil}d</span>}
+                <span className="flex items-center gap-1.5 text-sm">
+                  <Calendar className="w-3.5 h-3.5 flex-shrink-0" />
+                  <span>{new Date(deadline.dueDate).toLocaleDateString('sv-SE')}</span>
+                  {isUrgent && <span className="ml-1 font-bold text-amber-600">{daysUntil}d</span>}
                 </span>
               )}
             </div>
