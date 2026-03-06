@@ -99,7 +99,7 @@ export default async function Dashboard() {
           <div className="gradient-primary bg-slate-900 p-5 sm:p-6 rounded-2xl border border-white/[0.08] flex items-start justify-between hover:shadow-lg hover:scale-105 transition-all duration-300">
             <div>
               <p className="text-xs sm:text-sm font-bold text-slate-500 mb-1">Aktiva ärenden</p>
-              <p className="text-2xl sm:text-3xl font-black text-slate-900">{activeCasesCount}</p>
+              <p className="text-2xl sm:text-3xl font-black text-white">{activeCasesCount}</p>
             </div>
             <div className="p-3 bg-blue-500/10 rounded-xl"><Briefcase className="w-5 h-5 text-blue-600" /></div>
           </div>

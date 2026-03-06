@@ -54,7 +54,7 @@ export default async function ClientProfilePage({ params }: { params: Promise<{ 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           <div className="md:col-span-2 bg-slate-900 rounded-2xl border border-white/[0.08] p-8">
             <div className="flex items-center gap-5 mb-6">
-              <div className={`w-16 h-16 font-black text-2xl rounded-2xl flex items-center justify-center shadow-sm border ${client.isAnonymized ? 'bg-slate-100 text-slate-400 border-slate-200' : 'bg-blue-100 text-blue-700 border-blue-200'}`}>
+              <div className={`w-16 h-16 font-black text-2xl rounded-2xl flex items-center justify-center border ${client.isAnonymized ? 'bg-white/[0.08] text-slate-400 border-white/[0.08]' : 'bg-blue-500/20 text-blue-400 border-blue-500/20'}`}>
                 {client.isAnonymized ? '?' : client.name.charAt(0).toUpperCase()}
               </div>
               <div>

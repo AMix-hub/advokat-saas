@@ -19,8 +19,8 @@ export default function CopyPortalLink({ caseId }: { caseId: string }) {
       onClick={handleCopy}
       className={`px-4 py-2 rounded-lg text-sm font-bold transition shadow-sm flex items-center gap-2 border ${
         copied 
-          ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
-          : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
+          ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
+          : 'bg-white/[0.05] text-slate-300 border-white/10 hover:bg-white/[0.08]'
       }`}
     >
       {copied ? (
