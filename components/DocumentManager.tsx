@@ -1,89 +1,126 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { FileText, UploadCloud, File, Download, Loader2 } from 'lucide-react'
 
-interface DocumentItem {
-  id: string;
-  name: string;
-  url: string;
-  createdAt: Date;
-}
-
-export default function DocumentManager({ caseId, documents }: { caseId: string, documents: DocumentItem[] }) {
+export default function DocumentManager({ caseId, documents }: { caseId: string, documents: any[] }) {
   const router = useRouter()
   const [isUploading, setIsUploading] = useState(false)
+  const [uploadStatus, setUploadStatus] = useState('')
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
 
     setIsUploading(true)
-
-    // Vi måste använda FormData för att skicka filer
-    const formData = new FormData()
-    formData.append('file', file)
+    setUploadStatus('Förbereder krypterad överföring...')
 
     try {
-      const res = await fetch(`/api/cases/${caseId}/documents`, {
+      // 1. Be servern om en säker Amazon-nyckel
+      const urlRes = await fetch('/api/documents/upload-url', {
         method: 'POST',
-        body: formData,
+        body: JSON.stringify({ filename: file.name, contentType: file.type, caseId })
+      })
+      
+      const { signedUrl, fileUrl, error } = await urlRes.json()
+      
+      if (error) {
+        alert(error)
+        setIsUploading(false)
+        return
+      }
+
+      setUploadStatus('Laddar upp filen till säkert bankvalv...')
+
+      // 2. Ladda upp filen direkt till Amazon S3 (utan att belasta din webbserver)
+      await fetch(signedUrl, {
+        method: 'PUT',
+        body: file,
+        headers: { 'Content-Type': file.type }
       })
 
-      if (res.ok) {
-        // Fil uppladdad! Ladda om datan osynligt
-        router.refresh()
-      } else {
-        alert("Något gick fel vid uppladdningen.")
-      }
-    } catch (error) {
-      console.error(error)
-    } finally {
+      setUploadStatus('Sparar i akten...')
+
+      // 3. Spara informationen i Neon-databasen
+      await fetch('/api/documents', {
+        method: 'POST',
+        body: JSON.stringify({ name: file.name, url: fileUrl, caseId })
+      })
+
+      setUploadStatus('')
       setIsUploading(false)
-      // Återställ input-fältet så man kan ladda upp samma fil igen om man vill
-      e.target.value = ''
+      router.refresh()
+      
+    } catch (err) {
+      alert('Något gick fel vid uppladdningen. Kontrollera nätverket.')
+      setIsUploading(false)
     }
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 mt-8">
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 mt-6 sm:mt-8">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-bold text-slate-800">Dokument & Filer</h2>
-        
-        {/* En dold input för filuppladdning som vi "klickar på" med en snyggare label */}
-        <label className="bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300 px-4 py-2 rounded-lg text-sm font-medium cursor-pointer transition">
-          {isUploading ? 'Laddar upp...' : '+ Ladda upp PDF'}
+        <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+          <FileText className="w-5 h-5 text-indigo-500" /> Aktbilagor & Dokument
+        </h2>
+      </div>
+      
+      {/* Uppladdningszon */}
+      <div className="mb-8">
+        <label className={`w-full border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center transition cursor-pointer ${isUploading ? 'bg-slate-50 border-slate-300' : 'bg-slate-50 border-indigo-200 hover:bg-indigo-50 hover:border-indigo-400'}`}>
+          {isUploading ? (
+            <>
+              <Loader2 className="w-10 h-10 text-indigo-500 animate-spin mb-3" />
+              <p className="font-bold text-slate-700">{uploadStatus}</p>
+            </>
+          ) : (
+            <>
+              <UploadCloud className="w-10 h-10 text-indigo-500 mb-3" />
+              <p className="font-bold text-slate-700 mb-1">Klicka för att ladda upp bevisning eller avtal</p>
+              <p className="text-xs text-slate-500">PDF, Word eller bildfiler. Krypterad överföring.</p>
+            </>
+          )}
           <input 
             type="file" 
-            accept=".pdf,.doc,.docx,.jpg,.png" 
             className="hidden" 
-            onChange={handleFileUpload}
+            onChange={handleFileUpload} 
             disabled={isUploading}
+            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
           />
         </label>
       </div>
 
-      {documents.length === 0 ? (
-        <p className="text-slate-500 italic text-sm">Inga dokument har laddats upp ännu.</p>
-      ) : (
-        <ul className="divide-y divide-slate-100 border border-slate-100 rounded-lg">
-          {documents.map((doc) => (
-            <li key={doc.id} className="p-4 flex justify-between items-center hover:bg-slate-50 transition">
-              <div className="flex items-center gap-3">
-                <svg className="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2.5L18.5 9H13V4.5zM6 20V4h6v6h6v10H6z"/></svg>
-                <span className="font-medium text-slate-700">{doc.name}</span>
+      {/* Dokumentlista */}
+      <ul className="space-y-3">
+        {documents.length === 0 && (
+          <div className="text-center py-6 text-slate-500 text-sm font-medium border border-slate-100 rounded-xl bg-slate-50">
+            Inga dokument uppladdade ännu.
+          </div>
+        )}
+        {documents.map(doc => (
+          <li key={doc.id} className="flex justify-between items-center p-4 bg-white border border-slate-200 rounded-xl hover:shadow-sm hover:border-indigo-300 transition group">
+            <div className="flex items-center gap-3 overflow-hidden">
+              <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg flex-shrink-0">
+                <File className="w-5 h-5" />
               </div>
-              <a 
-                href={doc.url} 
-                target="_blank" 
-                rel="noreferrer"
-                className="text-sm font-medium text-blue-600 hover:text-blue-800 bg-blue-50 px-3 py-1.5 rounded"
-              >
-                Öppna
-              </a>
-            </li>
-          ))}
-        </ul>
-      )}
+              <div className="min-w-0">
+                <p className="font-bold text-slate-800 truncate">{doc.name}</p>
+                <p className="text-xs text-slate-500 font-medium">{new Date(doc.createdAt).toLocaleDateString('sv-SE')}</p>
+              </div>
+            </div>
+            
+            <a 
+              href={doc.url} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="bg-slate-100 text-slate-600 p-2 rounded-lg font-bold hover:bg-indigo-100 hover:text-indigo-700 transition flex items-center gap-1 flex-shrink-0 ml-4"
+              title="Ladda ner"
+            >
+              <Download className="w-4 h-4" /> <span className="hidden sm:inline text-sm">Öppna</span>
+            </a>
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }
