@@ -14,16 +14,12 @@ export default function TimeTracker({ caseId, timeEntries }: { caseId: string, t
 
   // Klockans logik som tickar varje sekund
   useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
-    if (isActive) {
-      interval = setInterval(() => {
-        setSeconds(s => s + 1)
-      }, 1000)
-    } else if (!isActive && seconds !== 0) {
-      if (interval) clearInterval(interval)
-    }
-    return () => { if (interval) clearInterval(interval) }
-  }, [isActive, seconds])
+    if (!isActive) return
+    const interval = setInterval(() => {
+      setSeconds(s => s + 1)
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [isActive])
 
   // Formatera sekunderna till snygg klocka (HH:MM:SS)
   const formatTime = (totalSeconds: number) => {

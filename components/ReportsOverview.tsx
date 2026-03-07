@@ -11,27 +11,28 @@ export default function ReportsOverview() {
   const [activeTab, setActiveTab] = useState('overview')
 
   useEffect(() => {
-    fetchReports()
-  }, [])
-
-  const fetchReports = async () => {
-    setLoading(true)
-    try {
-      const [overviewRes, typesRes, profitRes] = await Promise.all([
-        fetch('/api/reports?type=overview'),
-        fetch('/api/reports?type=case_types'),
-        fetch('/api/reports?type=profitability')
-      ])
-
-      if (overviewRes.ok) setStats((await overviewRes.json()).data)
-      if (typesRes.ok) setCaseTypes((await typesRes.json()).data)
-      if (profitRes.ok) setProfitability((await profitRes.json()).data)
-    } catch (error) {
-      console.error('Error fetching reports:', error)
-    } finally {
-      setLoading(false)
+    let cancelled = false
+    const fetchReports = async () => {
+      setLoading(true)
+      try {
+        const [overviewRes, typesRes, profitRes] = await Promise.all([
+          fetch('/api/reports?type=overview'),
+          fetch('/api/reports?type=case_types'),
+          fetch('/api/reports?type=profitability')
+        ])
+        if (cancelled) return
+        if (overviewRes.ok) setStats((await overviewRes.json()).data)
+        if (typesRes.ok) setCaseTypes((await typesRes.json()).data)
+        if (profitRes.ok) setProfitability((await profitRes.json()).data)
+      } catch (error) {
+        console.error('Error fetching reports:', error)
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
     }
-  }
+    fetchReports()
+    return () => { cancelled = true }
+  }, [])
 
   if (loading) {
     return <div className="text-slate-500 text-center py-20">Genererar rapporter...</div>

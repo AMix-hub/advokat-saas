@@ -3,18 +3,20 @@ export const dynamic = 'force-dynamic'
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import nextDynamic from 'next/dynamic'
 import CaseControls from '@/components/CaseControls'
 import DocumentManager from '@/components/DocumentManager'
 import TimeTracker from '@/components/TimeTracker'
 import ExpenseTracker from '@/components/ExpenseTracker'
 import TaskList from '@/components/TaskList'
 import DeadlineManager from '@/components/DeadlineManager'
-import InvoiceManager from '@/components/InvoiceManager'
 import InternalComments from '@/components/InternalComments'
 import CopyPortalLink from '@/components/CopyPortalLink'
 import Timeline from '@/components/Timeline'
 import { Briefcase, Edit, FileStack, FileText, ArrowLeft, Activity, AlertCircle } from 'lucide-react'
 import { statusLabel } from '@/lib/status'
+
+const InvoiceManager = nextDynamic(() => import('@/components/InvoiceManager'))
 
 function getStatusBadge(status: string) {
   switch (status) {

@@ -2,8 +2,8 @@ export const dynamic = 'force-dynamic'
 
 import { BarChart3 } from 'lucide-react'
 import Link from 'next/link'
-import ReportsOverview from '@/components/ReportsOverview'
 import { ArrowLeft } from 'lucide-react'
+import ReportsOverviewClient from '@/components/ReportsOverviewClient'
 
 export default async function ReportsPage() {
   return (
@@ -26,7 +26,7 @@ export default async function ReportsPage() {
 
         {/* Reports */}
         <div className="bg-slate-900 rounded-2xl border border-white/[0.08] p-6 sm:p-8">
-          <ReportsOverview />
+          <ReportsOverviewClient />
         </div>
       </div>
     </main>
