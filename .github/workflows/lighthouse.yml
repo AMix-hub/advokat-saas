@@ -1,0 +1,25 @@
+name: Lighthouse Audit - CaseCore
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Audit CaseCore Live URL
+        uses: treosh/lighthouse-config-action@v10
+        with:
+          urls: 'https://www.casecore.se'
+          budgetPath: ./lighthouse-budget.json # Valfritt: för att sätta gränser
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
+      - name: Format Lighthouse score as comment
+        uses: jakejarvis/lighthouse-action@master
+        with:
+          url: 'https://www.casecore.se'
