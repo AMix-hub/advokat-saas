@@ -98,31 +98,31 @@ export default async function Dashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 sm:mb-10">
           <div className="gradient-primary bg-slate-900 p-5 sm:p-6 rounded-2xl border border-white/[0.08] flex items-start justify-between hover:shadow-lg hover:scale-105 transition-all duration-300">
             <div>
-              <p className="text-xs sm:text-sm font-bold text-slate-500 mb-1">Aktiva ärenden</p>
+              <p className="text-xs sm:text-sm font-bold text-slate-400 mb-1">Aktiva ärenden</p>
               <p className="text-2xl sm:text-3xl font-black text-white">{activeCasesCount}</p>
             </div>
-            <div className="p-3 bg-blue-500/10 rounded-xl"><Briefcase className="w-5 h-5 text-blue-600" /></div>
+            <div className="p-3 bg-blue-500/20 rounded-xl"><Briefcase className="w-5 h-5 text-blue-400" /></div>
           </div>
           <div className="gradient-success bg-slate-900 p-5 sm:p-6 rounded-2xl border border-white/[0.08] flex items-start justify-between hover:shadow-lg hover:scale-105 transition-all duration-300">
             <div>
-              <p className="text-xs sm:text-sm font-bold text-slate-500 mb-1">Loggade timmar</p>
-              <p className="text-2xl sm:text-3xl font-black text-emerald-600">{totalHours.toFixed(1)} h</p>
+              <p className="text-xs sm:text-sm font-bold text-slate-400 mb-1">Loggade timmar</p>
+              <p className="text-2xl sm:text-3xl font-black text-emerald-400">{totalHours.toFixed(1)} h</p>
             </div>
-            <div className="p-3 bg-emerald-500/10 rounded-xl"><Clock className="w-5 h-5 text-emerald-600" /></div>
+            <div className="p-3 bg-emerald-500/20 rounded-xl"><Clock className="w-5 h-5 text-emerald-400" /></div>
           </div>
           <div className="gradient-warning bg-slate-900 p-5 sm:p-6 rounded-2xl border border-white/[0.08] flex items-start justify-between hover:shadow-lg hover:scale-105 transition-all duration-300">
             <div>
-              <p className="text-xs sm:text-sm font-bold text-slate-500 mb-1">Fakturerbart värde</p>
-              <p className="text-2xl sm:text-3xl font-black text-amber-600">{totalRevenue.toLocaleString('sv-SE')} kr</p>
+              <p className="text-xs sm:text-sm font-bold text-slate-400 mb-1">Fakturerbart värde</p>
+              <p className="text-2xl sm:text-3xl font-black text-amber-400">{totalRevenue.toLocaleString('sv-SE')} kr</p>
             </div>
-            <div className="p-3 bg-amber-500/10 rounded-xl"><FileText className="w-5 h-5 text-amber-600" /></div>
+            <div className="p-3 bg-amber-500/20 rounded-xl"><FileText className="w-5 h-5 text-amber-400" /></div>
           </div>
           <div className="gradient-danger bg-slate-900 p-5 sm:p-6 rounded-2xl border border-white/[0.08] flex items-start justify-between hover:shadow-lg hover:scale-105 transition-all duration-300">
             <div>
-              <p className="text-xs sm:text-sm font-bold text-slate-500 mb-1">Innestående uppgifter</p>
-              <p className="text-2xl sm:text-3xl font-black text-red-600">{pendingTasksCount} st</p>
+              <p className="text-xs sm:text-sm font-bold text-slate-400 mb-1">Innestående uppgifter</p>
+              <p className="text-2xl sm:text-3xl font-black text-red-400">{pendingTasksCount} st</p>
             </div>
-            <div className="p-3 bg-red-500/10 rounded-xl"><CheckCircle2 className="w-5 h-5 text-red-600" /></div>
+            <div className="p-3 bg-red-500/20 rounded-xl"><CheckCircle2 className="w-5 h-5 text-red-400" /></div>
           </div>
         </div>
 
