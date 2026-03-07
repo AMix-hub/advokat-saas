@@ -8,11 +8,15 @@ export async function GET(req: NextRequest) {
     const token = await getToken({ req })
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+    const user = await prisma.user.findUnique({ where: { email: token.email as string } })
+    if (!user) return NextResponse.json({ error: 'Användaren hittades inte' }, { status: 401 })
+    const userId = user.id
+
     const type = req.nextUrl.searchParams.get('type') || 'overview'
     const startDate = req.nextUrl.searchParams.get('startDate')
     const endDate = req.nextUrl.searchParams.get('endDate')
 
-    let where: any = {}
+    let where: any = { assignedToId: userId }
     if (startDate && endDate) {
       where.createdAt = {
         gte: new Date(startDate),
@@ -22,13 +26,14 @@ export async function GET(req: NextRequest) {
 
     // OVERVIEW - Övergripande statistik
     if (type === 'overview') {
-      const totalCases = await prisma.case.count()
-      const openCases = await prisma.case.count({ where: { status: 'OPEN' } })
+      const totalCases = await prisma.case.count({ where })
+      const openCases = await prisma.case.count({ where: { ...where, status: 'OPEN' } })
       const totalRevenue = await prisma.invoice.aggregate({
-        where: { status: 'PAID' },
+        where: { status: 'PAID', case: { assignedToId: userId } },
         _sum: { totalAmount: true }
       })
       const totalHours = await prisma.timeEntry.aggregate({
+        where: { case: { assignedToId: userId } },
         _sum: { hours: true }
       })
 
@@ -58,12 +63,12 @@ export async function GET(req: NextRequest) {
           type: ct.caseType || 'OTHER',
           count: ct._count,
           avgHours: await prisma.timeEntry.aggregate({
-            where: { case: { caseType: ct.caseType } },
+            where: { case: { caseType: ct.caseType, assignedToId: userId } },
             _avg: { hours: true }
           }),
           totalRevenue: await prisma.invoice.aggregate({
             where: { 
-              case: { caseType: ct.caseType },
+              case: { caseType: ct.caseType, assignedToId: userId },
               status: 'PAID'
             },
             _sum: { totalAmount: true }
@@ -116,7 +121,7 @@ export async function GET(req: NextRequest) {
     if (type === 'time_budget') {
       const cases = await prisma.case.findMany({
         include: { timeEntries: true },
-        where: { budgetedHours: { not: null } }
+        where: { ...where, budgetedHours: { not: null } }
       })
 
       const timeBudget = cases.map((c) => ({

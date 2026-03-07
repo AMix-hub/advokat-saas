@@ -25,22 +25,27 @@ model User {
   createdAgreements Agreement[]   @relation("CreatedBy")
   sentMessages      Message[]      @relation("SentMessages")
   generatedDocuments GeneratedDocument[] @relation("GeneratedDocuments")
+  createdClients    Client[]       @relation("CreatedClients")
   createdAt     DateTime         @default(now())
 }
 
 model Client {
   id           String   @id @default(cuid())
   name         String
-  email        String   @unique
+  email        String
   orgNr        String?
   kycCompleted Boolean  @default(false)
   pepStatus    Boolean  @default(false)
   kycNotes     String?
   isAnonymized Boolean  @default(false)
+  createdById  String?
+  createdBy    User?    @relation("CreatedClients", fields: [createdById], references: [id], onDelete: SetNull)
   cases        Case[]
   messages     Message[]
   kycRecords   KycRecord[]
   createdAt    DateTime @default(now())
+
+  @@unique([email, createdById])
 }
 
 model Case {

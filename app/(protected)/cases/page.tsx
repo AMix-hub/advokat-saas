@@ -2,6 +2,8 @@ export const dynamic = 'force-dynamic'
 
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { Briefcase, Plus, Clock, AlertCircle } from 'lucide-react'
 import { statusLabel, caseTypeLabel } from '@/lib/status'
 
@@ -16,13 +18,18 @@ function getStatusBadge(status: string) {
 }
 
 export default async function CasesPage() {
-  const cases = await prisma.case.findMany({
+  const session = await getServerSession(authOptions)
+  const userEmail = session?.user?.email
+  const dbUser = userEmail ? await prisma.user.findUnique({ where: { email: userEmail } }) : null
+
+  const cases = dbUser ? await prisma.case.findMany({
+    where: { assignedToId: dbUser.id },
     include: {
       client: true,
       timeEntries: true,
     },
     orderBy: { updatedAt: 'desc' }
-  })
+  }) : []
 
   return (
     <main className="min-h-screen bg-slate-950 p-4 sm:p-8">

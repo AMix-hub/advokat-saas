@@ -2,10 +2,16 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getToken } from 'next-auth/jwt'
 
-// GET: Hämtar historiken över alla sökningar
+// GET: Hämtar historiken över den inloggade användarens sökningar
 export async function GET(req: NextRequest) {
   try {
+    const token = await getToken({ req })
+    if (!token?.email) return NextResponse.json({ error: 'Ej inloggad' }, { status: 401 })
+
+    const user = await prisma.user.findUnique({ where: { email: token.email } })
+
     const logs = await prisma.conflictLog.findMany({
+      where: { userId: user?.id },
       include: { user: true },
       orderBy: { createdAt: 'desc' },
       take: 50 // Visar de 50 senaste sökningarna

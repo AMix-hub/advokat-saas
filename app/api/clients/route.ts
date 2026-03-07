@@ -7,11 +7,14 @@ export async function POST(req: NextRequest) {
     const token = await getToken({ req })
     if (!token?.email) return NextResponse.json({ error: 'Ej inloggad' }, { status: 401 })
 
+    const user = await prisma.user.findUnique({ where: { email: token.email } })
+    if (!user) return NextResponse.json({ error: 'Användaren hittades inte' }, { status: 401 })
+
     const body = await req.json()
     
-    // Kontrollera om e-posten redan finns för att undvika krockar
+    // Kontrollera om e-posten redan finns för denna användare
     const existingClient = await prisma.client.findUnique({
-      where: { email: body.email }
+      where: { email_createdById: { email: body.email, createdById: user.id } }
     })
 
     if (existingClient) {
@@ -23,6 +26,7 @@ export async function POST(req: NextRequest) {
         name: body.name,
         email: body.email,
         orgNr: body.orgNr,
+        createdById: user.id,
       }
     })
     

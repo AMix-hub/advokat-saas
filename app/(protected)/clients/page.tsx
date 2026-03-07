@@ -2,15 +2,22 @@ export const dynamic = 'force-dynamic'
 
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { Users } from 'lucide-react'
 
 export default async function ClientsPage() {
-  const clients = await prisma.client.findMany({
+  const session = await getServerSession(authOptions)
+  const userEmail = session?.user?.email
+  const dbUser = userEmail ? await prisma.user.findUnique({ where: { email: userEmail } }) : null
+
+  const clients = dbUser ? await prisma.client.findMany({
+    where: { createdById: dbUser.id },
     include: {
       cases: true
     },
     orderBy: { name: 'asc' }
-  })
+  }) : []
 
   return (
     <main className="min-h-screen bg-slate-950 p-4 sm:p-8">

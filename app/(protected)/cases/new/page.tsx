@@ -2,13 +2,20 @@ export const dynamic = 'force-dynamic'
 
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import NewCaseForm from './NewCaseForm'
 
 export default async function NewCasePage() {
-  // Hämta alla klienter så vi kan koppla ärendet till någon
-  const clients = await prisma.client.findMany({ 
-    orderBy: { name: 'asc' } 
-  })
+  const session = await getServerSession(authOptions)
+  const userEmail = session?.user?.email
+  const dbUser = userEmail ? await prisma.user.findUnique({ where: { email: userEmail } }) : null
+
+  // Hämta bara klienter skapade av den inloggade användaren
+  const clients = dbUser ? await prisma.client.findMany({
+    where: { createdById: dbUser.id },
+    orderBy: { name: 'asc' }
+  }) : []
   
   // Hämta hela teamet så vi kan välja ansvarig handläggare
   const users = await prisma.user.findMany({ 
