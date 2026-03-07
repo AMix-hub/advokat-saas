@@ -232,7 +232,7 @@ export default function Sidebar() {
       )}
 
       {/* Desktop sidebar */}
-      <aside className="w-64 min-h-screen sticky top-0 hidden lg:flex flex-col bg-gradient-to-b from-slate-950 via-slate-900 to-indigo-950 border-r border-white/[0.06] shadow-2xl">
+      <aside className="w-64 h-screen sticky top-0 hidden lg:flex flex-col bg-gradient-to-b from-slate-950 via-slate-900 to-indigo-950 border-r border-white/[0.06] shadow-2xl">
         {sidebarContent}
       </aside>
     </>
