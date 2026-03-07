@@ -34,13 +34,14 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { code, description, maxUses, expiresAt } = await req.json()
+    const { code, description, licenseType, maxUses, expiresAt } = await req.json()
 
     if (!code || typeof code !== 'string' || code.trim().length < 4) {
       return NextResponse.json({ error: 'Koden måste vara minst 4 tecken.' }, { status: 400 })
     }
 
     const normalized = code.trim().toUpperCase()
+    const normalizedType = licenseType === 'BYRA' ? 'BYRA' : 'SOLO'
 
     const existing = await prisma.activationCode.findUnique({ where: { code: normalized } })
     if (existing) {
@@ -51,6 +52,7 @@ export async function POST(req: Request) {
       data: {
         code: normalized,
         description: description?.trim() || null,
+        licenseType: normalizedType,
         maxUses: maxUses === -1 ? -1 : Math.max(1, parseInt(maxUses) || 1),
         expiresAt: expiresAt ? new Date(expiresAt) : null,
       },
