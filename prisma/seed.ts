@@ -17,14 +17,20 @@ async function main() {
     },
   })
 
-  // 2. Skapa en test-klient
+  // 2. Skapa en test-klient (länkad till admin-användaren)
   const client = await prisma.client.upsert({
-    where: { email: 'info@svensson.se' },
+    where: {
+      email_createdById: {
+        email: 'info@svensson.se',
+        createdById: user.id,
+      },
+    },
     update: {},
     create: {
       name: 'Svensson Entreprenad AB',
       email: 'info@svensson.se',
       orgNr: '556677-8899',
+      createdById: user.id,
     },
   })
 
