@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import {
   Zap,
@@ -20,6 +21,13 @@ import {
   BookOpen,
   Plus,
 } from 'lucide-react'
+
+export const metadata: Metadata = {
+  title: 'Priser & Funktioner | CaseCore',
+  description:
+    'Se CaseCores prisplaner – Solo, Byrå och Enterprise. Komplett jämförelse av alla funktioner, FAQ och vad som ingår i varje plan. Prova gratis i 14 dagar.',
+  alternates: { canonical: '/pitch' },
+}
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
