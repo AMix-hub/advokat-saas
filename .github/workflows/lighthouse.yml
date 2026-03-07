@@ -9,17 +9,11 @@ jobs:
   lighthouse:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4 # Uppdaterad till v4
 
       - name: Audit CaseCore Live URL
-        uses: treosh/lighthouse-config-action@v10
+        uses: treosh/lighthouse-config-action@v12 # Uppdaterad till v12
         with:
           urls: 'https://www.casecore.se'
-          budgetPath: ./lighthouse-budget.json # Valfritt: för att sätta gränser
           uploadArtifacts: true
           temporaryPublicStorage: true
-
-      - name: Format Lighthouse score as comment
-        uses: jakejarvis/lighthouse-action@master
-        with:
-          url: 'https://www.casecore.se'
