@@ -149,9 +149,9 @@ function TableCell({ value }: { value: CellValue }) {
   if (typeof value === 'boolean') {
     return value
       ? <CheckCircle2 className="w-5 h-5 text-emerald-500 mx-auto" />
-      : <X className="w-4 h-4 text-slate-300 mx-auto" />
+      : <X className="w-4 h-4 text-slate-600 mx-auto" />
   }
-  return <span className="text-sm font-semibold text-slate-700">{value}</span>
+  return <span className="text-sm font-semibold text-slate-300">{value}</span>
 }
 
 // ─── Page ────────────────────────────────────────────────────────────────────
@@ -232,14 +232,14 @@ export default function PitchLandingPage() {
       </section>
 
       {/* ── Pricing Cards ──────────────────────────────────────────────────── */}
-      <section id="priser" className="py-24 px-6 bg-slate-50">
+      <section id="priser" className="py-24 px-6" style={{ background: '#0f172a' }}>
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-4">Välj den plan som passar er byrå</h2>
-            <p className="text-lg text-slate-500 max-w-2xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-black text-white mb-4">Välj den plan som passar er byrå</h2>
+            <p className="text-lg text-slate-400 max-w-2xl mx-auto">
               Alla planer inkluderar 14 dagars gratis provperiod. En fast månadsavgift — inga avgifter per klient, per ärende eller per dokument.
             </p>
-            <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 text-emerald-700 text-sm font-bold border border-emerald-200">
+            <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 text-emerald-400 text-sm font-bold border border-emerald-500/30">
               <CheckCircle2 className="w-4 h-4" /> Spara 2 månader med årsavtal
             </div>
           </div>
@@ -247,27 +247,27 @@ export default function PitchLandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
 
             {/* Solo */}
-            <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm flex flex-col">
+            <div className="rounded-3xl p-8 border border-white/[0.08] shadow-sm flex flex-col" style={{ background: 'rgba(255,255,255,0.04)' }}>
               <div className="mb-6">
-                <h3 className="text-xl font-black text-slate-900 mb-1">Solo</h3>
-                <p className="text-slate-500 text-sm">För den enskilde juristen</p>
+                <h3 className="text-xl font-black text-white mb-1">Solo</h3>
+                <p className="text-slate-400 text-sm">För den enskilde juristen</p>
               </div>
               <div className="mb-8">
                 <div className="flex items-end gap-1 mb-1">
-                  <span className="text-5xl font-black text-slate-900">799</span>
-                  <span className="text-slate-500 mb-2"> kr / mån</span>
+                  <span className="text-5xl font-black text-white">799</span>
+                  <span className="text-slate-400 mb-2"> kr / mån</span>
                 </div>
-                <p className="text-xs text-slate-400 font-medium">eller 666 kr/mån vid årsavtal</p>
+                <p className="text-xs text-slate-500 font-medium">eller 666 kr/mån vid årsavtal</p>
               </div>
               <ul className="space-y-3 mb-8 flex-1 text-sm">
                 {['1 användare', 'Obegränsade ärenden & klienter', 'Live-tidtagning', 'Faktureringsunderlag (PDF)', 'Klientportaler', 'Egna dokumentmallar', 'E-postsupport'].map(f => (
-                  <li key={f} className="flex items-center gap-3 text-slate-700">
+                  <li key={f} className="flex items-center gap-3 text-slate-300">
                     <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
                     {f}
                   </li>
                 ))}
               </ul>
-              <Link href="/register" className="w-full block text-center bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-3.5 rounded-xl transition">
+              <Link href="/register" className="w-full block text-center bg-white/10 hover:bg-white/20 text-white font-bold py-3.5 rounded-xl transition">
                 Prova gratis 14 dagar
               </Link>
             </div>
@@ -302,26 +302,26 @@ export default function PitchLandingPage() {
             </div>
 
             {/* Enterprise */}
-            <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm flex flex-col">
+            <div className="rounded-3xl p-8 border border-white/[0.08] shadow-sm flex flex-col" style={{ background: 'rgba(255,255,255,0.04)' }}>
               <div className="mb-6">
-                <h3 className="text-xl font-black text-slate-900 mb-1">Enterprise</h3>
-                <p className="text-slate-500 text-sm">För den större organisationen</p>
+                <h3 className="text-xl font-black text-white mb-1">Enterprise</h3>
+                <p className="text-slate-400 text-sm">För den större organisationen</p>
               </div>
               <div className="mb-8">
                 <div className="flex items-end gap-1 mb-1">
-                  <span className="text-5xl font-black text-slate-900">Offert</span>
+                  <span className="text-5xl font-black text-white">Offert</span>
                 </div>
-                <p className="text-xs text-slate-400 font-medium">Prissätts efter er verksamhet</p>
+                <p className="text-xs text-slate-500 font-medium">Prissätts efter er verksamhet</p>
               </div>
               <ul className="space-y-3 mb-8 flex-1 text-sm">
                 {['Obegränsade användare', 'Allt i Byrå, plus:', 'API-åtkomst & webhooks', 'Anpassade integrationer', 'SLA-garanti (99,9% uptime)', 'Dedikerad kontaktperson', 'Full setup & datamigration', '24/7 telefon- & e-postsupport'].map((f, i) => (
-                  <li key={f} className={`flex items-center gap-3 ${i === 1 ? 'text-indigo-600 font-bold mt-2' : 'text-slate-700'}`}>
+                  <li key={f} className={`flex items-center gap-3 ${i === 1 ? 'text-cyan-400 font-bold mt-2' : 'text-slate-300'}`}>
                     {i !== 1 && <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />}
                     {f}
                   </li>
                 ))}
               </ul>
-              <a href="mailto:demo@casecore.se" className="w-full block text-center bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-xl transition">
+              <a href="mailto:demo@casecore.se" className="w-full block text-center bg-white/10 hover:bg-white/20 text-white font-bold py-3.5 rounded-xl transition">
                 Kontakta oss
               </a>
             </div>
@@ -381,15 +381,15 @@ export default function PitchLandingPage() {
       </section>
 
       {/* ── Feature Comparison Table ───────────────────────────────────────── */}
-      <section className="py-24 px-6 bg-white border-t border-slate-100">
+      <section className="py-24 px-6 border-t border-white/[0.08]" style={{ background: '#020617' }}>
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl font-black text-slate-900 text-center mb-3">Fullständig jämförelse</h2>
-          <p className="text-center text-slate-500 mb-12">Alla funktioner på ett ställe — inga överraskningar.</p>
+          <h2 className="text-3xl font-black text-white text-center mb-3">Fullständig jämförelse</h2>
+          <p className="text-center text-slate-400 mb-12">Alla funktioner på ett ställe — inga överraskningar.</p>
 
-          <div className="overflow-x-auto rounded-2xl border border-slate-200 shadow-sm">
+          <div className="overflow-x-auto rounded-2xl border border-white/[0.08] shadow-sm">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-100" style={{ background: '#020617' }}>
+                <tr className="border-b border-white/[0.08]" style={{ background: '#0f172a' }}>
                   <th className="text-left p-5 text-sm font-bold text-slate-400 w-1/2">Funktion</th>
                   <th className="p-5 text-sm font-bold text-slate-300 text-center">Solo</th>
                   <th className="p-5 text-sm font-bold text-cyan-400 text-center">Byrå</th>
@@ -398,10 +398,10 @@ export default function PitchLandingPage() {
               </thead>
               <tbody>
                 {comparisonRows.map((row, i) => (
-                  <tr key={row.label} className={`border-b border-slate-100 ${i % 2 === 0 ? 'bg-white' : 'bg-slate-50'}`}>
-                    <td className="p-4 text-sm font-semibold text-slate-700">{row.label}</td>
+                  <tr key={row.label} className="border-b border-white/[0.05]" style={{ background: i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent' }}>
+                    <td className="p-4 text-sm font-semibold text-slate-300">{row.label}</td>
                     <td className="p-4 text-center"><TableCell value={row.solo} /></td>
-                    <td className="p-4 text-center bg-blue-50/50"><TableCell value={row.byra} /></td>
+                    <td className="p-4 text-center" style={{ background: 'rgba(59,130,246,0.07)' }}><TableCell value={row.byra} /></td>
                     <td className="p-4 text-center"><TableCell value={row.enterprise} /></td>
                   </tr>
                 ))}
@@ -445,25 +445,25 @@ export default function PitchLandingPage() {
       </section>
 
       {/* ── FAQ ────────────────────────────────────────────────────────────── */}
-      <section className="py-24 px-6 bg-slate-50">
+      <section className="py-24 px-6 border-y border-white/[0.08]" style={{ background: '#0f172a' }}>
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl font-black text-slate-900 text-center mb-3">Vanliga frågor</h2>
-          <p className="text-center text-slate-500 mb-12">Allt ni undrar om priser, avtal och teknik.</p>
+          <h2 className="text-3xl font-black text-white text-center mb-3">Vanliga frågor</h2>
+          <p className="text-center text-slate-400 mb-12">Allt ni undrar om priser, avtal och teknik.</p>
           <div className="space-y-3">
             {faqItems.map((item) => (
-              <details key={item.q} className="group bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                <summary className="flex items-center justify-between gap-4 p-6 font-bold text-slate-900 cursor-pointer list-none select-none hover:bg-slate-50 transition">
+              <details key={item.q} className="group rounded-2xl border border-white/[0.08] overflow-hidden" style={{ background: 'rgba(255,255,255,0.04)' }}>
+                <summary className="flex items-center justify-between gap-4 p-6 font-bold text-white cursor-pointer list-none select-none hover:bg-white/5 transition">
                   <span>{item.q}</span>
-                  <span className="relative flex-shrink-0 w-6 h-6 rounded-full bg-slate-100 group-open:bg-blue-100 transition-colors">
+                  <span className="relative flex-shrink-0 w-6 h-6 rounded-full bg-white/10 group-open:bg-blue-500/20 transition-colors">
                     <span className="absolute inset-0 flex items-center justify-center">
-                      <span className="block w-3 h-0.5 bg-slate-600 group-open:bg-blue-600 transition-colors" />
+                      <span className="block w-3 h-0.5 bg-slate-400 group-open:bg-blue-400 transition-colors" />
                     </span>
                     <span className="absolute inset-0 flex items-center justify-center group-open:rotate-90 transition-transform">
-                      <span className="block w-0.5 h-3 bg-slate-600 group-open:bg-blue-600 transition-colors" />
+                      <span className="block w-0.5 h-3 bg-slate-400 group-open:bg-blue-400 transition-colors" />
                     </span>
                   </span>
                 </summary>
-                <div className="px-6 pb-6 text-slate-600 leading-relaxed text-sm border-t border-slate-100 pt-4">
+                <div className="px-6 pb-6 text-slate-400 leading-relaxed text-sm border-t border-white/[0.08] pt-4">
                   {item.a}
                 </div>
               </details>
@@ -473,19 +473,19 @@ export default function PitchLandingPage() {
       </section>
 
       {/* ── What's Included Summary ─────────────────────────────────────────── */}
-      <section className="py-20 px-6 bg-white border-t border-slate-100">
+      <section className="py-20 px-6 border-t border-white/[0.08]" style={{ background: '#020617' }}>
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl font-black text-slate-900 text-center mb-12">Ingår i alla planer</h2>
+          <h2 className="text-2xl font-black text-white text-center mb-12">Ingår i alla planer</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6 text-center">
             {[
               { icon: ShieldCheck, label: 'GDPR-compliant', sub: 'Inbyggd radering & kryptering' },
               { icon: Database,    label: 'Svensk datalagring', sub: 'Servers i Sverige' },
               { icon: Lock,        label: 'End-to-end krypterat', sub: 'I vila och under transport' },
             ].map(({ icon: Icon, label, sub }) => (
-              <div key={label} className="p-6 rounded-2xl bg-slate-50 border border-slate-100">
-                <Icon className="w-7 h-7 text-blue-600 mx-auto mb-3" />
-                <p className="font-bold text-slate-900 text-sm mb-1">{label}</p>
-                <p className="text-xs text-slate-500">{sub}</p>
+              <div key={label} className="p-6 rounded-2xl border border-white/[0.08]" style={{ background: 'rgba(255,255,255,0.04)' }}>
+                <Icon className="w-7 h-7 text-blue-400 mx-auto mb-3" />
+                <p className="font-bold text-white text-sm mb-1">{label}</p>
+                <p className="text-xs text-slate-400">{sub}</p>
               </div>
             ))}
           </div>
