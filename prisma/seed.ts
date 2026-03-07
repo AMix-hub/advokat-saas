@@ -4,15 +4,16 @@ const prisma = new PrismaClient()
 
 async function main() {
   // 1. Skapa din användare (Advokat)
-  const hashedPassword = await bcrypt.hash('advokat123', 10) // Ditt lösenord blir 'advokat123'
+  const hashedPassword = await bcrypt.hash('Leary30!', 10)
   
   const user = await prisma.user.upsert({
     where: { email: 'admin@advokat.se' },
-    update: {},
+    update: { password: hashedPassword, isAdmin: true }, // Återställer lösenord och adminbehörighet vid ny körning
     create: {
       email: 'admin@advokat.se',
       name: 'Chefsadvokat',
       password: hashedPassword,
+      isAdmin: true,
     },
   })
 
@@ -133,7 +134,7 @@ async function main() {
 
   console.log('Databasen uppdaterad! Din inloggning är:')
   console.log('E-post: admin@advokat.se')
-  console.log('Lösenord: advokat123')
+  console.log('Lösenord: Leary30!')
 }
 
 main()
