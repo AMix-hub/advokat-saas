@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import {
   Zap,
@@ -14,6 +15,13 @@ import {
   Database,
   Layers,
 } from 'lucide-react'
+
+export const metadata: Metadata = {
+  title: 'CaseCore | Ärendehantering för moderna advokatbyråer',
+  description:
+    'CaseCore är nästa generations ärendehantering för juristbyråer. Fånga varje fakturerbar minut, automatisera KYC och låt systemet sköta faktureringen. Prova gratis i 14 dagar.',
+  alternates: { canonical: '/' },
+}
 
 const features = [
   {

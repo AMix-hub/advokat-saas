@@ -5,11 +5,20 @@ import { getToken } from 'next-auth/jwt'
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const token = await getToken({ req })
-    const user = token?.email ? await prisma.user.findUnique({ where: { email: token.email } }) : null
+    if (!token?.email) return NextResponse.json({ error: 'Ej inloggad' }, { status: 401 })
+
+    const user = await prisma.user.findUnique({ where: { email: token.email } })
     const userName = user?.name || 'En kollega'
 
     const resolvedParams = await params;
     const body = await req.json()
+
+    // Ownership check: only the assigned user (or an admin) may update the case
+    const existingCase = await prisma.case.findUnique({ where: { id: resolvedParams.id } })
+    if (!existingCase) return NextResponse.json({ error: 'Ärendet hittades inte' }, { status: 404 })
+    if (existingCase.assignedToId !== user?.id && !user?.isAdmin) {
+      return NextResponse.json({ error: 'Åtkomst nekad' }, { status: 403 })
+    }
     
     // Vi kollar om requesten skickar med invoiceStatus, annars låter vi bli det fältet
     const dataToUpdate: any = {
@@ -45,7 +54,19 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const token = await getToken({ req })
+    if (!token?.email) return NextResponse.json({ error: 'Ej inloggad' }, { status: 401 })
+
+    const user = await prisma.user.findUnique({ where: { email: token.email } })
     const resolvedParams = await params;
+
+    // Ownership check: only the assigned user (or an admin) may delete the case
+    const existingCase = await prisma.case.findUnique({ where: { id: resolvedParams.id } })
+    if (!existingCase) return NextResponse.json({ error: 'Ärendet hittades inte' }, { status: 404 })
+    if (existingCase.assignedToId !== user?.id && !user?.isAdmin) {
+      return NextResponse.json({ error: 'Åtkomst nekad' }, { status: 403 })
+    }
+
     await prisma.log.deleteMany({ where: { caseId: resolvedParams.id } })
     await prisma.task.deleteMany({ where: { caseId: resolvedParams.id } })
     await prisma.timeEntry.deleteMany({ where: { caseId: resolvedParams.id } })

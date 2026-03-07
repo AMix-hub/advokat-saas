@@ -11,9 +11,19 @@ export async function PUT(
     const token = await getToken({ req })
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+    const user = await prisma.user.findUnique({ where: { email: token.email as string } })
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
     const resolvedParams = await params
     const body = await req.json()
     const { content } = body
+
+    // Ownership check: only the author (or an admin) may edit the comment
+    const existing = await prisma.internalComment.findUnique({ where: { id: resolvedParams.id } })
+    if (!existing) return NextResponse.json({ error: 'Kommentaren hittades inte' }, { status: 404 })
+    if (existing.userId !== user.id && !user.isAdmin) {
+      return NextResponse.json({ error: 'Åtkomst nekad' }, { status: 403 })
+    }
 
     const comment = await prisma.internalComment.update({
       where: { id: resolvedParams.id },
@@ -37,7 +47,17 @@ export async function DELETE(
     const token = await getToken({ req })
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+    const user = await prisma.user.findUnique({ where: { email: token.email as string } })
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
     const resolvedParams = await params
+
+    // Ownership check: only the author (or an admin) may delete the comment
+    const existing = await prisma.internalComment.findUnique({ where: { id: resolvedParams.id } })
+    if (!existing) return NextResponse.json({ error: 'Kommentaren hittades inte' }, { status: 404 })
+    if (existing.userId !== user.id && !user.isAdmin) {
+      return NextResponse.json({ error: 'Åtkomst nekad' }, { status: 403 })
+    }
 
     await prisma.internalComment.delete({
       where: { id: resolvedParams.id }

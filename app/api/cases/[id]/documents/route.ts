@@ -3,6 +3,10 @@ import { prisma } from '@/lib/prisma'
 import { writeFile, mkdir } from 'fs/promises'
 import path from 'path'
 import { getToken } from 'next-auth/jwt'
+import crypto from 'crypto'
+
+const ALLOWED_EXTENSIONS = new Set(['.pdf', '.docx', '.txt', '.jpg', '.jpeg', '.png', '.xlsx'])
+const MAX_FILE_SIZE_BYTES = 20 * 1024 * 1024 // 20 MB
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -20,6 +24,17 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       return NextResponse.json({ error: 'Ingen fil skickades med.' }, { status: 400 })
     }
 
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      return NextResponse.json({ error: 'Filen är för stor. Max 20 MB.' }, { status: 400 })
+    }
+
+    // Validate file extension – use only the basename to prevent path traversal
+    const safeBaseName = path.basename(file.name)
+    const ext = path.extname(safeBaseName).toLowerCase()
+    if (!ALLOWED_EXTENSIONS.has(ext)) {
+      return NextResponse.json({ error: 'Filtypen är inte tillåten.' }, { status: 400 })
+    }
+
     // Konvertera filen till ett format som kan sparas på hårddisken
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
@@ -32,18 +47,19 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       // Mappen fanns redan, ignorera
     }
 
-    // Skapa ett unikt filnamn så att filer med samma namn inte skriver över varandra
-    const uniqueFilename = `${Date.now()}-${file.name.replace(/\s+/g, '_')}`
+    // Generate a cryptographically random filename to prevent enumeration and path traversal
+    const randomId = crypto.randomBytes(16).toString('hex')
+    const uniqueFilename = `${randomId}${ext}`
     const filePath = path.join(uploadDir, uniqueFilename)
 
-    // Spara filen fysiskt på din PC
+    // Spara filen fysiskt på servern
     await writeFile(filePath, buffer)
 
-    // Spara informationen i databasen och koppla till ärendet
+    // Spara informationen i databasen och koppla till ärendet (använd originalnamnet som visningsnamn)
     const document = await prisma.document.create({
       data: {
-        name: file.name,
-        url: `/uploads/${uniqueFilename}`, // Detta är den publika URL:en som webbläsaren kan läsa
+        name: safeBaseName,
+        url: `/uploads/${uniqueFilename}`,
         caseId: caseId,
       }
     })
@@ -51,7 +67,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     // Auto-logga att ett dokument laddades upp!
     await prisma.log.create({
       data: {
-        action: `Laddade upp dokument: ${file.name}`,
+        action: `Laddade upp dokument: ${safeBaseName}`,
         caseId: caseId
       }
     })
