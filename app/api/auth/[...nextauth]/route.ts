@@ -44,8 +44,8 @@ const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (session.user) {
-        (session.user as { isAdmin?: boolean; modules?: string[] }).isAdmin = token.isAdmin as boolean ?? false;
-        (session.user as { isAdmin?: boolean; modules?: string[] }).modules = token.modules as string[] ?? []
+        (session.user as { isAdmin?: boolean; modules?: string[] }).isAdmin = (token.isAdmin ?? false) as boolean;
+        (session.user as { isAdmin?: boolean; modules?: string[] }).modules = (token.modules ?? []) as string[]
       }
       return session
     },

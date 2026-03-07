@@ -87,7 +87,7 @@ export default function KommunikationPage() {
     fetch('/api/settings')
       .then(r => r.json())
       .then(data => { if (data.user && !data.user.modules?.includes('kommunikation')) setAccessDenied(true) })
-      .catch(() => {})
+      .catch(err => { console.error('Failed to check module access:', err) })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

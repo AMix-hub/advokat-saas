@@ -370,7 +370,7 @@ export default function DocsPage() {
     fetch('/api/settings')
       .then(r => r.json())
       .then(data => { if (data.user && !data.user.modules?.includes('docs')) setAccessDenied(true) })
-      .catch(() => {})
+      .catch(err => { console.error('Failed to check module access:', err) })
   }, [])
 
   const loadHistory = async () => {

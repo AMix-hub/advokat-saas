@@ -137,7 +137,7 @@ export default function KycPage() {
     fetch('/api/settings')
       .then(r => r.json())
       .then(data => { if (data.user && !data.user.modules?.includes('kyc')) setAccessDenied(true) })
-      .catch(() => {})
+      .catch(err => { console.error('Failed to check module access:', err) })
   }, [])
 
   const openClient = (client: ClientKyc) => {
