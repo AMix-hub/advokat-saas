@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import AccessDenied from '@/components/AccessDenied'
 import {
   BookOpen,
   FileText,
@@ -362,9 +363,14 @@ export default function DocsPage() {
   const [saving, setSaving] = useState(false)
   const [saveSuccess, setSaveSuccess] = useState(false)
   const [showHistory, setShowHistory] = useState(false)
+  const [accessDenied, setAccessDenied] = useState(false)
 
   useEffect(() => {
     fetch('/api/cases').then(r => r.json()).then(d => { if (Array.isArray(d)) setCases(d) })
+    fetch('/api/settings')
+      .then(r => r.json())
+      .then(data => { if (data.user && !data.user.modules?.includes('docs')) setAccessDenied(true) })
+      .catch(() => {})
   }, [])
 
   const loadHistory = async () => {
@@ -419,6 +425,8 @@ export default function DocsPage() {
   const allRequiredFilled = selectedTemplate
     ? selectedTemplate.fields.filter(f => f.required).every(f => (fields[f.key] ?? '').trim() !== '')
     : false
+
+  if (accessDenied) return <AccessDenied moduleName="CaseCore Docs" />
 
   // ── Gallery view ────────────────────────────────────────
   if (view === 'gallery') {

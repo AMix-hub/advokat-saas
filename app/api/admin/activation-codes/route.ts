@@ -2,11 +2,16 @@ import { NextResponse } from 'next/server'
 import { getToken } from 'next-auth/jwt'
 import { prisma } from '@/lib/prisma'
 
-// GET /api/admin/activation-codes — Hämta alla aktiveringskoder
+// GET /api/admin/activation-codes — Hämta alla aktiveringskoder (endast admin)
 export async function GET(req: Request) {
   const token = await getToken({ req: req as Parameters<typeof getToken>[0]['req'] })
   if (!token?.email) {
     return NextResponse.json({ error: 'Ej inloggad' }, { status: 401 })
+  }
+
+  const user = await prisma.user.findUnique({ where: { email: token.email } })
+  if (!user?.isAdmin) {
+    return NextResponse.json({ error: 'Åtkomst nekad' }, { status: 403 })
   }
 
   const codes = await prisma.activationCode.findMany({
@@ -16,11 +21,16 @@ export async function GET(req: Request) {
   return NextResponse.json({ codes })
 }
 
-// POST /api/admin/activation-codes — Skapa en ny aktiveringskod
+// POST /api/admin/activation-codes — Skapa en ny aktiveringskod (endast admin)
 export async function POST(req: Request) {
   const token = await getToken({ req: req as Parameters<typeof getToken>[0]['req'] })
   if (!token?.email) {
     return NextResponse.json({ error: 'Ej inloggad' }, { status: 401 })
+  }
+
+  const user = await prisma.user.findUnique({ where: { email: token.email } })
+  if (!user?.isAdmin) {
+    return NextResponse.json({ error: 'Åtkomst nekad' }, { status: 403 })
   }
 
   try {

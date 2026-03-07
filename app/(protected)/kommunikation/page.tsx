@@ -3,6 +3,7 @@
 export const dynamic = 'force-dynamic'
 
 import { useState, useEffect } from 'react'
+import AccessDenied from '@/components/AccessDenied'
 import {
   MessageSquare,
   Send,
@@ -51,6 +52,7 @@ export default function KommunikationPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [error, setError] = useState('')
   const [successMsg, setSuccessMsg] = useState('')
+  const [accessDenied, setAccessDenied] = useState(false)
 
   const fetchMessages = async () => {
     setLoading(true)
@@ -82,6 +84,10 @@ export default function KommunikationPage() {
   useEffect(() => {
     fetchMessages()
     fetchClients()
+    fetch('/api/settings')
+      .then(r => r.json())
+      .then(data => { if (data.user && !data.user.modules?.includes('kommunikation')) setAccessDenied(true) })
+      .catch(() => {})
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -144,6 +150,8 @@ export default function KommunikationPage() {
     if (!groupedByClient[key]) groupedByClient[key] = []
     groupedByClient[key].push(m)
   })
+
+  if (accessDenied) return <AccessDenied moduleName="Klientkommunikation" />
 
   return (
     <main className="min-h-screen bg-slate-950 p-3 sm:p-6 lg:p-8">
