@@ -83,6 +83,12 @@ export default function InvoiceManager({ caseId, timeEntries = [], expenses = []
     fetchInvoices()
   }, [fetchInvoices])
 
+  useEffect(() => {
+    const handleUpdate = () => fetchInvoices()
+    window.addEventListener('faktura-uppdatera', handleUpdate)
+    return () => window.removeEventListener('faktura-uppdatera', handleUpdate)
+  }, [fetchInvoices])
+
   const handleOpenNewForm = () => {
     // Förifyll fakturarader från tidsregistreringar och utlägg
     const preFilledItems = [

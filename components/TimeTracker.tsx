@@ -52,6 +52,7 @@ export default function TimeTracker({ caseId, timeEntries }: { caseId: string, t
     setDescription('')
     setHours('')
     setIsSubmitting(false)
+    window.dispatchEvent(new CustomEvent('faktura-uppdatera'))
     router.refresh()
   }
 
