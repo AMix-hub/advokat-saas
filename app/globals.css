@@ -32,19 +32,19 @@ body {
 
 /* Gradient Backgrounds */
 .gradient-primary {
-  @apply bg-gradient-to-br from-blue-50 to-indigo-50;
+  @apply bg-gradient-to-br from-blue-950 to-indigo-950;
 }
 
 .gradient-success {
-  @apply bg-gradient-to-br from-green-50 to-emerald-50;
+  @apply bg-gradient-to-br from-green-950 to-emerald-950;
 }
 
 .gradient-warning {
-  @apply bg-gradient-to-br from-amber-50 to-orange-50;
+  @apply bg-gradient-to-br from-amber-950 to-orange-950;
 }
 
 .gradient-danger {
-  @apply bg-gradient-to-br from-red-50 to-pink-50;
+  @apply bg-gradient-to-br from-red-950 to-pink-950;
 }
 
 /* Status Badge Styles */
