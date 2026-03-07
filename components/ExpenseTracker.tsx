@@ -21,6 +21,7 @@ export default function ExpenseTracker({ caseId, expenses }: { caseId: string, e
     setDescription('')
     setAmount('')
     setIsSubmitting(false)
+    window.dispatchEvent(new CustomEvent('faktura-uppdatera'))
     router.refresh()
   }
 
