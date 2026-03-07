@@ -30,14 +30,14 @@ export default async function TeamPage() {
           <div className="bg-slate-900 rounded-2xl border border-white/[0.08] p-8">
             <h1 className="text-2xl font-extrabold text-white mb-6">Ditt Team</h1>
             <div className="space-y-4">
-              {users.map((user, index) => (
+              {users.map((user) => (
                 <div key={user.id} className="flex items-center justify-between p-4 bg-white/[0.04] rounded-xl border border-white/[0.06]">
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 bg-blue-500/20 text-blue-400 font-bold rounded-full flex items-center justify-center">
                       {user.name?.charAt(0) || 'U'}
                     </div>
                     <div>
-                      <p className="font-bold text-slate-100">{user.name} {index === 0 && <span className="text-xs bg-white/10 text-slate-300 px-2 py-0.5 rounded ml-2">Admin</span>}</p>
+                      <p className="font-bold text-slate-100">{user.name} {user.isAdmin && <span className="text-xs bg-white/10 text-slate-300 px-2 py-0.5 rounded ml-2">Admin</span>}</p>
                       <p className="text-xs text-slate-500">{user.email}</p>
                     </div>
                   </div>

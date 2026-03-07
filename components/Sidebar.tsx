@@ -23,6 +23,7 @@ import {
   MessageSquare,
   BookOpen,
   ShieldCheck,
+  UserCog,
 } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 
@@ -32,7 +33,7 @@ export default function Sidebar() {
   const pathname = usePathname()
   const router = useRouter()
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [user, setUser] = useState<{ name?: string | null; email?: string | null } | null>(null)
+  const [user, setUser] = useState<{ name?: string | null; email?: string | null; isAdmin?: boolean; modules?: string[] } | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
@@ -60,15 +61,22 @@ export default function Sidebar() {
     { href: '/templates',      label: 'Mallar',           icon: FileText },
     { href: '/conflict-check', label: 'Jävsprövning',     icon: Scale },
     { href: '/team',           label: 'Team',             icon: Users },
-    { href: '/admin/activation-codes', label: 'Åtkomstkoder', icon: KeyRound },
+    ...(user?.isAdmin ? [
+      { href: '/admin/activation-codes', label: 'Åtkomstkoder',       icon: KeyRound },
+      { href: '/admin/users',            label: 'Användarhantering',   icon: UserCog },
+    ] : []),
     { href: '/settings',       label: 'Inställningar',    icon: Settings },
   ]
 
-  const addOnItems = [
-    { href: '/docs',          label: 'CaseCore Docs',        icon: BookOpen },
-    { href: '/kyc',           label: 'CaseCore KYC',         icon: ShieldCheck },
-    { href: '/kommunikation', label: 'Klientkommunikation',  icon: MessageSquare },
+  const allAddOnItems = [
+    { href: '/docs',          label: 'CaseCore Docs',        icon: BookOpen,     module: 'docs' },
+    { href: '/kyc',           label: 'CaseCore KYC',         icon: ShieldCheck,  module: 'kyc' },
+    { href: '/kommunikation', label: 'Klientkommunikation',  icon: MessageSquare, module: 'kommunikation' },
   ]
+
+  const addOnItems = user
+    ? allAddOnItems.filter(item => user.modules?.includes(item.module))
+    : []
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -143,7 +151,7 @@ export default function Sidebar() {
         <div className="mt-4 mb-2 border-t border-white/[0.06] pt-3">
           <p className="text-[9px] font-bold text-purple-600 uppercase tracking-[0.15em] px-3 mb-2">Tillägg</p>
           <div className="space-y-0.5">
-            {addOnItems.map((item) => {
+            {addOnItems.length > 0 ? addOnItems.map((item) => {
               const Icon = item.icon
               const active = isActive(item.href)
               return (
@@ -164,7 +172,9 @@ export default function Sidebar() {
                   )}
                 </Link>
               )
-            })}
+            }) : (
+              <p className="px-3 py-2 text-xs text-slate-600 italic">Inga tillägg aktiverade</p>
+            )}
           </div>
         </div>
       </nav>

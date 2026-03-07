@@ -2,6 +2,8 @@ export const dynamic = 'force-dynamic'
 
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import UpcomingDeadlines from '@/components/UpcomingDeadlines'
 import FloatingActionButton from '@/components/FloatingActionButton'
 import NotificationBadge from '@/components/NotificationBadge'
@@ -9,7 +11,12 @@ import { Download, Plus, Calendar, Clock, FileText, Briefcase, CheckCircle2, Cir
 import { statusLabel } from '@/lib/status'
 
 export default async function Dashboard() {
-  const cases = await prisma.case.findMany({
+  const session = await getServerSession(authOptions)
+  const userEmail = session?.user?.email
+  const dbUser = userEmail ? await prisma.user.findUnique({ where: { email: userEmail } }) : null
+
+  const cases = dbUser ? await prisma.case.findMany({
+    where: { assignedToId: dbUser.id },
     include: {
       client: true,
       timeEntries: true,
@@ -20,31 +27,34 @@ export default async function Dashboard() {
       invoices: true
     },
     orderBy: { updatedAt: 'desc' }
-  })
+  }) : []
 
-  const upcomingTasks = await prisma.task.findMany({
+  const upcomingTasks = dbUser ? await prisma.task.findMany({
     where: {
       isCompleted: false,
-      dueDate: { not: null }
+      dueDate: { not: null },
+      case: { assignedToId: dbUser.id },
     },
     include: { case: true },
     orderBy: { dueDate: 'asc' },
     take: 6
-  })
+  }) : []
 
-  const overdeadlines = await prisma.deadline.findMany({
+  const overdeadlines = dbUser ? await prisma.deadline.findMany({
     where: {
       dueDate: { lt: new Date() },
-      isCompleted: false
+      isCompleted: false,
+      case: { assignedToId: dbUser.id },
     },
     include: { case: true }
-  })
+  }) : []
 
-  const unpaidInvoices = await prisma.invoice.findMany({
+  const unpaidInvoices = dbUser ? await prisma.invoice.findMany({
     where: {
-      status: { in: ['DRAFT', 'SENT', 'OVERDUE'] }
+      status: { in: ['DRAFT', 'SENT', 'OVERDUE'] },
+      case: { assignedToId: dbUser.id },
     }
-  })
+  }) : []
 
   const activeCasesCount = cases.filter(c => c.status === 'OPEN' || c.status === 'PENDING').length
   

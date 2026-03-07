@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import AccessDenied from '@/components/AccessDenied'
 import {
   ShieldCheck,
   AlertTriangle,
@@ -105,6 +106,7 @@ export default function KycPage() {
   const [saving, setSaving] = useState(false)
   const [saveSuccess, setSaveSuccess] = useState(false)
   const [saveError, setSaveError] = useState('')
+  const [accessDenied, setAccessDenied] = useState(false)
 
   // Form state
   const [form, setForm] = useState({
@@ -130,7 +132,13 @@ export default function KycPage() {
     }
   }
 
-  useEffect(() => { fetchClients() }, [])
+  useEffect(() => {
+    fetchClients()
+    fetch('/api/settings')
+      .then(r => r.json())
+      .then(data => { if (data.user && !data.user.modules?.includes('kyc')) setAccessDenied(true) })
+      .catch(err => { console.error('Failed to check module access:', err) })
+  }, [])
 
   const openClient = (client: ClientKyc) => {
     const r = client.kycRecords[0]
@@ -199,6 +207,8 @@ export default function KycPage() {
   const pending = clients.filter(c => kycStatus(c) === 'none').length
   const high = clients.filter(c => c.kycRecords[0]?.riskLevel === 'HIGH').length
   const medium = clients.filter(c => c.kycRecords[0]?.riskLevel === 'MEDIUM').length
+
+  if (accessDenied) return <AccessDenied moduleName="CaseCore KYC" />
 
   return (
     <main className="min-h-screen bg-slate-950 p-4 sm:p-6 lg:p-8">

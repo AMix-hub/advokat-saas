@@ -2,12 +2,18 @@ import { NextResponse } from 'next/server'
 import { getToken } from 'next-auth/jwt'
 import { prisma } from '@/lib/prisma'
 
-// PATCH /api/admin/activation-codes/[id] — Uppdatera en aktiveringskod
-export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
+async function requireAdmin(req: Request) {
   const token = await getToken({ req: req as Parameters<typeof getToken>[0]['req'] })
-  if (!token?.email) {
-    return NextResponse.json({ error: 'Ej inloggad' }, { status: 401 })
-  }
+  if (!token?.email) return { error: 'Ej inloggad', status: 401 }
+  const user = await prisma.user.findUnique({ where: { email: token.email } })
+  if (!user?.isAdmin) return { error: 'Åtkomst nekad', status: 403 }
+  return null
+}
+
+// PATCH /api/admin/activation-codes/[id] — Uppdatera en aktiveringskod (endast admin)
+export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const denied = await requireAdmin(req)
+  if (denied) return NextResponse.json({ error: denied.error }, { status: denied.status })
 
   try {
     const { id } = await params
@@ -34,12 +40,10 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   }
 }
 
-// DELETE /api/admin/activation-codes/[id] — Ta bort en aktiveringskod
+// DELETE /api/admin/activation-codes/[id] — Ta bort en aktiveringskod (endast admin)
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const token = await getToken({ req: req as Parameters<typeof getToken>[0]['req'] })
-  if (!token?.email) {
-    return NextResponse.json({ error: 'Ej inloggad' }, { status: 401 })
-  }
+  const denied = await requireAdmin(req)
+  if (denied) return NextResponse.json({ error: denied.error }, { status: denied.status })
 
   try {
     const { id } = await params

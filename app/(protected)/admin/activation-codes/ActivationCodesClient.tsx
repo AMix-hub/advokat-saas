@@ -24,6 +24,7 @@ function randomCode() {
 export default function ActivationCodesClient() {
   const [codes, setCodes] = useState<ActivationCode[]>([])
   const [loading, setLoading] = useState(true)
+  const [accessDenied, setAccessDenied] = useState(false)
   const [creating, setCreating] = useState(false)
   const [copiedId, setCopiedId] = useState<string | null>(null)
 
@@ -37,6 +38,10 @@ export default function ActivationCodesClient() {
     setLoading(true)
     try {
       const res = await fetch('/api/admin/activation-codes')
+      if (res.status === 403) {
+        setAccessDenied(true)
+        return
+      }
       const data = await res.json()
       setCodes(data.codes || [])
     } finally {
@@ -108,6 +113,16 @@ export default function ActivationCodesClient() {
     <main className="min-h-screen bg-slate-950 p-4 sm:p-8">
       <div className="max-w-4xl mx-auto space-y-6">
 
+        {accessDenied ? (
+          <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+            <div className="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center">
+              <AlertTriangle className="w-8 h-8 text-red-400" />
+            </div>
+            <h1 className="text-2xl font-extrabold text-white">Åtkomst nekad</h1>
+            <p className="text-slate-400 text-center">Du har inte behörighet att se den här sidan. Kontakta en administratör.</p>
+          </div>
+        ) : (
+          <>
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -319,7 +334,8 @@ export default function ActivationCodesClient() {
             </li>
           </ul>
         </div>
-
+          </>
+        )}
       </div>
     </main>
   )

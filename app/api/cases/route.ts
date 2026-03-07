@@ -7,11 +7,17 @@ export async function GET(req: NextRequest) {
     const token = await getToken({ req })
     if (!token?.email) return NextResponse.json({ error: 'Ej inloggad' }, { status: 401 })
 
+    const user = await prisma.user.findUnique({ where: { email: token.email } })
+    const userId = user?.id
+
     const { searchParams } = new URL(req.url)
     const clientId = searchParams.get('clientId') ?? undefined
 
     const cases = await prisma.case.findMany({
-      where: clientId ? { clientId } : undefined,
+      where: {
+        assignedToId: userId ?? 'none',
+        ...(clientId ? { clientId } : {}),
+      },
       select: { id: true, title: true, status: true },
       orderBy: { updatedAt: 'desc' },
     })
@@ -39,7 +45,7 @@ export async function POST(req: NextRequest) {
         hourlyRate: parseFloat(body.hourlyRate),
         status: 'OPEN',
         clientId: body.clientId,
-        assignedToId: body.assignedToId || user?.id, // Sätt ansvarig
+        assignedToId: user?.id, // Alltid inloggad användare som ansvarig
       }
     })
 

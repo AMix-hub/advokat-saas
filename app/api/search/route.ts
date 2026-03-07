@@ -15,8 +15,12 @@ export async function GET(req: NextRequest) {
   }
 
   try {
+    const user = await prisma.user.findUnique({ where: { email: token.email } })
+    if (!user) return NextResponse.json({ clients: [], cases: [] })
+
     const clients = await prisma.client.findMany({
       where: { 
+        createdById: user.id,
         OR: [ 
           { name: { contains: query, mode: 'insensitive' } }, 
           { orgNr: { contains: query, mode: 'insensitive' } } 
@@ -27,6 +31,7 @@ export async function GET(req: NextRequest) {
 
     const cases = await prisma.case.findMany({
       where: { 
+        assignedToId: user.id,
         OR: [ 
           { title: { contains: query, mode: 'insensitive' } } 
         ] 

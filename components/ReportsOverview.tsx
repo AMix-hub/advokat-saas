@@ -110,12 +110,12 @@ export default function ReportsOverview() {
               </div>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <p className="text-slate-500">Avg timmar per ärende</p>
-                  <p className="font-semibold text-slate-900">{(type.avgHours._avg.hours || 0).toFixed(1)} h</p>
+                  <p className="text-slate-400">Avg timmar per ärende</p>
+                  <p className="font-semibold text-slate-100">{(type.avgHours._avg.hours || 0).toFixed(1)} h</p>
                 </div>
                 <div>
-                  <p className="text-slate-500">Total intäkt</p>
-                  <p className="font-semibold text-emerald-600">
+                  <p className="text-slate-400">Total intäkt</p>
+                  <p className="font-semibold text-emerald-400">
                     {(type.totalRevenue._sum.totalAmount || 0).toLocaleString('sv-SE')} kr
                   </p>
                 </div>
@@ -153,22 +153,22 @@ export default function ReportsOverview() {
               </div>
               <div className="grid grid-cols-4 gap-3 text-sm">
                 <div>
-                  <p className="text-slate-600">Intäkt</p>
-                  <p className="font-semibold text-emerald-600">{item.revenue.toLocaleString('sv-SE')} kr</p>
+                  <p className="text-slate-400">Intäkt</p>
+                  <p className="font-semibold text-emerald-400">{item.revenue.toLocaleString('sv-SE')} kr</p>
                 </div>
                 <div>
-                  <p className="text-slate-600">Kostnader</p>
-                  <p className="font-semibold text-slate-800">{item.costs.toLocaleString('sv-SE')} kr</p>
+                  <p className="text-slate-400">Kostnader</p>
+                  <p className="font-semibold text-slate-200">{item.costs.toLocaleString('sv-SE')} kr</p>
                 </div>
                 <div>
-                  <p className="text-slate-600">Vinst</p>
-                  <p className={`font-semibold ${item.profit >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                  <p className="text-slate-400">Vinst</p>
+                  <p className={`font-semibold ${item.profit >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                     {item.profit.toLocaleString('sv-SE')} kr
                   </p>
                 </div>
                 <div>
-                  <p className="text-slate-600">Timmar</p>
-                  <p className="font-semibold text-slate-800">{item.hoursWorked.toFixed(1)} h</p>
+                  <p className="text-slate-400">Timmar</p>
+                  <p className="font-semibold text-slate-200">{item.hoursWorked.toFixed(1)} h</p>
                 </div>
               </div>
             </div>

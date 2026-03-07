@@ -1,9 +1,9 @@
-import NextAuth from 'next-auth'
+import NextAuth, { type NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
 
-const handler = NextAuth({
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -24,16 +24,39 @@ const handler = NextAuth({
           return null
         }
 
-        return { id: user.id, email: user.email, name: user.name }
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          isAdmin: user.isAdmin,
+          modules: user.modules,
+        }
       }
     })
   ],
-  // NYTT: Lägg till denna del för att peka ut vår egna sida
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.isAdmin = (user as { isAdmin?: boolean }).isAdmin ?? false
+        token.modules = (user as { modules?: string[] }).modules ?? []
+      }
+      return token
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        (session.user as { isAdmin?: boolean; modules?: string[] }).isAdmin = (token.isAdmin ?? false) as boolean;
+        (session.user as { isAdmin?: boolean; modules?: string[] }).modules = (token.modules ?? []) as string[]
+      }
+      return session
+    },
+  },
   pages: {
-    signIn: '/login', // Säger att inloggningen ligger på /login
+    signIn: '/login',
   },
   session: { strategy: 'jwt' },
   secret: process.env.NEXTAUTH_SECRET,
-})
+}
+
+const handler = NextAuth(authOptions)
 
 export { handler as GET, handler as POST }

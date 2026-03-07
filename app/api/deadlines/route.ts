@@ -8,11 +8,16 @@ export async function GET(req: NextRequest) {
     const token = await getToken({ req })
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+    const user = await prisma.user.findUnique({ where: { email: token.email as string } })
+    if (!user) return NextResponse.json({ error: 'Användaren hittades inte' }, { status: 401 })
+
     const caseId = req.nextUrl.searchParams.get('caseId')
     const type = req.nextUrl.searchParams.get('type')
     const isCompleted = req.nextUrl.searchParams.get('isCompleted')
 
-    const where: any = {}
+    const where: any = {
+      case: { assignedToId: user.id },
+    }
     if (caseId) where.caseId = caseId
     if (type) where.type = type
     if (isCompleted !== null) where.isCompleted = isCompleted === 'true'

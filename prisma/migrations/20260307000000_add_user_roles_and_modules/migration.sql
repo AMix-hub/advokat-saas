@@ -1,0 +1,3 @@
+-- AlterTable: Add isAdmin and modules to User
+ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "isAdmin" BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "modules" TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[];
