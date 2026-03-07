@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { Calendar, AlertCircle, CheckCircle, Trash2, Edit2 } from 'lucide-react'
 
 interface Deadline {
@@ -21,11 +21,7 @@ export default function DeadlineManager({ caseId }: { caseId?: string }) {
   const [newDeadline, setNewDeadline] = useState({ title: '', dueDate: '', type: 'REMINDER' })
   const [showForm, setShowForm] = useState(false)
 
-  useEffect(() => {
-    fetchDeadlines()
-  }, [caseId])
-
-  const fetchDeadlines = async () => {
+  const fetchDeadlines = useCallback(async () => {
     try {
       const url = caseId ? `/api/deadlines?caseId=${caseId}` : '/api/deadlines'
       const res = await fetch(url)
@@ -38,7 +34,11 @@ export default function DeadlineManager({ caseId }: { caseId?: string }) {
     } finally {
       setLoading(false)
     }
-  }
+  }, [caseId])
+
+  useEffect(() => {
+    fetchDeadlines()
+  }, [fetchDeadlines])
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault()

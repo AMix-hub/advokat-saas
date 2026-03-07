@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 export default function TaskList({ caseId, tasks }: { caseId: string, tasks: any[] }) {
@@ -40,12 +40,12 @@ export default function TaskList({ caseId, tasks }: { caseId: string, tasks: any
   }
 
   // Sortering: Ogjorda uppgifter hamnar högst upp. Därefter sorterat på närmaste förfallodatum.
-  const sortedTasks = [...tasks].sort((a, b) => {
+  const sortedTasks = useMemo(() => [...tasks].sort((a, b) => {
     if (a.isCompleted === b.isCompleted) {
         return new Date(a.dueDate || a.createdAt).getTime() - new Date(b.dueDate || b.createdAt).getTime()
     }
     return a.isCompleted ? 1 : -1
-  })
+  }), [tasks])
 
   return (
     <div className="bg-slate-900 rounded-2xl border border-white/[0.08] p-6 mb-8">

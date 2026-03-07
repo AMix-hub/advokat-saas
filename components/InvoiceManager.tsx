@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { CreditCard, Trash2, Eye, Plus, X } from 'lucide-react'
 
 interface InvoiceItem {
@@ -64,12 +64,7 @@ export default function InvoiceManager({ caseId, timeEntries = [], expenses = []
     notes: ''
   })
 
-  useEffect(() => {
-    fetchInvoices()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [caseId, timeEntries.length, expenses.length])
-
-  const fetchInvoices = async () => {
+  const fetchInvoices = useCallback(async () => {
     try {
       const url = caseId ? `/api/invoices?caseId=${caseId}` : '/api/invoices'
       const res = await fetch(url)
@@ -82,7 +77,11 @@ export default function InvoiceManager({ caseId, timeEntries = [], expenses = []
     } finally {
       setLoading(false)
     }
-  }
+  }, [caseId])
+
+  useEffect(() => {
+    fetchInvoices()
+  }, [fetchInvoices])
 
   const handleOpenNewForm = () => {
     // Förifyll fakturarader från tidsregistreringar och utlägg
