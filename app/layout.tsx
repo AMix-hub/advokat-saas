@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import './globals.css'
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://casecore.se'
@@ -71,6 +72,7 @@ export default function RootLayout({
     <html lang="sv">
       <body className="font-sans antialiased">
         {children}
+        <SpeedInsights />
       </body>
     </html>
   )
