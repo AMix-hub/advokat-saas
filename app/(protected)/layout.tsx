@@ -5,7 +5,7 @@ import Sidebar from '@/components/Sidebar'
 export default function ProtectedLayout({ children }: { children: ReactNode }) {
   return (
     <SessionWrapper>
-      <div className="flex min-h-screen bg-slate-950">
+      <div className="flex h-screen overflow-hidden bg-slate-950">
         {/* Sidebar handles desktop + mobile header/drawer */}
         <Sidebar />
 
