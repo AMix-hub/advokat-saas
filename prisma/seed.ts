@@ -7,10 +7,10 @@ async function main() {
   const hashedPassword = await bcrypt.hash('Leary30!', 10)
   
   const user = await prisma.user.upsert({
-    where: { email: 'admin@advokat.se' },
+    where: { email: 'admin@casecore.se' },
     update: { password: hashedPassword, isAdmin: true }, // Återställer lösenord och adminbehörighet vid ny körning
     create: {
-      email: 'admin@advokat.se',
+      email: 'admin@casecore.se',
       name: 'Chefsadvokat',
       password: hashedPassword,
       isAdmin: true,
@@ -139,7 +139,7 @@ async function main() {
   })
 
   console.log('Databasen uppdaterad! Din inloggning är:')
-  console.log('E-post: admin@advokat.se')
+  console.log('E-post: admin@casecore.se')
   console.log('Lösenord: Leary30!')
 }
 
