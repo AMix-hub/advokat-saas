@@ -16,7 +16,9 @@ interface AdminUser {
   id: string
   name: string | null
   email: string
+  firmName: string | null
   isAdmin: boolean
+  licenseType: string
   modules: string[]
 }
 
@@ -46,7 +48,7 @@ export default function AdminUsersClient() {
 
   useEffect(() => { fetchUsers() }, [fetchUsers])
 
-  const updateUser = async (userId: string, patch: Partial<Pick<AdminUser, 'isAdmin' | 'modules'>>) => {
+  const updateUser = async (userId: string, patch: Partial<Pick<AdminUser, 'isAdmin' | 'modules' | 'licenseType'>>) => {
     setSaving(userId)
     try {
       const res = await fetch(`/api/admin/users/${userId}`, {
@@ -127,22 +129,36 @@ export default function AdminUsersClient() {
                           <div>
                             <p className="font-bold text-white text-sm">{user.name ?? '(inget namn)'}</p>
                             <p className="text-xs text-slate-500">{user.email}</p>
+                            {user.firmName && <p className="text-xs text-slate-600">{user.firmName}</p>}
                           </div>
                         </div>
-                        {/* Admin toggle */}
-                        <button
-                          onClick={() => toggleAdmin(user)}
-                          disabled={saving === user.id}
-                          className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition border ${
-                            user.isAdmin
-                              ? 'bg-amber-500/10 border-amber-500/20 text-amber-400 hover:bg-amber-500/20'
-                              : 'bg-white/[0.05] border-white/10 text-slate-400 hover:text-slate-200 hover:bg-white/[0.08]'
-                          }`}
-                          title={user.isAdmin ? 'Ta bort admin' : 'Gör till admin'}
-                        >
-                          {user.isAdmin ? <Shield className="w-3.5 h-3.5" /> : <ShieldOff className="w-3.5 h-3.5" />}
-                          {user.isAdmin ? 'Admin' : 'Användare'}
-                        </button>
+                        <div className="flex items-center gap-2">
+                          {/* License type */}
+                          <select
+                            value={user.licenseType}
+                            onChange={e => updateUser(user.id, { licenseType: e.target.value })}
+                            disabled={saving === user.id}
+                            className="text-xs font-bold px-2 py-1.5 rounded-lg border outline-none cursor-pointer disabled:opacity-50 bg-white/[0.04] border-white/[0.08] text-slate-300"
+                          >
+                            <option value="SOLO">Solo</option>
+                            <option value="BYRA">Byrå</option>
+                            <option value="TRIAL">Trial</option>
+                          </select>
+                          {/* Admin toggle */}
+                          <button
+                            onClick={() => toggleAdmin(user)}
+                            disabled={saving === user.id}
+                            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition border ${
+                              user.isAdmin
+                                ? 'bg-amber-500/10 border-amber-500/20 text-amber-400 hover:bg-amber-500/20'
+                                : 'bg-white/[0.05] border-white/10 text-slate-400 hover:text-slate-200 hover:bg-white/[0.08]'
+                            }`}
+                            title={user.isAdmin ? 'Ta bort admin' : 'Gör till admin'}
+                          >
+                            {user.isAdmin ? <Shield className="w-3.5 h-3.5" /> : <ShieldOff className="w-3.5 h-3.5" />}
+                            {user.isAdmin ? 'Admin' : 'Användare'}
+                          </button>
+                        </div>
                       </div>
 
                       {/* Modules */}
