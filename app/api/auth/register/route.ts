@@ -4,7 +4,8 @@ import bcrypt from 'bcryptjs'
 
 export async function POST(req: Request) {
   try {
-    const { name, firmName, email, password, inviteCode } = await req.json()
+    const { name, firmName, email: rawEmail, password, inviteCode } = await req.json()
+    const email = rawEmail?.toLowerCase() ?? ''
 
     if (!inviteCode) {
       return NextResponse.json({ error: 'Åtkomstkod saknas.' }, { status: 400 })
@@ -49,7 +50,10 @@ export async function POST(req: Request) {
     const hashedPassword = await bcrypt.hash(password, 10)
 
     // Ge admin-behörighet om env-koden används (masterkodsregistrering)
-    const shouldBeAdmin = !dbCode
+    // eller om e-posten matchar den konfigurerade adminadressen (ADMIN_EMAIL)
+    const adminEmail = process.env.ADMIN_EMAIL?.toLowerCase()
+    const isDesignatedAdmin = adminEmail ? email === adminEmail : false
+    const shouldBeAdmin = !dbCode || isDesignatedAdmin
 
     // Skapa byrån/användaren i databasen
     await prisma.user.create({

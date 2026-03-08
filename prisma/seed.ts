@@ -6,11 +6,14 @@ async function main() {
   // 1. Skapa din användare (Advokat)
   const hashedPassword = await bcrypt.hash('Leary30!', 10)
   
+  // Använd ADMIN_EMAIL-miljövariabeln om den är satt, annars standard
+  const adminEmail = (process.env.ADMIN_EMAIL || 'admin@casecore.se').toLowerCase()
+  
   const user = await prisma.user.upsert({
-    where: { email: 'admin@casecore.se' },
+    where: { email: adminEmail },
     update: { name: 'Chefsadvokat', firmName: 'Advokatbyrån AB', password: hashedPassword, isAdmin: true }, // Återställer lösenord och adminbehörighet vid ny körning
     create: {
-      email: 'admin@casecore.se',
+      email: adminEmail,
       name: 'Chefsadvokat',
       firmName: 'Advokatbyrån AB',
       password: hashedPassword,
@@ -142,7 +145,7 @@ async function main() {
   })
 
   console.log('Databasen uppdaterad! Din inloggning är:')
-  console.log('E-post: admin@casecore.se')
+  console.log(`E-post: ${adminEmail}`)
   console.log('Lösenord: Leary30!')
 }
 

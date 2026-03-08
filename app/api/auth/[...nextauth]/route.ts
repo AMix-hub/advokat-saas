@@ -17,18 +17,26 @@ export const authOptions: NextAuthOptions = {
         }
 
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email }
+          where: { email: credentials.email.toLowerCase() }
         })
 
         if (!user || !(await bcrypt.compare(credentials.password, user.password))) {
           return null
         }
 
+        // Auto-promote the designated admin email to isAdmin if not already set
+        const adminEmail = process.env.ADMIN_EMAIL?.toLowerCase()
+        let isAdmin = user.isAdmin
+        if (adminEmail && user.email === adminEmail && !user.isAdmin) {
+          await prisma.user.update({ where: { id: user.id }, data: { isAdmin: true } })
+          isAdmin = true
+        }
+
         return {
           id: user.id,
           email: user.email,
           name: user.name,
-          isAdmin: user.isAdmin,
+          isAdmin,
           modules: user.modules,
         }
       }
