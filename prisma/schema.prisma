@@ -261,6 +261,7 @@ model ActivationCode {
   id          String    @id @default(cuid())
   code        String    @unique
   description String?
+  licenseType String    @default("SOLO")  // SOLO | BYRA
   maxUses     Int       @default(1)  // -1 = obegränsat antal användningar
   usedCount   Int       @default(0)
   isActive    Boolean   @default(true)

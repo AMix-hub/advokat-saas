@@ -62,8 +62,8 @@ export default function Sidebar() {
     { href: '/conflict-check', label: 'Jävsprövning',     icon: Scale },
     { href: '/team',           label: 'Team',             icon: Users },
     ...(user?.isAdmin ? [
-      { href: '/admin/activation-codes', label: 'Åtkomstkoder',       icon: KeyRound },
-      { href: '/admin/users',            label: 'Användarhantering',   icon: UserCog },
+      { href: '/admin/licenser',  label: 'Licenser',          icon: KeyRound },
+      { href: '/admin/users',     label: 'Moduler',           icon: UserCog },
     ] : []),
     { href: '/settings',       label: 'Inställningar',    icon: Settings },
   ]
@@ -75,7 +75,7 @@ export default function Sidebar() {
   ]
 
   const addOnItems = user
-    ? allAddOnItems.filter(item => user.modules?.includes(item.module))
+    ? (user.isAdmin ? allAddOnItems : allAddOnItems.filter(item => user.modules?.includes(item.module)))
     : []
 
   const handleSearch = (e: React.FormEvent) => {
