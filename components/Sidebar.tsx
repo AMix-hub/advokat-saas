@@ -24,6 +24,9 @@ import {
   BookOpen,
   ShieldCheck,
   UserCog,
+  LayoutDashboard,
+  Upload,
+  Plug,
 } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 
@@ -62,8 +65,11 @@ export default function Sidebar() {
     { href: '/conflict-check', label: 'Jävsprövning',     icon: Scale },
     { href: '/team',           label: 'Team',             icon: Users },
     ...(user?.isAdmin ? [
-      { href: '/admin/licenser',  label: 'Licenser',          icon: KeyRound },
-      { href: '/admin/users',     label: 'Moduler',           icon: UserCog },
+      { href: '/admin/overview',      label: 'Webmaster',         icon: LayoutDashboard },
+      { href: '/admin/licenser',      label: 'Licenser',          icon: KeyRound },
+      { href: '/admin/users',         label: 'Moduler',           icon: UserCog },
+      { href: '/admin/import',        label: 'Dataimport',        icon: Upload },
+      { href: '/admin/integrations',  label: 'Integrationer',     icon: Plug },
     ] : []),
     { href: '/settings',       label: 'Inställningar',    icon: Settings },
   ]

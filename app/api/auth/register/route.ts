@@ -63,6 +63,7 @@ export async function POST(req: Request) {
         email,
         password: hashedPassword,
         isAdmin: shouldBeAdmin,
+        licenseType: dbCode?.licenseType ?? 'SOLO',
       }
     })
 

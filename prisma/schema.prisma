@@ -18,6 +18,7 @@ model User {
   password      String
   logo          String?
   isAdmin       Boolean          @default(false)
+  licenseType   String           @default("SOLO")  // SOLO | BYRA | TRIAL
   modules       String[]         @default([])  // Aktiverade tillägg, t.ex. ["docs", "kyc", "kommunikation"]
   cases         Case[]
   conflictLogs  ConflictLog[]
@@ -335,4 +336,16 @@ model KycRecord {
   expiresAt        DateTime?
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
+}
+
+// Webmaster: Integrationer mot redovisningssystem (Visma, Fortnox)
+model IntegrationSetting {
+  id          String   @id @default(cuid())
+  service     String   @unique  // "visma" | "fortnox"
+  isEnabled   Boolean  @default(false)
+  apiKey      String?  @db.Text  // krypterad API-nyckel
+  clientId    String?
+  extraConfig String?  @db.Text  // JSON för extra inställningar
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
 }

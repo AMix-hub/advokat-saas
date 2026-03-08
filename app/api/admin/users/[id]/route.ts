@@ -24,12 +24,15 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       data: {
         isAdmin: typeof body.isAdmin === 'boolean' ? body.isAdmin : undefined,
         modules: Array.isArray(body.modules) ? body.modules : undefined,
+        licenseType: typeof body.licenseType === 'string' ? body.licenseType : undefined,
       },
       select: {
         id: true,
         name: true,
         email: true,
+        firmName: true,
         isAdmin: true,
+        licenseType: true,
         modules: true,
       },
     })
