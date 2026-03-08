@@ -48,6 +48,9 @@ export async function POST(req: Request) {
     // Kryptera lösenordet innan vi sparar det
     const hashedPassword = await bcrypt.hash(password, 10)
 
+    // Ge admin-behörighet om env-koden används (masterkodsregistrering)
+    const shouldBeAdmin = !dbCode
+
     // Skapa byrån/användaren i databasen
     await prisma.user.create({
       data: {
@@ -55,6 +58,7 @@ export async function POST(req: Request) {
         firmName,
         email,
         password: hashedPassword,
+        isAdmin: shouldBeAdmin,
       }
     })
 
