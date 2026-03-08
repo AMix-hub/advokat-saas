@@ -51,6 +51,8 @@ Anna Svensson,anna@example.com,556789-1234
 Björn Karlsson,bjorn@example.com,
 Carla Nilsson,carla@example.com,802001-4567`
 
+const MAX_PREVIEW_ROWS = 100
+
 export default function ImportClient() {
   const [users, setUsers] = useState<ImportUser[]>([])
   const [loadingUsers, setLoadingUsers] = useState(true)
@@ -265,7 +267,7 @@ export default function ImportClient() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/[0.03]">
-                  {parsedRows.slice(0, 100).map((row, i) => (
+                  {parsedRows.slice(0, MAX_PREVIEW_ROWS).map((row, i) => (
                     <tr key={i} className={row._valid ? '' : 'bg-red-500/5'}>
                       <td className="px-6 py-2 text-white">{row.name || <span className="text-red-400 italic">tom</span>}</td>
                       <td className="px-4 py-2 text-slate-400">{row.email || <span className="text-red-400 italic">tom</span>}</td>
@@ -278,10 +280,10 @@ export default function ImportClient() {
                       </td>
                     </tr>
                   ))}
-                  {parsedRows.length > 100 && (
+                  {parsedRows.length > MAX_PREVIEW_ROWS && (
                     <tr>
                       <td colSpan={4} className="px-6 py-2 text-slate-600 text-center">
-                        … och {parsedRows.length - 100} fler rader
+                        … och {parsedRows.length - MAX_PREVIEW_ROWS} fler rader
                       </td>
                     </tr>
                   )}

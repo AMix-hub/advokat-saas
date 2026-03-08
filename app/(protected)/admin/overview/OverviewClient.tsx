@@ -29,6 +29,8 @@ interface Stats {
   trialUsers: number
 }
 
+type LicenseFilter = 'ALL' | 'SOLO' | 'BYRA' | 'TRIAL'
+
 const LICENSE_COLORS: Record<string, string> = {
   SOLO:  'bg-blue-500/15 border-blue-500/25 text-blue-300',
   BYRA:  'bg-violet-500/15 border-violet-500/25 text-violet-300',
@@ -47,7 +49,7 @@ export default function OverviewClient() {
   const [loading, setLoading] = useState(true)
   const [accessDenied, setAccessDenied] = useState(false)
   const [saving, setSaving] = useState<string | null>(null)
-  const [filter, setFilter] = useState<'ALL' | 'SOLO' | 'BYRA' | 'TRIAL'>('ALL')
+  const [filter, setFilter] = useState<LicenseFilter>('ALL')
 
   const fetchData = useCallback(async () => {
     setLoading(true)
@@ -187,7 +189,7 @@ export default function OverviewClient() {
               return (
                 <button
                   key={item.key}
-                  onClick={() => setFilter(filter === item.key as 'ALL'|'SOLO'|'BYRA'|'TRIAL' ? 'ALL' : item.key as 'ALL'|'SOLO'|'BYRA'|'TRIAL')}
+                  onClick={() => setFilter(filter === item.key as LicenseFilter ? 'ALL' : item.key as LicenseFilter)}
                   className={`bg-slate-900 rounded-2xl border p-4 flex items-center gap-3 transition ${
                     filter === item.key
                       ? 'border-white/20 ring-1 ring-white/10'

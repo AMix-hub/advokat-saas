@@ -12,6 +12,12 @@ async function requireAdmin(req: Request) {
 
 const ALLOWED_SERVICES = ['visma', 'fortnox']
 
+function maskApiKey(key: string | null): string | null {
+  if (!key) return null
+  if (key.length <= 4) return '••••'
+  return `${'•'.repeat(key.length - 4)}${key.slice(-4)}`
+}
+
 // GET /api/admin/integrations — Hämta integrationsinställningar (endast admin)
 export async function GET(req: Request) {
   const denied = await requireAdmin(req)
@@ -24,7 +30,7 @@ export async function GET(req: Request) {
   // Mask API keys — only show last 4 chars
   const masked = settings.map(s => ({
     ...s,
-    apiKey: s.apiKey ? `${'•'.repeat(Math.max(0, s.apiKey.length - 4))}${s.apiKey.slice(-4)}` : null,
+    apiKey: maskApiKey(s.apiKey),
   }))
 
   return NextResponse.json({ integrations: masked })
@@ -69,9 +75,7 @@ export async function POST(req: Request) {
     return NextResponse.json({
       integration: {
         ...updated,
-        apiKey: updated.apiKey
-          ? `${'•'.repeat(Math.max(0, updated.apiKey.length - 4))}${updated.apiKey.slice(-4)}`
-          : null,
+        apiKey: maskApiKey(updated.apiKey),
       },
     })
   } catch (error) {
