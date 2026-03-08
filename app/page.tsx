@@ -186,6 +186,25 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ── Integration strip ──────────────────────────────────────────────── */}
+      <div className="border-y border-white/[0.08] py-10 px-6" style={{ background: '#0f172a' }}>
+        <div className="max-w-5xl mx-auto text-center">
+          <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-6">Integrerar med era befintliga system</p>
+          <div className="flex flex-wrap justify-center items-center gap-3">
+            {[
+              { name: 'Fortnox',     color: 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10' },
+              { name: 'Visma',       color: 'text-blue-400    border-blue-500/30    bg-blue-500/10'    },
+              { name: 'Excel / CSV', color: 'text-violet-400  border-violet-500/30  bg-violet-500/10'  },
+              { name: 'API & eget',  color: 'text-amber-400   border-amber-500/30   bg-amber-500/10'   },
+            ].map(({ name, color }) => (
+              <span key={name} className={`text-sm font-bold px-4 py-2 rounded-full border ${color}`}>
+                {name}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* ── Modules teaser ──────────────────────────────────────────────────── */}
       <section className="py-24 px-6" style={{ background: '#020617' }}>
         <div className="max-w-5xl mx-auto">
