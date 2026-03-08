@@ -20,6 +20,10 @@ import {
   Wallet,
   BookOpen,
   Plus,
+  Plug,
+  Upload,
+  RefreshCw,
+  Download,
 } from 'lucide-react'
 
 export const metadata: Metadata = {
@@ -124,6 +128,14 @@ const faqItems = [
   {
     q: 'Ingår det en gratis provperiod?',
     a: 'Ja! Både Solo och Byrå har 14 dagars gratis provperiod – inget kreditkort behövs. Ni provar hela plattformen med fullständiga funktioner, inte en begränsad demoversion.',
+  },
+  {
+    q: 'Hur fungerar migreringen av data från vårt nuvarande system?',
+    a: 'Vi hanterar hela migreringen åt er. Exportera era befintliga ärenden, klienter och dokument som CSV, Excel eller JSON från ert nuvarande system — vår onboarding-specialist tar hand om resten: importerar, mappar fälten och verifierar att all historik hamnar rätt. Byrå- och Enterprise-planerna inkluderar dedikerad migrationssupport. Solo-användare kan importera via CSV-uppladdning. Hela processen tar normalt under en arbetsdag.',
+  },
+  {
+    q: 'Vilka ekonomisystem integrerar CaseCore med?',
+    a: 'CaseCore integrerar med Fortnox och Visma för automatisk export av fakturor och bokföringsunderlag — inget dubbelarbete. Alla planer stöder export till CSV/Excel. Enterprise-planen ger fullständig API-åtkomst och webhooks för att koppla mot valfritt externt system.',
   },
 ]
 
@@ -385,6 +397,103 @@ export default function PitchLandingPage() {
           <p className="text-center text-slate-600 text-sm mt-10">
             Alla tillägg aktiveras omedelbart och faktureras månadsvis tillsammans med din plan.
           </p>
+        </div>
+      </section>
+
+      {/* ── Integrations ───────────────────────────────────────────────────── */}
+      <section id="integrationer" className="py-24 px-6" style={{ background: '#020617' }}>
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 font-bold text-xs uppercase tracking-widest mb-6">
+              <Plug className="w-3.5 h-3.5" /> Integrationer
+            </div>
+            <h2 className="text-3xl md:text-4xl font-black text-white mb-4">Koppla ihop med era befintliga system</h2>
+            <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+              Slipp dubbelarbete. CaseCore integrerar med Fortnox, Visma och de ekonomisystem ni redan använder — fakturor och bokföringsunderlag synkas automatiskt.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+            {[
+              { name: 'Fortnox',     desc: 'Fakturaexport & synk',     icon: Wallet,    color: '#4ade80', bg: 'rgba(74,222,128,0.08)',  border: 'rgba(74,222,128,0.25)'  },
+              { name: 'Visma',       desc: 'Bokföringsexport',         icon: Building2, color: '#60a5fa', bg: 'rgba(96,165,250,0.08)',  border: 'rgba(96,165,250,0.25)'  },
+              { name: 'Excel / CSV', desc: 'Bulk-import & export',     icon: FileText,  color: '#a78bfa', bg: 'rgba(167,139,250,0.08)', border: 'rgba(167,139,250,0.25)' },
+              { name: 'API & eget',  desc: 'Webhooks (Enterprise)',    icon: Plug,      color: '#f59e0b', bg: 'rgba(245,158,11,0.08)',  border: 'rgba(245,158,11,0.25)'  },
+            ].map(({ name, desc, icon: Icon, color, bg, border }) => (
+              <div key={name} className="p-6 rounded-2xl text-center border" style={{ background: bg, borderColor: border }}>
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3" style={{ background: 'rgba(255,255,255,0.05)' }}>
+                  <Icon className="w-6 h-6" style={{ color }} />
+                </div>
+                <p className="font-black text-white text-sm mb-1">{name}</p>
+                <p className="text-xs text-slate-400">{desc}</p>
+              </div>
+            ))}
+          </div>
+          <div className="rounded-2xl border border-white/[0.08] p-8 text-center" style={{ background: 'rgba(255,255,255,0.03)' }}>
+            <p className="text-slate-400 text-sm leading-relaxed max-w-3xl mx-auto">
+              Fakturor och bokföringsunderlag exporteras i rätt format till ert ekonomisystem — ingen manuell inmatning. Enterprise-kunder får anpassade integrationer mot valfritt system via REST API och webhooks.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Migration ──────────────────────────────────────────────────────── */}
+      <section id="migration" className="py-24 px-6 border-t border-white/[0.08]" style={{ background: 'linear-gradient(160deg, #0f172a 0%, #1e1b4b 100%)' }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 font-bold text-xs uppercase tracking-widest mb-6">
+              <Upload className="w-3.5 h-3.5" /> Datamigration
+            </div>
+            <h2 className="text-3xl md:text-4xl font-black text-white mb-4">Flytta era ärenden hit — vi sköter allt</h2>
+            <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+              Det vanligaste hindret för att byta system är{' '}
+              <span className="text-white font-bold">&ldquo;Hur får jag över mina gamla ärenden?&rdquo;</span>{' '}
+              — vi har gjort det till en icke-fråga.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            {[
+              {
+                step: '01',
+                icon: Download,
+                title: 'Exportera från ert nuvarande system',
+                desc: 'Ta ut era ärenden, klienter och dokument som CSV, Excel eller JSON. Vi accepterar alla vanliga format — inget specialprogram behövs.',
+              },
+              {
+                step: '02',
+                icon: RefreshCw,
+                title: 'Vi importerar & kvalitetssäkrar',
+                desc: 'Vår onboarding-specialist mappar era fält, rensar dubbletter och verifierar att all historik hamnar rätt. Ni behöver inte röra en rad.',
+              },
+              {
+                step: '03',
+                icon: CheckCircle2,
+                title: 'Redo att fakturera dag 1',
+                desc: 'Hela ärendehistoriken är sökbar och tillgänglig från dag ett. Börja tidregistrera direkt — utan att förlora något från gamla systemet.',
+              },
+            ].map(({ step, icon: Icon, title, desc }) => (
+              <div key={step} className="relative p-7 rounded-2xl border border-white/[0.08] overflow-hidden" style={{ background: 'rgba(255,255,255,0.04)' }}>
+                <span className="absolute top-4 right-5 text-6xl font-black leading-none select-none" style={{ color: 'rgba(255,255,255,0.04)' }}>{step}</span>
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{ background: 'linear-gradient(135deg, rgba(59,130,246,0.2), rgba(34,211,238,0.1))' }}>
+                  <Icon className="w-6 h-6 text-blue-400" />
+                </div>
+                <h3 className="text-base font-black text-white mb-3">{title}</h3>
+                <p className="text-slate-400 text-sm leading-relaxed">{desc}</p>
+              </div>
+            ))}
+          </div>
+          <div className="rounded-2xl border border-blue-500/20 p-6 flex flex-col sm:flex-row items-center justify-between gap-6" style={{ background: 'rgba(59,130,246,0.07)' }}>
+            <div>
+              <p className="text-white font-bold text-sm mb-1">Ingår i Byrå &amp; Enterprise</p>
+              <p className="text-slate-400 text-sm">Datamigration med dedikerad specialist. Solo-användare importerar via CSV-uppladdning.</p>
+            </div>
+            <a
+              href="mailto:demo@casecore.se"
+              className="flex-shrink-0 inline-flex items-center gap-2 font-bold text-white px-6 py-3 rounded-xl transition whitespace-nowrap"
+              style={{ background: 'linear-gradient(135deg,#3b82f6,#2563eb)', boxShadow: '0 0 20px rgba(59,130,246,0.3)' }}
+            >
+              Fråga om migration <ArrowRight className="w-4 h-4" />
+            </a>
+          </div>
         </div>
       </section>
 
