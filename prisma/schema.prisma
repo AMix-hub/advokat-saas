@@ -28,6 +28,7 @@ model User {
   generatedDocuments GeneratedDocument[] @relation("GeneratedDocuments")
   createdClients    Client[]       @relation("CreatedClients")
   createdAt     DateTime         @default(now())
+  integrationSettings IntegrationSetting[]
 }
 
 model Client {
@@ -338,14 +339,18 @@ model KycRecord {
   updatedAt        DateTime  @updatedAt
 }
 
-// Webmaster: Integrationer mot redovisningssystem (Visma, Fortnox)
+// Webmaster: Integrationer mot redovisningssystem (Visma, Fortnox) — per användare
 model IntegrationSetting {
   id          String   @id @default(cuid())
-  service     String   @unique  // "visma" | "fortnox"
+  service     String   // "visma" | "fortnox"
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   isEnabled   Boolean  @default(false)
   apiKey      String?  @db.Text  // krypterad API-nyckel
   clientId    String?
   extraConfig String?  @db.Text  // JSON för extra inställningar
   updatedAt   DateTime @updatedAt
   createdAt   DateTime @default(now())
+
+  @@unique([service, userId])
 }

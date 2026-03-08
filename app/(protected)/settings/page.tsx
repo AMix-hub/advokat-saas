@@ -1,6 +1,166 @@
 'use client'
+
 import { useState, useEffect } from 'react'
-import { Settings as SettingsIcon, Image as ImageIcon, CheckCircle2 } from 'lucide-react'
+import {
+  Settings as SettingsIcon, Image as ImageIcon, CheckCircle2,
+  Plug, Eye, EyeOff, Save, RefreshCw, ExternalLink,
+} from 'lucide-react'
+
+interface Integration {
+  id: string
+  service: string
+  isEnabled: boolean
+  apiKey: string | null
+  clientId: string | null
+  updatedAt: string
+}
+
+const SERVICE_META: Record<string, {
+  label: string
+  color: string
+  bg: string
+  border: string
+  description: string
+  docsUrl: string
+}> = {
+  visma: {
+    label: 'Visma',
+    color: 'text-sky-400',
+    bg: 'bg-sky-500/10',
+    border: 'border-sky-500/20',
+    description: 'Synkronisera fakturor och klientdata med Visma eEkonomi.',
+    docsUrl: 'https://developer.visma.com/',
+  },
+  fortnox: {
+    label: 'Fortnox',
+    color: 'text-emerald-400',
+    bg: 'bg-emerald-500/10',
+    border: 'border-emerald-500/20',
+    description: 'Exportera fakturor, klienter och tidrapporter till Fortnox.',
+    docsUrl: 'https://developer.fortnox.se/',
+  },
+}
+
+function IntegrationCard({
+  service,
+  integration,
+  onSave,
+}: {
+  service: string
+  integration?: Integration
+  onSave: (service: string, data: { apiKey?: string; clientId?: string; isEnabled: boolean }) => Promise<void>
+}) {
+  const meta = SERVICE_META[service]
+  const [isEnabled, setIsEnabled] = useState(integration?.isEnabled ?? false)
+  const [clientId, setClientId] = useState(integration?.clientId ?? '')
+  const [apiKey, setApiKey] = useState('')
+  const [showKey, setShowKey] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [saved, setSaved] = useState(false)
+
+  const handleSave = async () => {
+    setSaving(true)
+    try {
+      await onSave(service, {
+        isEnabled,
+        clientId: clientId || undefined,
+        apiKey: apiKey || undefined,
+      })
+      setSaved(true)
+      setApiKey('')
+      setTimeout(() => setSaved(false), 2500)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <div className={`bg-white/[0.03] rounded-2xl border ${meta.border} overflow-hidden`}>
+      <div className={`px-5 py-3.5 border-b ${meta.border} flex items-center justify-between`}>
+        <div className="flex items-center gap-3">
+          <div className={`w-8 h-8 ${meta.bg} rounded-xl flex items-center justify-center`}>
+            <Plug className={`w-3.5 h-3.5 ${meta.color}`} />
+          </div>
+          <div>
+            <h4 className="font-bold text-white text-sm">{meta.label}</h4>
+            <p className="text-xs text-slate-500">{meta.description}</p>
+          </div>
+        </div>
+        <button
+          onClick={() => setIsEnabled(v => !v)}
+          className={`relative w-10 h-5 rounded-full transition-colors flex-shrink-0 ${isEnabled ? 'bg-emerald-500' : 'bg-white/10'}`}
+          title={isEnabled ? 'Inaktivera' : 'Aktivera'}
+        >
+          <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${isEnabled ? 'translate-x-5' : ''}`} />
+        </button>
+      </div>
+      <div className="px-5 py-4 space-y-3">
+        <div>
+          <label className="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wide">Klient-ID</label>
+          <input
+            type="text"
+            value={clientId}
+            onChange={e => setClientId(e.target.value)}
+            placeholder={`Ditt ${meta.label} klient-ID`}
+            className="w-full bg-white/[0.05] border border-white/10 text-white text-sm rounded-xl px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500/40 placeholder:text-slate-600"
+          />
+        </div>
+        <div>
+          <div className="flex items-center justify-between mb-1.5">
+            <label className="text-xs font-bold text-slate-400 uppercase tracking-wide">API-nyckel</label>
+            {integration?.apiKey && (
+              <span className="text-[11px] text-slate-500 font-mono">
+                Nuvarande: <span className="text-slate-400">{integration.apiKey}</span>
+              </span>
+            )}
+          </div>
+          <div className="relative">
+            <input
+              type={showKey ? 'text' : 'password'}
+              value={apiKey}
+              onChange={e => setApiKey(e.target.value)}
+              placeholder={integration?.apiKey ? 'Ange ny nyckel för att ersätta' : 'Klistra in din API-nyckel'}
+              className="w-full bg-white/[0.05] border border-white/10 text-white text-sm rounded-xl px-3 py-2 pr-9 outline-none focus:ring-2 focus:ring-blue-500/40 placeholder:text-slate-600"
+            />
+            <button
+              type="button"
+              onClick={() => setShowKey(v => !v)}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition"
+            >
+              {showKey ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+            </button>
+          </div>
+        </div>
+        <div className="flex items-center justify-between pt-1">
+          <a
+            href={meta.docsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1 text-xs text-slate-500 hover:text-slate-300 transition"
+          >
+            <ExternalLink className="w-3 h-3" /> API-dokumentation
+          </a>
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold text-xs transition ${
+              saved
+                ? 'bg-emerald-500/20 border border-emerald-500/30 text-emerald-400'
+                : 'bg-white/[0.08] hover:bg-white/[0.12] text-white border border-white/10'
+            } disabled:opacity-50`}
+          >
+            {saving
+              ? <><RefreshCw className="w-3 h-3 animate-spin" /> Sparar...</>
+              : saved
+              ? <><CheckCircle2 className="w-3 h-3" /> Sparat!</>
+              : <><Save className="w-3 h-3" /> Spara</>
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export default function SettingsPage() {
   const [name, setName] = useState('')
@@ -9,6 +169,8 @@ export default function SettingsPage() {
   const [logo, setLogo] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [saved, setSaved] = useState(false)
+
+  const [integrations, setIntegrations] = useState<Integration[]>([])
 
   useEffect(() => {
     fetch('/api/settings').then(res => res.json()).then(data => {
@@ -19,9 +181,11 @@ export default function SettingsPage() {
         setLogo(data.user.logo || null)
       }
     })
+    fetch('/api/integrations').then(res => res.json()).then(data => {
+      setIntegrations(data.integrations || [])
+    })
   }, [])
 
-  // Hanterar bilduppladdning och konverterar till Base64-text så databasen kan spara den
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
@@ -47,9 +211,28 @@ export default function SettingsPage() {
     setTimeout(() => setSaved(false), 3000)
   }
 
+  const handleIntegrationSave = async (
+    service: string,
+    data: { apiKey?: string; clientId?: string; isEnabled: boolean },
+  ) => {
+    const res = await fetch('/api/integrations', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ service, ...data }),
+    })
+    if (res.ok) {
+      const json = await res.json()
+      setIntegrations(prev => {
+        const exists = prev.find(i => i.service === service)
+        if (exists) return prev.map(i => i.service === service ? { ...i, ...json.integration } : i)
+        return [...prev, json.integration]
+      })
+    }
+  }
+
   return (
     <main className="min-h-screen bg-slate-950 p-4 sm:p-8">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-3xl mx-auto space-y-8">
 
         <div className="bg-slate-900 rounded-2xl border border-white/[0.08] p-8 md:p-12">
           <div className="flex items-center gap-4 mb-8 border-b border-white/[0.06] pb-8">
@@ -63,7 +246,7 @@ export default function SettingsPage() {
           </div>
 
           <form onSubmit={handleSave} className="space-y-8">
-            
+
             {/* LOGOTYP / WHITE LABEL */}
             <div className="bg-white/[0.04] p-6 rounded-2xl border border-white/[0.08]">
               <h3 className="font-bold text-slate-100 mb-4 flex items-center gap-2">
@@ -115,6 +298,38 @@ export default function SettingsPage() {
 
           </form>
         </div>
+
+        {/* INTEGRATIONER */}
+        <div className="bg-slate-900 rounded-2xl border border-white/[0.08] p-8">
+          <div className="flex items-center gap-3 mb-6 pb-6 border-b border-white/[0.06]">
+            <div className="w-10 h-10 bg-white/[0.06] rounded-xl flex items-center justify-center">
+              <Plug className="w-5 h-5 text-slate-300" />
+            </div>
+            <div>
+              <h2 className="text-xl font-extrabold text-white">Integrationer</h2>
+              <p className="text-slate-500 text-sm">Koppla din byrå mot Visma och Fortnox med dina egna uppgifter</p>
+            </div>
+          </div>
+
+          <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-3.5 text-sm text-amber-400 mb-5">
+            <p className="font-bold mb-0.5">Status: Under utveckling</p>
+            <p className="text-xs opacity-80">
+              Ange din byrås egna API-uppgifter för Visma eller Fortnox. Automatisk synkronisering aktiveras i kommande versioner.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            {Object.keys(SERVICE_META).map(service => (
+              <IntegrationCard
+                key={service}
+                service={service}
+                integration={integrations.find(i => i.service === service)}
+                onSave={handleIntegrationSave}
+              />
+            ))}
+          </div>
+        </div>
+
       </div>
     </main>
   )
