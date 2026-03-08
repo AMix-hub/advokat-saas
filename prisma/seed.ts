@@ -8,10 +8,11 @@ async function main() {
   
   const user = await prisma.user.upsert({
     where: { email: 'admin@casecore.se' },
-    update: { password: hashedPassword, isAdmin: true }, // Återställer lösenord och adminbehörighet vid ny körning
+    update: { name: 'Chefsadvokat', firmName: 'Advokatbyrån AB', password: hashedPassword, isAdmin: true }, // Återställer lösenord och adminbehörighet vid ny körning
     create: {
       email: 'admin@casecore.se',
       name: 'Chefsadvokat',
+      firmName: 'Advokatbyrån AB',
       password: hashedPassword,
       isAdmin: true,
     },
@@ -61,6 +62,7 @@ async function main() {
       title: 'Avtalsgranskning: Nybygge City',
       description: 'Genomgång av entreprenadavtal.',
       clientId: client.id,
+      assignedToId: user.id,
       status: 'OPEN',
       hourlyRate: 1500,
       logs: { create: { action: 'Ärende skapat via system-initiering.' } }
@@ -111,9 +113,10 @@ async function main() {
   })
 
   // 5. Skapa test-faktura
+  const currentYear = new Date().getFullYear()
   await prisma.invoice.create({
     data: {
-      invoiceNumber: `2024-001`,
+      invoiceNumber: `${currentYear}-001`,
       invoiceDate: new Date(),
       dueDate: new Date(new Date().setDate(new Date().getDate() + 30)),
       status: 'DRAFT',
